@@ -9,8 +9,14 @@ environment:
     secure: vlKzMvasdBb78FvDbvLRwA==
 
 install:
+  - ps: echo "-------------------------------------------------"  
+  - ps: echo "APPVEYOR_REPO_COMMIT $env:APPVEYOR_REPO_COMMIT  "  
+  - ps: echo "APPVEYOR_REPO_COMMIT_TIMESTAMP $env:APPVEYOR_REPO_COMMIT_TIMESTAMP  "  
+  - ps: echo "APPVEYOR_BUILD_VERSION $env:APPVEYOR_BUILD_VERSION"  
+  - ps: echo "\n\n\n\n\n"  
   - docker version
-
+  - choco install "msbuild-sonarqube-runner" -y
+  
 for:
 
 # configuration for "master" branch
@@ -21,8 +27,7 @@ for:
       - master
 
   configuration: Release
-  build_script:
-  - choco install "msbuild-sonarqube-runner" -y
+  build_script: 
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
   - dotnet build -c Release   
@@ -30,13 +35,13 @@ for:
   
   - ls -lha 
   - ps: echo "$env:DOCKER_USER"  
-  - echo " "
+  - echo " *master* " "\n"
   
   - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .
   - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
-  - ps: docker tag tdtb-web roured/tdtb-web:APPVEYOR_BUILD_NUMBER
+  - ps: docker tag tdtb-web roured/tdtb-web:$env:APPVEYOR_BUILD_VERSION
   - ps: docker tag tdtb-web roured/tdtb-web:latest
-  - ps: docker push roured/tdtb-web:APPVEYOR_BUILD_NUMBER
+  - ps: docker push roured/tdtb-web:$env:APPVEYOR_BUILD_VERSION
   - ps: docker push roured/tdtb-web:latest 
   - ps: docker logout
   
@@ -52,23 +57,14 @@ for:
       - dev
 
   configuration: Debug
-  build_script:  
-  - ps: echo "APPVEYOR_REPO_COMMIT $env:APPVEYOR_REPO_COMMIT  "  
-  - ps: echo "APPVEYOR_REPO_COMMIT_TIMESTAMP $env:APPVEYOR_REPO_COMMIT_TIMESTAMP  "  
-  - ps: echo "APPVEYOR_BUILD_VERSION $env:APPVEYOR_BUILD_VERSION"  
-  - ps: echo "APPVEYOR_BUILD_NUMBER  $env:APPVEYOR_BUILD_NUMBER "  
-  
-  - choco install "msbuild-sonarqube-runner" -y
+  build_script:   
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
   - dotnet build -c Debug   
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
-  - ls -lha 
-  - ps: echo "$env:DOCKER_USER"  
-  - ps: echo "APPVEYOR_BUILD_NUMBER"  
-  - ps: echo "$env:APPVEYOR_BUILD_NUMBER"  
-  - echo " "
+  - ls -lha   
+  - echo " *dev* " "\n"
   
   - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .  
   - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
