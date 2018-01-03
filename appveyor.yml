@@ -53,6 +53,9 @@ for:
 
   configuration: Debug
   build_script:
+  - ps: echo "APPVEYOR_BUILD_NUMBER"  
+  - ps: echo "$env:APPVEYOR_BUILD_NUMBER"  
+  
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
@@ -61,6 +64,8 @@ for:
   
   - ls -lha 
   - ps: echo "$env:DOCKER_USER"  
+  - ps: echo "APPVEYOR_BUILD_NUMBER"  
+  - ps: echo "$env:APPVEYOR_BUILD_NUMBER"  
   - echo " "
   
   - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .  
