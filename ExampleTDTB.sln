@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{B27DD2E5-C587-444A-A535-CA8AC3605AE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{92641CE6-1981-4B33-B778-7A23A4E68FCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD6146CB-DDB4-42C1-934A-102E5D5DC104}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BD7B76F7-EA95-46E5-A360-B420329B3CCB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B27DD2E5-C587-444A-A535-CA8AC3605AE2} = {92641CE6-1981-4B33-B778-7A23A4E68FCA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60475545-BB2D-4640-BE30-0A4289C1C368}
+	EndGlobalSection
+EndGlobal
