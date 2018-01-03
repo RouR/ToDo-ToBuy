@@ -50,8 +50,9 @@ for:
 
   configuration: Debug
   build_script:
-  - cmd: echo "$env:DOCKER_USER"
-  - cmd: echo "$env:DOCKER_PASS" | head -c 2
+  - ps: echo "$env:DOCKER_USER"
+  - ps: echo APPVEYOR_BUILD_NUMBER
+  - ps: echo "$env:DOCKER_PASS" | head -c 2
   
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
@@ -60,8 +61,8 @@ for:
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
-  - cmd: echo "$env:DOCKER_USER"
-  - cmd: echo "$env:DOCKER_PASS" | head -c 2
+  - ps: echo "$env:DOCKER_USER"
+  - ps: echo "$env:DOCKER_PASS" | head -c 2
   - echo " "
   - docker build -t tdtb-web -f docker/Dockerfile-Web .  
   - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
