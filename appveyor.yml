@@ -6,7 +6,7 @@ nuget:
 environment:
   DOCKER_USER: roured
   DOCKER_PASS:
-    secure: vlKzMvasdBb78FvDbvLRwA==  
+    secure: vlKzMvasdBb78FvDbvLRwA==
 
 install:
   - docker version
@@ -34,7 +34,9 @@ for:
   - docker tag tdtb-web roured/tdtb-web:APPVEYOR_BUILD_NUMBER
   - docker tag tdtb-web roured/tdtb-web:latest
   - docker push roured/tdtb-web:APPVEYOR_BUILD_NUMBER
-  - docker push roured/tdtb-web:latest  
+  - docker push roured/tdtb-web:latest 
+  - docker logout
+  
   cache:
   - '%USERPROFILE%\.nuget\packages'  
 
@@ -55,10 +57,13 @@ for:
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
-  - docker build -t tdtb-web -f docker/Dockerfile-Web .
+  - echo "$env:DOCKER_USER"
+  - echo "$env:DOCKER_PASS" | head -c 2
+  - docker build -t tdtb-web -f docker/Dockerfile-Web .  
   - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
   - docker tag tdtb-web roured/tdtb-web:staging
   - docker push roured/tdtb-web:staging
+  - docker logout
   
   cache:
   - '%USERPROFILE%\.nuget\packages'  
