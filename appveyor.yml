@@ -13,7 +13,7 @@ install:
   - ps: echo "APPVEYOR_REPO_COMMIT $env:APPVEYOR_REPO_COMMIT  "  
   - ps: echo "APPVEYOR_REPO_COMMIT_TIMESTAMP $env:APPVEYOR_REPO_COMMIT_TIMESTAMP  "  
   - ps: echo "APPVEYOR_BUILD_VERSION $env:APPVEYOR_BUILD_VERSION"  
-  - ps: echo "\n\n\n\n\n"  
+  - ps: echo "-------------------------------------------------"  
   - docker version
   - choco install "msbuild-sonarqube-runner" -y
   
@@ -35,7 +35,7 @@ for:
   
   - ls -lha 
   - ps: echo "$env:DOCKER_USER"  
-  - echo " *master* " "\n"
+  - echo " *master* " 
   
   - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .
   - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
@@ -64,7 +64,7 @@ for:
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha   
-  - echo " *dev* " "\n"
+  - echo " *dev* " 
   
   - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .  
   - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
