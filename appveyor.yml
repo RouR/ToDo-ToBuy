@@ -1,0 +1,89 @@
+version: 0.0.{build}
+image: Visual Studio 2017
+nuget:
+  disable_publish_on_pr: true
+
+environment:
+  DOCKER_USER: roured
+  DOCKER_PASS:
+    secure: vlKzMvasdBb78FvDbvLRwA==
+
+install:
+  - ps: echo "-------------------------------------------------"  
+  - ps: echo "APPVEYOR_REPO_COMMIT $env:APPVEYOR_REPO_COMMIT  "  
+  - ps: echo "APPVEYOR_REPO_COMMIT_TIMESTAMP $env:APPVEYOR_REPO_COMMIT_TIMESTAMP  "  
+  - ps: echo "APPVEYOR_BUILD_VERSION $env:APPVEYOR_BUILD_VERSION"  
+  - ps: echo "\n\n\n\n\n"  
+  - docker version
+  - choco install "msbuild-sonarqube-runner" -y
+  
+for:
+
+# configuration for "master" branch
+# build in Release mode and deploy to Azure
+-
+  branches:
+    only:
+      - master
+
+  configuration: Release
+  build_script: 
+  - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
+  - dotnet restore
+  - dotnet build -c Release   
+  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
+  
+  - ls -lha 
+  - ps: echo "$env:DOCKER_USER"  
+  - echo " *master* " "\n"
+  
+  - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .
+  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - ps: docker tag tdtb-web roured/tdtb-web:$env:APPVEYOR_BUILD_VERSION
+  - ps: docker tag tdtb-web roured/tdtb-web:latest
+  - ps: docker push roured/tdtb-web:$env:APPVEYOR_BUILD_VERSION
+  - ps: docker push roured/tdtb-web:latest 
+  - ps: docker logout
+  
+  cache:
+  - '%USERPROFILE%\.nuget\packages'  
+
+
+# configuration for all branches starting from "dev-"
+# build in Debug mode and deploy locally for testing
+-
+  branches:
+    only:
+      - dev
+
+  configuration: Debug
+  build_script:   
+  - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
+  - dotnet restore
+  - dotnet build -c Debug   
+  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
+  
+  - ls -lha   
+  - echo " *dev* " "\n"
+  
+  - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .  
+  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - ps: docker tag tdtb-web roured/tdtb-web:staging
+  - ps: docker push roured/tdtb-web:staging
+  - ps: docker logout
+  
+  cache:
+  - '%USERPROFILE%\.nuget\packages'  
+
+
+# "fall back" configuration for all other branches
+# no "branches" section defined
+# do not deploy at all
+-
+  configuration: Debug
+
+
+
+
+
+  
