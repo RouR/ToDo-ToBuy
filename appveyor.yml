@@ -25,11 +25,11 @@ for:
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
-  - dotnet build -c Release 
+  - dotnet build -c Release   
+  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
-  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"     
   - ls -lha 
-  - ./docker/build-web.sh
+  - docker build -t tdtb-web -f docker/Dockerfile-Web .
   - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
   - docker tag tdtb-web roured/tdtb-web:APPVEYOR_BUILD_NUMBER
   - docker tag tdtb-web roured/tdtb-web:latest
@@ -51,11 +51,11 @@ for:
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
-  - dotnet build -c Debug 
+  - dotnet build -c Debug   
+  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
-  - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"     
   - ls -lha 
-  - ./docker/build-web.sh
+  - docker build -t tdtb-web -f docker/Dockerfile-Web .
   - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
   - docker tag tdtb-web roured/tdtb-web:staging
   - docker push roured/tdtb-web:staging

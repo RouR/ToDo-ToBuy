@@ -10,5 +10,7 @@ namespace Web.Utils
         }
 
         public Guid Id { get; }
+        public string CodeVer = "v1";
+       
     }
 }
