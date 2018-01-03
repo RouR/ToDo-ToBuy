@@ -23,7 +23,7 @@ install:
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
-  - dotnet build
+  - dotnet build -c Release 
   
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"     
   - ls -lha 
@@ -34,8 +34,8 @@ install:
   - docker push roured/tdtb-web:APPVEYOR_BUILD_NUMBER
   - docker push roured/tdtb-web:latest  
   cache:
-    - '%USERPROFILE%\.nuget\packages'  
-  deploy:
+  - '%USERPROFILE%\.nuget\packages'  
+
 
 # configuration for all branches starting from "dev-"
 # build in Debug mode and deploy locally for testing
@@ -49,7 +49,7 @@ install:
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
-  - dotnet build
+  - dotnet build -c Debug 
   
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"     
   - ls -lha 
@@ -59,8 +59,8 @@ install:
   - docker push roured/tdtb-web:staging
   
   cache:
-    - '%USERPROFILE%\.nuget\packages'  
-  deploy:
+  - '%USERPROFILE%\.nuget\packages'  
+
 
 # "fall back" configuration for all other branches
 # no "branches" section defined
