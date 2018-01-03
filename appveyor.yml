@@ -29,13 +29,16 @@ for:
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
-  - docker build -t tdtb-web -f docker/Dockerfile-Web .
-  - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
-  - docker tag tdtb-web roured/tdtb-web:APPVEYOR_BUILD_NUMBER
-  - docker tag tdtb-web roured/tdtb-web:latest
-  - docker push roured/tdtb-web:APPVEYOR_BUILD_NUMBER
-  - docker push roured/tdtb-web:latest 
-  - docker logout
+  - ps: echo "$env:DOCKER_USER"  
+  - echo " "
+  
+  - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .
+  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - ps: docker tag tdtb-web roured/tdtb-web:APPVEYOR_BUILD_NUMBER
+  - ps: docker tag tdtb-web roured/tdtb-web:latest
+  - ps: docker push roured/tdtb-web:APPVEYOR_BUILD_NUMBER
+  - ps: docker push roured/tdtb-web:latest 
+  - ps: docker logout
   
   cache:
   - '%USERPROFILE%\.nuget\packages'  
@@ -50,10 +53,6 @@ for:
 
   configuration: Debug
   build_script:
-  - ps: echo "$env:DOCKER_USER"
-  - ps: echo APPVEYOR_BUILD_NUMBER
-  - ps: echo "$env:DOCKER_PASS" | head -c 2
-  
   - choco install "msbuild-sonarqube-runner" -y
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
   - dotnet restore
@@ -61,14 +60,14 @@ for:
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
-  - ps: echo "$env:DOCKER_USER"
-  - ps: echo "$env:DOCKER_PASS" | head -c 2
+  - ps: echo "$env:DOCKER_USER"  
   - echo " "
-  - docker build -t tdtb-web -f docker/Dockerfile-Web .  
-  - docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
-  - docker tag tdtb-web roured/tdtb-web:staging
-  - docker push roured/tdtb-web:staging
-  - docker logout
+  
+  - ps: docker build -t tdtb-web -f docker/Dockerfile-Web .  
+  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - ps: docker tag tdtb-web roured/tdtb-web:staging
+  - ps: docker push roured/tdtb-web:staging
+  - ps: docker logout
   
   cache:
   - '%USERPROFILE%\.nuget\packages'  
