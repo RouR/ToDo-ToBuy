@@ -4,13 +4,14 @@ sudo: required
 os: linux
 dist: trusty  
 mono: none
-dotnet: 2.0.0
+dotnet: 2.0.2
 services:
     - docker
 
 #env:
 #    DOCKER_USER: 
 #    DOCKER_PASS:
+#    BUILD_VER
       
     
 install:
@@ -28,21 +29,23 @@ script:
     - dotnet restore 
     - dotnet build    
     
-    - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID
-    - echo DOCKER_USER $env:DOCKER_USER
+    - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID    
+    - echo TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_NUMBER    
+    - echo BUILD_VER $BUILD_VER    
+    - echo docker image ver = $BUILD_VER.$TRAVIS_BUILD_NUMBER    
     - echo DOCKER_USER $DOCKER_USER
     
     - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
       dotnet publish -c Release ;
       
       rm -r ./pub-web ;
-      cp -r ./src/Web/bin/Release/newcoreapp2.0/publish ./pub-web ;
+      cp -r ./src/Web/bin/Release/netcoreapp2.0/publish ./pub-web ;
       docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
-      docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS" ;
-      docker tag tdtb-web roured/tdtb-web:$TRAVIS_BUILD_ID ;
+      docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
+      docker tag tdtb-web roured/tdtb-web:$BUILD_VER.$TRAVIS_BUILD_NUMBER ;
       docker tag tdtb-web roured/tdtb-web:latest ;
-      docker push roured/tdtb-web:$TRAVIS_BUILD_ID ;
+      docker push roured/tdtb-web:$BUILD_VER.$TRAVIS_BUILD_NUMBER ;
       docker push roured/tdtb-web:latest ;
       docker logout ;      
       fi
@@ -51,10 +54,10 @@ script:
       dotnet publish -c Debug ;
       
       rm -r ./pub-web ;
-      cp -r ./src/Web/bin/Debug/newcoreapp2.0/publish ./pub-web ;
+      cp -r ./src/Web/bin/Debug/netcoreapp2.0/publish ./pub-web ;
       docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
-      docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS" ;      
+      docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;      
       docker tag tdtb-web roured/tdtb-web:staging ;      
       docker push roured/tdtb-web:staging ;
       docker logout ;      
