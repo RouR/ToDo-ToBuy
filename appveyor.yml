@@ -32,6 +32,7 @@ for:
   - dotnet clean
   - dotnet restore
   - dotnet build -c Release 
+  # publish in Release, check DockerFile - path to Release folder
   - dotnet publish -c Release   
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
