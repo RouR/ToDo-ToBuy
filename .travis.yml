@@ -40,7 +40,7 @@ script:
       
       
       cp -r ./src/Web/bin/Release/netcoreapp2.0/publish ./pub-web ;
-      docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
+      docker build -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
       docker tag tdtb-web roured/tdtb-web:$BUILD_VER.$TRAVIS_BUILD_NUMBER ;
@@ -52,12 +52,11 @@ script:
       
     - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
       dotnet publish -c Debug ;
-      
+     
       
       cp -r ./src/Web/bin/Debug/netcoreapp2.0/publish ./pub-web ;
-      ls ;      
-      docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
+      docker build -t tdtb-web -f docker/Dockerfile-Web-2 . ;      
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;      
       docker tag tdtb-web roured/tdtb-web:staging ;      
       docker push roured/tdtb-web:staging ;
