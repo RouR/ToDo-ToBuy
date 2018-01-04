@@ -5,6 +5,5 @@ WORKDIR /app
 EXPOSE 5555
 
 COPY ./src/Web/bin/Release/netcoreapp2.0/publish .
-RUN ls -lha 
 
 ENTRYPOINT ["dotnet", "Web.dll"]
