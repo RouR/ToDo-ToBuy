@@ -38,7 +38,7 @@ script:
     - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
       dotnet publish -c Release ;
       
-      rm -r ./pub-web ;
+      
       cp -r ./src/Web/bin/Release/netcoreapp2.0/publish ./pub-web ;
       docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
@@ -53,8 +53,9 @@ script:
     - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
       dotnet publish -c Debug ;
       
-      rm -r ./pub-web ;
+      
       cp -r ./src/Web/bin/Debug/netcoreapp2.0/publish ./pub-web ;
+      ls ;      
       docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;      
