@@ -1,0 +1,65 @@
+language: csharp  
+sudo: required  
+dist: trusty  
+mono: none
+dotnet: 2.0
+services:
+    - docker
+
+#env:
+#    DOCKER_USER: 
+#    DOCKER_PASS:
+      
+    
+install:
+    - npm install -g bower
+    - npm install -g gulp
+
+
+   
+
+
+script:
+    - dotnet restore 
+    - dotnet build    
+    
+    - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID
+    - echo DOCKER_USER $env:DOCKER_USER
+    - echo DOCKER_USER $DOCKER_USER
+    
+    - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
+      dotnet publish -c Release ;
+      
+      rm -r ./pub-web ;
+      cp -r ./src/Web/bin/Release/newcoreapp2.0/publish ./pub-web ;
+      docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
+      
+      docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS" ;
+      docker tag tdtb-web roured/tdtb-web:$TRAVIS_BUILD_ID ;
+      docker tag tdtb-web roured/tdtb-web:latest ;
+      docker push roured/tdtb-web:$TRAVIS_BUILD_ID ;
+      docker push roured/tdtb-web:latest ;
+      docker logout ;      
+      fi
+      
+    - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
+      dotnet publish -c Debug ;
+      
+      rm -r ./pub-web ;
+      cp -r ./src/Web/bin/Debug/newcoreapp2.0/publish ./pub-web ;
+      docker -t tdtb-web -f docker/Dockerfile-Web-2 . ;
+      
+      docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS" ;      
+      docker tag tdtb-web roured/tdtb-web:staging ;      
+      docker push roured/tdtb-web:staging ;
+      docker logout ;      
+      fi
+    
+
+after_success: 
+
+    - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
+
+      /* Push to docker repo */
+
+      fi 
