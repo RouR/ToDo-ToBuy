@@ -8,7 +8,9 @@ dotnet: 2.0.2
 services:
     - docker
 
-#env:
+env:
+# https://docs.microsoft.com/ru-ru/dotnet/core/rid-catalog
+    DOTNETRUNTIME: ubuntu-x64
 #    DOCKER_USER: 
 #    DOCKER_PASS:
 #    BUILD_VER
@@ -26,7 +28,8 @@ script:
     - dotnet --info
     - docker version
     
-    - dotnet restore 
+    
+    - dotnet restore --runtime $DOTNETRUNTIME
     - dotnet build    
     
     - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID    
@@ -34,9 +37,10 @@ script:
     - echo BUILD_VER $BUILD_VER    
     - echo docker image ver = $BUILD_VER.$TRAVIS_BUILD_NUMBER    
     - echo DOCKER_USER $DOCKER_USER
+    - echo DOTNETRUNTIME $DOTNETRUNTIME
     
     - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
-      dotnet publish -c Release ;
+      dotnet publish -c Release --runtime $DOTNETRUNTIME ;
       
       
       cp -r ./src/Web/bin/Release/netcoreapp2.0/publish ./pub-web ;
@@ -51,7 +55,7 @@ script:
       fi
       
     - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
-      dotnet publish -c Debug ;
+      dotnet publish -c Debug --runtime $DOTNETRUNTIME ;
      
       
       cp -r ./src/Web/bin/Debug/netcoreapp2.0/publish ./pub-web ;
