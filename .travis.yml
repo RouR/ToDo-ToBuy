@@ -9,8 +9,9 @@ services:
     - docker
 
 env:
+    global:
 # https://docs.microsoft.com/ru-ru/dotnet/core/rid-catalog
-    DOTNETRUNTIME: ubuntu-x64
+        DOTNETRUNTIME: ubuntu-x64
 #    DOCKER_USER: 
 #    DOCKER_PASS:
 #    BUILD_VER
