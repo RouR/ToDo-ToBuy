@@ -8,9 +8,12 @@ metadata:
     app: tool-dockercheck
 spec:
   schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3  
   
   jobTemplate:
-      spec:
+      spec:                  
           template:
             metadata:
               namespace: dev
@@ -18,7 +21,7 @@ spec:
                 app: tool-dockercheck   
                 ddd: dd6fghg6
             spec:
-              #restartPolicy: OnFailure
+              restartPolicy: Never #OnFailure
               containers:
               - name: tool-dockercheck
                 image: roured/tdtb-dockercheck:dev
@@ -28,7 +31,7 @@ spec:
                 - name: KUBERNETES_NAMESPACE
                   value: "dev"
                 - name: KUBERNETES_SERVICE_HOST
-                  value: "kubernetes.dev"
+                  value: "kubernetes.default.svc.cluster.local"
                 - name: KUBERNETES_SERVICE_PORT
                   value: "443"
               
