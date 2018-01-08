@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD6146CB-DDB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BD7B76F7-EA95-46E5-A360-B420329B3CCB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{261F76A5-DF6B-4B25-9A88-8BDA0D797C34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerHubChecker", "src\DockerHubChecker\DockerHubChecker.csproj", "{E2D0FEB8-70BF-409B-85C5-4A58420F7A19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,12 +25,19 @@ Global
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2D0FEB8-70BF-409B-85C5-4A58420F7A19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2D0FEB8-70BF-409B-85C5-4A58420F7A19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2D0FEB8-70BF-409B-85C5-4A58420F7A19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2D0FEB8-70BF-409B-85C5-4A58420F7A19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2} = {92641CE6-1981-4B33-B778-7A23A4E68FCA}
+		{92641CE6-1981-4B33-B778-7A23A4E68FCA} = {BD6146CB-DDB4-42C1-934A-102E5D5DC104}
+		{261F76A5-DF6B-4B25-9A88-8BDA0D797C34} = {BD6146CB-DDB4-42C1-934A-102E5D5DC104}
+		{E2D0FEB8-70BF-409B-85C5-4A58420F7A19} = {261F76A5-DF6B-4B25-9A88-8BDA0D797C34}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60475545-BB2D-4640-BE30-0A4289C1C368}

@@ -63,8 +63,8 @@ script:
       
       docker build -t tdtb-web -f docker/Dockerfile-Web-2 . ;      
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;      
-      docker tag tdtb-web roured/tdtb-web:staging ;      
-      docker push roured/tdtb-web:staging ;
+      docker tag tdtb-web roured/tdtb-web:dev ;      
+      docker push roured/tdtb-web:dev ;
       docker logout ;      
       fi
     

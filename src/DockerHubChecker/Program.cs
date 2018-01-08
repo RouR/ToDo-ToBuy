@@ -1,38 +1,69 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Linq;
-using System.Threading;
-using k8s;
-using Newtonsoft.Json;
-=======
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using k8s;
->>>>>>> CI
+
 
 namespace DockerHubChecker
 {
     class Program
     {
         private const string StagingTagName = "staging";
-
-<<<<<<< HEAD
-=======
+        const string EnvName = "KUBERNETES_SERVICE_HOST";
 
         private static string DetectNamespace()
         {
-            return null;
+            
+            var envHost = Environment.GetEnvironmentVariable(EnvName);
+            return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
         }
 
 
         private static void CheckNamespace(string k8Namespace)
         {
-            string environmentVariable1 = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST");
+            var config = KubernetesClientConfiguration.InClusterConfig();
+            IKubernetes client = new Kubernetes(config);
+            Console.WriteLine("Starting Request to Kubernetes!");
+
+            var list = client.ListNamespacedPod(k8Namespace);
+            foreach (var item in list.Items)
+            {
+                Console.WriteLine($"Pod {item.Metadata.Name}");
+            }
+            if (list.Items.Count == 0)
+            {
+                Console.WriteLine("No Pods!");
+            }
+
+
+            Console.WriteLine("\nList Deployments:");
+            foreach (var item in client.ListNamespacedDeployment(k8Namespace).Items)
+            {
+                Console.WriteLine($"*\t Name {item.Metadata.Name}");
+                foreach (var label in item.Spec.Template.Metadata.Labels)
+                {
+                    Console.WriteLine($"Label {label.Key} = {label.Value}");
+                }
+
+                var ciLabel = item.Spec.Template.Metadata.Labels.SingleOrDefault(x => x.Key == "ci");
+                if (ciLabel.Key != null)
+                {
+                    Console.WriteLine($"\t\t\tFound!");
+                    var images = item.Spec.Template.Spec.Containers.Select(x => x.Image);
+                    Console.WriteLine($"\t\t\tImages = {string.Join("; ", images)}");
+                }
+
+                foreach (var container in item.Spec.Template.Spec.Containers)
+                {
+                    Console.WriteLine($"Image {container.Image}");
+                }
+            }
         }
 
->>>>>>> CI
+
         private static void Check()
         {
             var clientDocker = new DockerHubClient();
@@ -45,12 +76,10 @@ namespace DockerHubChecker
             if(tagStaging != null)
                 Console.WriteLine($"{StagingTagName}: \tId={tagStaging.Id} \tLastUpdated={tagStaging.LastUpdated:R}");
 
-<<<<<<< HEAD
-            var config = KubernetesClientConfiguration.InClusterConfig();
-=======
+
             KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
             //KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
->>>>>>> CI
+
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request!");
 
@@ -73,7 +102,7 @@ namespace DockerHubChecker
                     Console.WriteLine($"Label {label.Key} = {label.Value}");
                     if (label.Key == "ci")
                     {
-<<<<<<< HEAD
+
                         var newVal = "newdata";
                         Console.WriteLine($"\t\t\tFound! try set to {newVal}");
                         item.Spec.Template.Metadata.Labels.Add("ci2", "newVal");
@@ -84,25 +113,7 @@ namespace DockerHubChecker
                         //    path = "/spec/template/metadata/labels/"+ label.Key,
                         //    value = newVal
                         //},item.Metadata.Name, "default");
-=======
-                        Console.WriteLine($"\t\t\tFound!");
-                        if (tagStaging != null)
-                        {
-                            var newVal = "timestamp"+tagStaging.LastUpdated.ToString("s");
-                            Console.WriteLine($"\t\t\t try set to {newVal}");
 
-                            //item.Spec.Template.Metadata.Labels.Add("ci2", "newVal");
-                            //client.PatchNamespacedDeployment(item, item.Metadata.Name, "default");
-                            client.PatchNamespacedDeployment(new
-                            {
-                                op = "replace",
-                                path = "/spec/template/metadata/labels/" + label.Key,
-                                value = newVal
-                            }, item.Metadata.Name, "default");
-                        }
-
-
->>>>>>> CI
                     }
                 }
                 foreach (var container in item.Spec.Template.Spec.Containers)
@@ -118,19 +129,21 @@ namespace DockerHubChecker
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World! ");
-<<<<<<< HEAD
-=======
-            Console.WriteLine(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE"), ".kube\\config") : Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kube/config"));
->>>>>>> CI
 
-            Check();
+            //Check();
+
+            var k8Namespace = DetectNamespace();
+            Console.WriteLine($"k8l Namespace {k8Namespace}  from Environment {Environment.GetEnvironmentVariable(EnvName)}");
+
+            CheckNamespace(k8Namespace);
+
 
             Console.WriteLine("------------------------------------------------------------");
             Thread.Sleep(TimeSpan.FromSeconds(20));
             Console.WriteLine("------------------------------------------------------------");
             Thread.Sleep(TimeSpan.FromSeconds(20));
             Console.WriteLine("------------------------------------------------------------");
-            Check();
+            //Check();
         }
     }
 }

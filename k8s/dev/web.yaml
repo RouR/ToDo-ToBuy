@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: roured/tdtb-web:staging
+        image: roured/tdtb-web:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 5555
