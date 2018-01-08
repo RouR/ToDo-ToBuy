@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2 # apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: web-deployment
+  namespace: dev
   labels:
     app: web
 spec:
@@ -19,6 +20,7 @@ spec:
   
   template:
     metadata:
+      namespace: dev
       labels:
         app: web
         ci: somedataForOverride
@@ -43,6 +45,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: web-service
+  namespace: dev
 spec:
   selector:
     app: web
@@ -62,6 +65,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: web-ingress
+  namespace: dev
 spec:
   backend:
     serviceName: web-service
