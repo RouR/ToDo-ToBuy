@@ -1,25 +1,6 @@
-FROM microsoft/dotnet:2.0-sdk AS build-env
-WORKDIR /app
-EXPOSE 5555
-
-COPY *.sln ./
-COPY ./src ./src
-#RUN ls -lha 
-
-RUN dotnet clean
-RUN dotnet restore
-
-WORKDIR /app/src/Web
-#RUN ls -lha 
-
-RUN dotnet build -c Release 
-RUN dotnet publish -c Release 
-#RUN dotnet publish -c Release  -o /app
-
 # build runtime image
 #FROM microsoft/dotnet:2.0-runtime-deps
 FROM microsoft/dotnet:2.0-runtime
 WORKDIR /app
-COPY --from=build-env /app/src/Web/bin/Release/netcoreapp2.0/publish .
-#RUN ls -lha 
+COPY ./pub-web .
 ENTRYPOINT ["dotnet", "Web.dll"]
