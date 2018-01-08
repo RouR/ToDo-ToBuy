@@ -12,13 +12,14 @@ namespace DockerHubChecker
     class Program
     {
         private const string StagingTagName = "staging";
-        const string EnvName = "KUBERNETES_SERVICE_HOST";
+        const string EnvName = "KUBERNETES_NAMESPACE";
 
         private static string DetectNamespace()
         {
             
             var envHost = Environment.GetEnvironmentVariable(EnvName);
-            return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
+            return envHost;
+            //return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
         }
 
 
@@ -133,7 +134,7 @@ namespace DockerHubChecker
             //Check();
 
             var k8Namespace = DetectNamespace();
-            Console.WriteLine($"k8l Namespace {k8Namespace}  from Environment {Environment.GetEnvironmentVariable(EnvName)}");
+            Console.WriteLine($"k8l Namespace {k8Namespace}  from Environment {EnvName} {Environment.GetEnvironmentVariable(EnvName)}");
 
             CheckNamespace(k8Namespace);
 
