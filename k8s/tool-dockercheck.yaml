@@ -1,0 +1,49 @@
+apiVersion: apps/v1beta2 # apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: tool-dockercheck-deployment
+  labels:
+    app: tool-dockercheck
+spec:
+<<<<<<< HEAD
+  #replicas: 2
+=======
+  replicas: 1
+>>>>>>> CI
+  selector:
+    matchLabels:
+      app: tool-dockercheck
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  
+  minReadySeconds: 50
+  
+  template:
+    metadata:
+      labels:
+        app: tool-dockercheck   
+<<<<<<< HEAD
+        ddd: dd6rty6
+=======
+        ddd: ddsdf
+>>>>>>> CI
+    spec:
+      containers:
+      - name: tool-dockercheck
+        image: roured/tdtb-dockercheck:staging
+        imagePullPolicy: Always
+        env:
+<<<<<<< HEAD
+=======
+        #https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+>>>>>>> CI
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc.cluster.local"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
+        
+        
+---

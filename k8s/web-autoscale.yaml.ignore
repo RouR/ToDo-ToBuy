@@ -1,0 +1,36 @@
+# kubectl describe hpa
+# kubectl delete -f web-autoscale.yaml
+
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-scale
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: web-deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics: #The HorizontalPodAutoscaler will calculate proposed replica counts for each metric, and then choose the one with the highest replica count
+  - type: Resource 
+  #it is represented as a percentage of a resource specified on pod containers. Notice that you can specify other resource metrics besides CPU. By default, the only other supported resource metric is memor
+    resource:
+      name: cpu
+      targetAverageUtilization: 80
+  - type: Pods 
+  # These metrics describe pods, and are averaged together across pods and compared with a target value to determine the replica coun
+    pods:
+      metricName: packets-per-second
+      targetAverageValue: 1k
+  - type: Object 
+  #These metrics describe a different object in the same namespace, instead of describing pods. Note that the metrics are not fetched from the object – they simply describe it. Object metrics do not involve averaging
+    object:
+      metricName: requests-per-second
+      target:
+        apiVersion: extensions/v1beta1
+        kind: Ingress
+        name: web-ingress
+      targetValue: 10k    
+# attempt to ensure that each pod was consuming roughly 50% of its requested CPU, serving 1000 packets per second, and that all pods behind the main-route Ingress were serving a total of 10000 requests per second   
