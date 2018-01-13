@@ -9,7 +9,7 @@ metadata:
 spec:
   schedule: "*/1 * * * *"
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 3  
   
   jobTemplate:
@@ -21,7 +21,8 @@ spec:
                 app: tool-dockercheck   
                 ddd: dd6fghg6
             spec:
-              restartPolicy: Never #OnFailure
+              restartPolicy: Never 
+              #OnFailure
               containers:
               - name: tool-dockercheck
                 image: roured/tdtb-dockercheck:dev
