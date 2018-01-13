@@ -33,10 +33,10 @@ namespace DockerHubChecker
 
         private static void CheckNamespace(string k8Namespace)
         {
-#if DEBUG
+#if false
             var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
 #else
-            var config = KubernetesClientConfiguration.InClusterConfig();
+            var config = KubernetesClientConfiguration.InClusterConfig(); //for docker image, both on Debug and in Release versions
 #endif
 
             IKubernetes client = new Kubernetes(config);
