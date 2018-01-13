@@ -20,17 +20,6 @@ namespace Web
 
         //public IConfiguration Configuration { get; }
 
-        public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
-        {
-            applicationLifetime.ApplicationStopping.Register(() =>
-            {
-                // server is not going to shutdown
-                // until the callback is done
-                Console.WriteLine("gracefull shutdown");
-            });
-        }
-
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -52,11 +41,17 @@ namespace Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
 
+            applicationLifetime.ApplicationStopping.Register(() =>
+            {
+                // server is not going to shutdown
+                // until the callback is done
+                Console.WriteLine("gracefull shutdown");
+            });
 
             app.UseStaticFiles();
             app.UseMvc(routes =>
