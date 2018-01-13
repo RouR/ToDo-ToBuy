@@ -33,11 +33,11 @@ spec:
         - containerPort: 5555
         readinessProbe:
           httpGet:
-            path: /hc
+            path: /healthz
             port: 5555
         livenessProbe:
           httpGet:
-            path: /hc
+            path: /healthz
             port: 5555
           initialDelaySeconds: 10
           timeoutSeconds: 1
@@ -58,12 +58,8 @@ spec:
   ports:
   - name: http
     protocol: TCP
-    port: 80
-    targetPort: 5555
-  - name: https
-    protocol: TCP
-    port: 443
-    targetPort: 5556   
+    port: 8082
+    targetPort: 5555 
     
 ---
 
@@ -78,10 +74,10 @@ spec:
   rules:
   - http:
       paths:
-      - backend:
-          # This assumes http-svc exists and routes to healthy endpoints.
+      - path: /
+        backend:          
           serviceName: web-service
-          servicePort: 80
+          servicePort: 8082
     
 ---   
 
