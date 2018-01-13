@@ -58,7 +58,7 @@ spec:
   ports:
   - name: http
     protocol: TCP
-    port: 8082
+    port: 80
     targetPort: 5555 
     
 ---
@@ -67,17 +67,17 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: web-ingress
-  namespace: dev
+#  namespace: dev
+  namespace: ingress-nginx
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - http:
       paths:
-      - path: /
-        backend:          
+      - backend:          
           serviceName: web-service
-          servicePort: 8082
+          servicePort: 80
     
 ---   
 
