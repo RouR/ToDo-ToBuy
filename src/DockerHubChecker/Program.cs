@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using k8s;
+using k8s.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
+//using Marvin.JsonPatch;
+
+//Install-Package KubernetesClient -Version 0.3.0-beta
 
 namespace DockerHubChecker
 {
@@ -18,6 +24,8 @@ namespace DockerHubChecker
         {
             
             var envHost = Environment.GetEnvironmentVariable(EnvName);
+            if(string.IsNullOrWhiteSpace(envHost))
+                throw new ArgumentNullException(nameof(envHost));
             return envHost;
             //return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
         }
@@ -25,7 +33,12 @@ namespace DockerHubChecker
 
         private static void CheckNamespace(string k8Namespace)
         {
+#if DEBUG
+            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
+#else
             var config = KubernetesClientConfiguration.InClusterConfig();
+#endif
+
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
 
@@ -55,6 +68,22 @@ namespace DockerHubChecker
                     Console.WriteLine($"\t\t\tFound!");
                     var images = item.Spec.Template.Spec.Containers.Select(x => x.Image);
                     Console.WriteLine($"\t\t\tImages = {string.Join("; ", images)}");
+
+                    //client.PatchNamespacedDeployment(new
+                    //{
+                    //    op = "replace",
+                    //    path = "/spec/template/metadata/labels/" + ciLabel.Key,
+                    //    value = DateTime.UtcNow.ToString("O")
+                    //}, item.Metadata.Name, "default"); //fail!
+
+                    var newlables = new Dictionary<string, string>(item.Spec.Template.Metadata.Labels)
+                    {
+                        //todo: get time from docker
+                        [ciLabel.Key] = DateTime.UtcNow.ToString("O").Replace(".","").Replace(":","").Replace("-","") //some symbols is not allowed
+                    };
+                    var patch = new JsonPatchDocument<Appsv1beta1Deployment>();
+                    patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
+                    client.PatchNamespacedDeployment(patch, item.Metadata.Name, k8Namespace);
                 }
 
                 foreach (var container in item.Spec.Template.Spec.Containers)
