@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -24,6 +25,7 @@ namespace DockerHubChecker
 
         public IEnumerable<Tag> GetTags(string username, string repoName)
         {
+            Console.WriteLine($"docker start load for {username}/{repoName}");
             var client = new RestClient(HttpsRegistryHubDockerComV2);
             
             var request = new RestRequest($"/repositories/{username}/{repoName}/tags/", Method.GET);
@@ -32,6 +34,7 @@ namespace DockerHubChecker
             var response = client.Execute(request);
             var content = response.Content;
 
+            Console.WriteLine($"docker finish load for {username}/{repoName} = {content}");
             return JsonConvert.DeserializeObject<TagListResponse>(content).Results;
         }
 

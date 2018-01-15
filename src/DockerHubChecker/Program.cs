@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -69,21 +70,30 @@ namespace DockerHubChecker
                     var images = item.Spec.Template.Spec.Containers.Select(x => x.Image);
                     Console.WriteLine($"\t\t\tImages = {string.Join("; ", images)}");
 
-                    //client.PatchNamespacedDeployment(new
-                    //{
-                    //    op = "replace",
-                    //    path = "/spec/template/metadata/labels/" + ciLabel.Key,
-                    //    value = DateTime.UtcNow.ToString("O")
-                    //}, item.Metadata.Name, "default"); //fail!
+                    // await Task.Factory.StartNew<Tag>(clientDocker.GetTags(x[0],x[1]))
+                    var clientDocker = new DockerHubClient();
 
-                    var newlables = new Dictionary<string, string>(item.Spec.Template.Metadata.Labels)
+                    var tasks = images
+                        .Select(x=> x.Split('/', '\\', ':'))
+                        .Select(async (x) => clientDocker.GetTags(x[0], x[1]).SingleOrDefault(y=> y.Name == x[2]));
+
+                    var result = Task.WhenAll(tasks);
+
+                    var newTime = result.Result.Max(x => x.LastUpdated);
+                    var newTag = newTime.ToString("O").Replace(".", "").Replace(":", "").Replace("-", ""); //some symbols is not allowed;
+
+                    if (ciLabel.Value != newTag)
                     {
-                        //todo: get time from docker
-                        [ciLabel.Key] = DateTime.UtcNow.ToString("O").Replace(".","").Replace(":","").Replace("-","") //some symbols is not allowed
-                    };
-                    var patch = new JsonPatchDocument<Appsv1beta1Deployment>();
-                    patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
-                    client.PatchNamespacedDeployment(patch, item.Metadata.Name, k8Namespace);
+                        Console.WriteLine($"change from {ciLabel.Value} to {newTag}");
+                        var newlables = new Dictionary<string, string>(item.Spec.Template.Metadata.Labels)
+                        {
+                            [ciLabel.Key] = newTag
+                        };
+                        var patch = new JsonPatchDocument<Appsv1beta1Deployment>();
+                        patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
+                        client.PatchNamespacedDeployment(patch, item.Metadata.Name, k8Namespace);
+                    }
+                    
                 }
 
                 foreach (var container in item.Spec.Template.Spec.Containers)
