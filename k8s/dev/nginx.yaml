@@ -70,7 +70,8 @@ spec:
 
 kind: ConfigMap
 apiVersion: v1
-#data:
+data:
+  enable-vts-status: "true"
 #  X-Different-Name: "true"
 #  X-Request-Start: t=${msec}
 #  X-Using-Nginx-Controller: "true"
@@ -156,6 +157,74 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
+            
+        - name: telegraf-metrics
+          image: telegraf:1.5.1
+          args: ["telegraf --config /var/mapconfig"]
+          env:
+            - name: POD
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: INFLUXDBURL
+              value: http://monitoring-influxdb.kube-system:8086/
+            - name: NGINXURL
+              value: http://localhost:10254/metrics              
+          volumeMounts:
+            - name: config-volume-telegraf
+              mountPath: /var/mapconfig
+          
+      volumes:
+          - name: config-volume-telegraf
+            configMap:
+            #https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+            #ls /var/mapconfig
+                name: telegraf-config      
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-config
+  namespace: ingress-nginx
+data:
+  telegraf.conf: |
+    [global_tags]  
+      pod = "$POD"
+    [agent]
+      interval = "1s"
+      round_interval = true
+      metric_batch_size = 1000
+      metric_buffer_limit = 10000
+      collection_jitter = "0s"
+      flush_interval = "10s"
+      flush_jitter = "0s"
+      precision = ""
+      debug = true
+      #quiet = false
+      logfile = ""
+      #hostname = "tele13-verup"
+      #omit_hostname = false
+    [[outputs.influxdb]]
+      #http://127.0.0.1/?test=testtest
+      urls = ["$INFLUXDBURL"] # UDP endpoint example
+      database = "telegraf" # required
+      retention_policy = ""
+      write_consistency = "any"
+      timeout = "5s"
+      username = "_write"
+      password = "_write"
+      precision = "s"      
+    [[inputs.nginx]]
+      ## An array of Nginx stub_status URI to gather stats. http://localhost/server_status
+      urls = ["NGINXURL"]
+      ## Optional SSL Config
+      # ssl_ca = "/etc/telegraf/ca.pem"
+      # ssl_cert = "/etc/telegraf/cert.pem"
+      # ssl_key = "/etc/telegraf/key.pem"
+      ## Use SSL but skip chain & host verification
+      # insecure_skip_verify = false
+      ## HTTP response timeout (default: 5s)
+      response_timeout = "5s" 
 ---
 #Baremetal
 apiVersion: v1
@@ -178,3 +247,6 @@ spec:
     protocol: TCP
   selector:
     app: ingress-nginx
+
+---
+ 
