@@ -160,7 +160,8 @@ spec:
             
         - name: telegraf-metrics
           image: telegraf:1.5.1
-          args: ["telegraf --config /var/mapconfig"]
+          command: ["telegraf"]
+          args: [" --config /var/mapconfig/telegraf.conf"]
           env:
             - name: POD
               valueFrom:
@@ -172,7 +173,7 @@ spec:
               value: http://localhost:10254/metrics              
           volumeMounts:
             - name: config-volume-telegraf
-              mountPath: /var/mapconfig
+              mountPath: /etc/telegraf
           
       volumes:
           - name: config-volume-telegraf
@@ -187,9 +188,13 @@ metadata:
   name: telegraf-config
   namespace: ingress-nginx
 data:
+#kubectl -n ingress-nginx exec -ti nginx-ingress-controller-545b9df67-5chkz --container telegraf-metrics -- /bin/bash 
+#curl http://127.0.0.1:10254/metrics
+#curl http://localhost:18080/nginx_status
+
   telegraf.conf: |
     [global_tags]  
-      pod = "$POD"
+      #pod = "$POD"
     [agent]
       interval = "1s"
       round_interval = true
@@ -199,24 +204,29 @@ data:
       flush_interval = "10s"
       flush_jitter = "0s"
       precision = ""
-      debug = true
+      #debug = true
       #quiet = false
       logfile = ""
       #hostname = "tele13-verup"
       #omit_hostname = false
     [[outputs.influxdb]]
       #http://127.0.0.1/?test=testtest
-      urls = ["$INFLUXDBURL"] # UDP endpoint example
-      database = "telegraf" # required
+      #urls = ["$INFLUXDBURL"] 
+      urls = ["http://monitoring-influxdb.kube-system:8086/"] 
+      database = "telegraf" 
       retention_policy = ""
       write_consistency = "any"
       timeout = "5s"
-      username = "_write"
-      password = "_write"
+      #username = "_write"
+      #password = "_write"
       precision = "s"      
-    [[inputs.nginx]]
+    [[inputs.httpjson]]
+      servers  = ["http://localhost:18080/nginx_status/format/json"]
+      response_timeout = "5s"
+    #[[inputs.prometheus]]
       ## An array of Nginx stub_status URI to gather stats. http://localhost/server_status
-      urls = ["NGINXURL"]
+      #urls = ["NGINXURL"]
+    #  urls = ["http://localhost:10254/metrics"]
       ## Optional SSL Config
       # ssl_ca = "/etc/telegraf/ca.pem"
       # ssl_cert = "/etc/telegraf/cert.pem"
@@ -224,7 +234,79 @@ data:
       ## Use SSL but skip chain & host verification
       # insecure_skip_verify = false
       ## HTTP response timeout (default: 5s)
-      response_timeout = "5s" 
+    #  response_timeout = "5s" 
+      # Read metrics about cpu usage
+    # Read metrics about cpu usage
+    [[inputs.cpu]]
+      ## Whether to report per-cpu stats or not
+      percpu = true
+      ## Whether to report total system cpu stats or not
+      totalcpu = true
+      ## Comment this line if you want the raw CPU time metrics
+      fielddrop = ["time_*"]
+    # Read metrics about disk usage by mount point
+    [[inputs.disk]]
+      ## By default, telegraf gather stats for all mountpoints.
+      ## Setting mountpoints will restrict the stats to the specified mountpoints.
+      # mount_points = ["/"]
+      ## Ignore some mountpoints by filesystem type. For example (dev)tmpfs (usually
+      ## present on /run, /var/run, /dev/shm or /dev).
+      ignore_fs = ["tmpfs", "devtmpfs"]
+    # Read metrics about disk IO by device
+    [[inputs.diskio]]
+      ## By default, telegraf will gather stats for all devices including
+      ## disk partitions.
+      ## Setting devices will restrict the stats to the specified devices.
+      # devices = ["sda", "sdb"]
+      ## Uncomment the following line if you need disk serial numbers.
+      # skip_serial_number = false
+    # Get kernel statistics from /proc/stat
+    [[inputs.kernel]]
+      # no configuration
+    # Read metrics about memory usage
+    [[inputs.mem]]
+      # no configuration
+    # Get the number of processes and group them by status
+    [[inputs.processes]]
+      # no configuration
+    # Read metrics about swap memory usage
+    [[inputs.swap]]
+      # no configuration
+    # Read metrics about system load & uptime
+    [[inputs.system]]
+      # no configuration
+    # Read metrics about network interface usage
+    [[inputs.net]]
+      # collect data only about specific interfaces
+      # interfaces = ["eth0"]
+    [[inputs.netstat]]
+      # no configuration
+    [[inputs.interrupts]]
+      # no configuration
+    [[inputs.linux_sysctl_fs]]
+      # no configuration
+
+      
+      
+---
+#metrics http://192.168.99.100:18080/nginx_status
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ingress-nginx
+  name: nginx-ingress-prometheus-discovery
+  labels:
+    k8s-app: ingress
+spec:
+  selector:
+    app: ingress-nginx
+  externalIPs:
+  - 192.168.99.100  
+  type: NodePort
+  ports:
+  - name: metrics
+    port: 18080
+    protocol: TCP       
 ---
 #Baremetal
 apiVersion: v1

@@ -4,6 +4,7 @@
 #kubectl --namespace="kube-system" exec -ti monitoring-grafana-847bc75564-nsmpz -- grafana-cli plugins install raintank-kubernetes-app
 #http://docs.grafana.org/installation/docker/  
 #minikube addons enable default-storageclass
+#https://grafana.com/dashboards/928
 
 apiVersion: extensions/v1beta1
 kind: Deployment
