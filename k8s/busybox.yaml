@@ -1,5 +1,10 @@
 # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
 #kubectl exec -ti busybox -- nslookup kubernetes.default
+#kubectl exec -ti busybox -- nslookup web-service
+#kubectl exec -ti busybox -- wget http://web-service.dev
+#kubectl exec -ti busybox -- rm healthz
+#kubectl exec -ti busybox -- wget http://default-http-backend.ingress-nginx/healthz
+#kubectl exec -ti busybox -- cat healthz
 apiVersion: v1
 kind: Pod
 metadata:
