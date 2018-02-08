@@ -223,10 +223,10 @@ data:
     [[inputs.httpjson]]
       servers  = ["http://localhost:18080/nginx_status/format/json"]
       response_timeout = "5s"
-    #[[inputs.prometheus]]
+    [[inputs.prometheus]]
       ## An array of Nginx stub_status URI to gather stats. http://localhost/server_status
       #urls = ["NGINXURL"]
-    #  urls = ["http://localhost:10254/metrics"]
+      urls = ["http://localhost:10254/metrics"]
       ## Optional SSL Config
       # ssl_ca = "/etc/telegraf/ca.pem"
       # ssl_cert = "/etc/telegraf/cert.pem"
@@ -234,7 +234,7 @@ data:
       ## Use SSL but skip chain & host verification
       # insecure_skip_verify = false
       ## HTTP response timeout (default: 5s)
-    #  response_timeout = "5s" 
+      response_timeout = "5s" 
       # Read metrics about cpu usage
     # Read metrics about cpu usage
     [[inputs.cpu]]
@@ -289,46 +289,7 @@ data:
       
       
 ---
-#metrics http://192.168.99.100:18080/nginx_status
-kind: Service
-apiVersion: v1
-metadata:
-  namespace: ingress-nginx
-  name: nginx-ingress-prometheus-discovery
-  labels:
-    k8s-app: ingress
-spec:
-  selector:
-    app: ingress-nginx
-  externalIPs:
-  - 192.168.99.100  
-  type: NodePort
-  ports:
-  - name: metrics
-    port: 18080
-    protocol: TCP       
----
-#Baremetal
-apiVersion: v1
-kind: Service
-metadata:
-  name: ingress-nginx
-  namespace: ingress-nginx
-spec:
-  externalIPs:
-  - 192.168.99.100
-  type: NodePort
-  ports:
-  - name: http
-    port: 80
-    targetPort: 80
-    protocol: TCP
-  - name: https
-    port: 443
-    targetPort: 443
-    protocol: TCP
-  selector:
-    app: ingress-nginx
 
----
+
+
  

@@ -23,9 +23,10 @@ spec:
         image: k8s.gcr.io/heapster-amd64:v1.4.3
         imagePullPolicy: IfNotPresent
         command:
-        - /heapster
-        - --source=kubernetes:https://kubernetes.default
-        - --sink=influxdb:http://monitoring-influxdb.kube-system.svc:8086
+        - /heapster 
+        - --source=kubernetes
+        - --metric-resolution=5s 
+        - --sink=influxdb:http://monitoring-influxdb.kube-system.svc:8086?db=heapster&user=heapster&pw=heapster
 ---
 apiVersion: v1
 kind: Service

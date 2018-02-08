@@ -1,3 +1,17 @@
-The default user name and password is 'admin'. Once you login to Grafana, add a datasource that is InfluxDB. The URL for InfluxDB will be http://INFLUXDB_HOST:INFLUXDB_PORT. Database name is 'k8s'. Default user name and password is 'root'.
+http://monitoring-influxdb.kube-system.svc:8086 see Database name in heapster.yaml
 
 Set IsDefault !
+
+pod name regex /^([.-\w\d]*)-[\w\d]{9,}-[\w\d]{5,}$/ for https://grafana.com/dashboards/3649
+
+https://grafana.com/dashboards/3646
+
+
+-- Telegraph
+
+see Database name in nginx.yaml
+https://grafana.com/dashboards/928
+
+
+
+

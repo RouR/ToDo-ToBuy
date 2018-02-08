@@ -1,10 +1,14 @@
-#The default user name and password is 'admin'. Once you login to Grafana, add a datasource that is InfluxDB. The URL for InfluxDB will be http://INFLUXDB_HOST:INFLUXDB_PORT. Database name is 'k8s'. Default user name and password is 'root'.
+#The default user name and password is 'admin'. Once you login to Grafana, add a datasource that is InfluxDB. The URL for InfluxDB will be http://INFLUXDB_HOST:INFLUXDB_PORT. 
+#http://monitoring-influxdb.kube-system.svc:8086 Database name is 'k8s'. Default user name and password is 'root'.
+# OR see Database name in heapster.yaml
+
 #https://github.com/kubernetes/heapster/blob/master/docs/influxdb.md
 #kubectl get services --namespace=kube-system monitoring-grafana monitoring-influxdb
 #kubectl --namespace="kube-system" exec -ti monitoring-grafana-847bc75564-nsmpz -- grafana-cli plugins install raintank-kubernetes-app
 #http://docs.grafana.org/installation/docker/  
 #minikube addons enable default-storageclass
-#https://grafana.com/dashboards/928
+#https://grafana.com/dashboards/3646
+#https://grafana.com/dashboards/3649
 
 apiVersion: extensions/v1beta1
 kind: Deployment
