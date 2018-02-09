@@ -13,7 +13,7 @@
 #kubectl -n ingress-nginx exec -ti nginx-ingress-controller-864d449cc6-cxnq9 -- /bin/bash 
 #curl http://127.0.0.1:10254/metrics
 
-null
+
 apiVersion: v1
 kind: Pod
 metadata:

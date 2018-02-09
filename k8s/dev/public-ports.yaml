@@ -1,0 +1,69 @@
+#metrics http://192.168.99.100:18080/nginx_status
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ingress-nginx
+  name: nginx-ingress-prometheus-discovery
+  labels:
+    k8s-app: ingress
+spec:
+  selector:
+    app: ingress-nginx
+  externalIPs:
+  - 192.168.99.103  
+  type: NodePort
+  ports:
+  - name: metrics
+    port: 18080
+    protocol: TCP       
+---
+
+  
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: grafana-node
+  labels:
+    k8s-app: grafana
+spec:
+  selector:
+    k8s-app: grafana
+  externalIPs:
+  - 192.168.99.103  
+  type: NodePort
+  ports:
+  - name: gr
+    port: 8100
+    targetPort: 3000
+    protocol: TCP     
+---
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: logs-node  
+spec:
+  selector:
+    component: clickhouse
+  externalIPs:
+  - 192.168.99.103  
+  type: NodePort
+  ports:
+  - name: http
+    port: 8123
+    targetPort: 8123
+    protocol: TCP
+  - name: http2
+    port: 8124
+    targetPort: 9292
+    protocol: TCP
+  - name: native
+    port: 9000
+    targetPort: 9000
+    protocol: TCP       
+---
