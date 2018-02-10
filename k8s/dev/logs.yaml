@@ -1,5 +1,7 @@
 #https://github.com/flant/loghouse
 
+
+
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -224,7 +226,7 @@ spec:
         - name: CLICKHOUSE_USER
           value: "default"
         - name: CLICKHOUSE_PASS
-          value: ""
+          value: "password"
         - name: CLICKHOUSE_DB
           value: "logs"
         - name: K8S_LOGS_TABLE
@@ -350,7 +352,7 @@ data:
         </profiles>
         <users>
             <default>
-                <password></password>
+                <password_sha256_hex>5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8</password_sha256_hex>
                 <networks incl="networks" replace="replace">
                     <ip>::/0</ip>
                 </networks>
@@ -456,7 +458,7 @@ spec:
         - name: CLICKHOUSE_USER
           value: "default"
         - name: CLICKHOUSE_PASS
-          value: ""
+          value: "password"
         - name: CLICKHOUSE_DB
           value: "logs"
         - name: K8S_LOGS_TABLE
@@ -545,7 +547,7 @@ spec:
               - name: CLICKHOUSE_USERNAME
                 value: "default"
               - name: CLICKHOUSE_PASSWORD
-                value: ""
+                value: "password"
               - name: CLICKHOUSE_DATABASE
                 value: "logs"
 # Custom partitioning, using LOGS_TABLES_PARTITION_PERIOD variable, in hours.
@@ -586,7 +588,7 @@ spec:
         - name: CLICKHOUSE_USERNAME
           value: "default"
         - name: CLICKHOUSE_PASSWORD
-          value: ""
+          value: "password"
         - name: CLICKHOUSE_DATABASE
           value: "logs"
         - name: CLICKHOUSE_LOGS_TABLE
@@ -603,7 +605,7 @@ metadata:
   name: logs-init-tables
   namespace: kube-system
 spec:
-  activeDeadlineSeconds: 60
+  activeDeadlineSeconds: 160
   template:
     metadata:
       name: logs-init-tables
@@ -622,11 +624,11 @@ spec:
         - name: KUBERNETES_DEPLOYED
           value: "now"
         - name: CLICKHOUSE_URL
-          value: "clickhouse"
+          value: "clickhouse:8123"
         - name: CLICKHOUSE_USERNAME
           value: "default"
         - name: CLICKHOUSE_PASSWORD
-          value: ""
+          value: "password"
         - name: CLICKHOUSE_DATABASE
           value: "logs"
         - name: CLICKHOUSE_LOGS_TABLE
@@ -669,4 +671,69 @@ subjects:
   namespace: kube-system
   
   
-          
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+---   
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: tabix
+  namespace: kube-system
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: tabix
+    spec:
+      containers:
+      - name: tabix
+        image: flant/loghouse-tabix:0.0.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          timeoutSeconds: 1
+          initialDelaySeconds: 60
+          tcpSocket:
+            port: 80
+        readinessProbe:
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 80
+        resources:
+          requests:
+            cpu: 0.2
+            memory: 256Mi
+          limits:
+            cpu: 0.5
+            memory: 512Mi
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+  # name: tabix
+  # namespace: kube-system
+# spec:
+  # selector:
+    # component: tabix
+  # ports:
+  # - name: http
+    # port: 80
+    # targetPort: 80
+    # protocol: TCP       
+    

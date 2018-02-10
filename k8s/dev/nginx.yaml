@@ -6,12 +6,7 @@
 #https://github.com/kubernetes/contrib/issues/1535
 #minikube addons disable ingress
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ingress-nginx
 
----
 
 apiVersion: extensions/v1beta1
 kind: Deployment

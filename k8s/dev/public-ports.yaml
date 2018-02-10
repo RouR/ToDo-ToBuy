@@ -41,6 +41,12 @@ spec:
     protocol: TCP     
 ---
 
+#open tabix http://192.168.99.103:8150
+#connect to clickhouse:
+#logs
+#http://192.168.99.103:8123
+#default
+#password
 ---
 kind: Service
 apiVersion: v1
@@ -57,13 +63,22 @@ spec:
   - name: http
     port: 8123
     targetPort: 8123
-    protocol: TCP
-  - name: http2
-    port: 8124
-    targetPort: 9292
-    protocol: TCP
-  - name: native
-    port: 9000
-    targetPort: 9000
-    protocol: TCP       
+    protocol: TCP  
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: logs-dashboard-node  
+spec:
+  selector:
+    component: tabix
+  externalIPs:
+  - 192.168.99.103  
+  type: NodePort
+  ports:
+  - name: http
+    port: 8150
+    targetPort: 80
+    protocol: TCP   
 ---
