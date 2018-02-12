@@ -1,4 +1,7 @@
-﻿using App.Metrics.AspNetCore;
+﻿using System;
+using App.Metrics;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -58,7 +61,32 @@ namespace Web
                     logging.AddConsole();
                     logging.AddDebug();
                 })
-                .UseMetricsWebTracking()
+                .ConfigureMetricsWithDefaults(builder =>
+                {
+                    builder
+                        .Report.ToConsole(TimeSpan.FromSeconds(2))
+                        .Report.ToInfluxDb(
+                            options =>
+                            {
+                                //https://grafana.com/dashboards?search=app%20metrics
+                                options.InfluxDb.BaseUri = new Uri("http://192.168.99.100:8083/");
+                                //options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system.svc:8086");
+                                options.InfluxDb.Database = "appmetrics";
+                                //options.InfluxDb.Consistenency = "consistency";
+                                //options.InfluxDb.UserName = "appm";
+                                //options.InfluxDb.Password = "appm";
+                                //options.InfluxDb.RetensionPolicy = "rp";
+                                options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
+                                options.HttpPolicy.FailuresBeforeBackoff = 5;
+                                options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
+                                //options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
+                                //options.Filter = filter;
+                                //options.FlushInterval = TimeSpan.FromSeconds(1);
+                            })
+                            ;
+                })
+                .UseMetrics()
+                //.UseMetricsWebTracking()
                 .Build();
     }
 }

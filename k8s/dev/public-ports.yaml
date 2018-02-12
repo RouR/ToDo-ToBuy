@@ -11,7 +11,7 @@ spec:
   selector:
     app: ingress-nginx
   externalIPs:
-  - 192.168.99.103  
+  - 192.168.99.100  
   type: NodePort
   ports:
   - name: metrics
@@ -32,7 +32,7 @@ spec:
   selector:
     k8s-app: grafana
   externalIPs:
-  - 192.168.99.103  
+  - 192.168.99.100  
   type: NodePort
   ports:
   - name: gr
@@ -41,10 +41,10 @@ spec:
     protocol: TCP     
 ---
 
-#open tabix http://192.168.99.103:8150
+#open tabix http://192.168.99.100:8150
 #connect to clickhouse:
 #logs
-#http://192.168.99.103:8123
+#http://192.168.99.100:8123
 #default
 #password
 ---
@@ -57,7 +57,7 @@ spec:
   selector:
     component: clickhouse
   externalIPs:
-  - 192.168.99.103  
+  - 192.168.99.100  
   type: NodePort
   ports:
   - name: http
@@ -74,11 +74,34 @@ spec:
   selector:
     component: tabix
   externalIPs:
-  - 192.168.99.103  
+  - 192.168.99.100  
   type: NodePort
   ports:
   - name: http
     port: 8150
     targetPort: 80
+    protocol: TCP   
+---
+
+
+
+
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: infux-node  
+spec:
+  selector:
+    k8s-app: influxdb
+  externalIPs:
+  - 192.168.99.100  
+  type: NodePort
+  ports:
+  - name: http
+    port: 8083
+    targetPort: 8086
     protocol: TCP   
 ---

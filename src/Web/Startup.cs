@@ -31,6 +31,8 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMetrics();
+
             services.AddMvc();
 
             services.AddHealthChecks(checks =>
@@ -45,34 +47,36 @@ namespace Web
                     () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
             });
 
-            var metrics = AppMetrics.CreateDefaultBuilder()
-                //.Configuration.Configure(
-                //    options =>
-                //    {
-                //        //options.AddServerTag();
-                //        options.GlobalTags.Add("myTagKey", "myTagValue");
-                //    })
-                //.Report.ToConsole(TimeSpan.FromSeconds(6))
-                .Report.ToInfluxDb(
-                    options => {
-                        //https://grafana.com/dashboards?search=app%20metrics
-                        options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system.svc:8086");
-                        options.InfluxDb.Database = "app-metrics";
-                        options.InfluxDb.Consistenency = "consistency";
-                        options.InfluxDb.UserName = "appm";
-                        options.InfluxDb.Password = "appm";
-                        options.InfluxDb.RetensionPolicy = "rp";
-                        options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
-                        options.HttpPolicy.FailuresBeforeBackoff = 5;
-                        options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
-                        options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
-                        //options.Filter = filter;
-                        options.FlushInterval = TimeSpan.FromSeconds(1);
-                    })
-                .Build();
+            //var metrics = AppMetrics.CreateDefaultBuilder()
+            //    //.Configuration.Configure(
+            //    //    options =>
+            //    //    {
+            //    //        //options.AddServerTag();
+            //    //        options.GlobalTags.Add("myTagKey", "myTagValue");
+            //    //    })
+            //    .Report.ToConsole(TimeSpan.FromSeconds(6))
+            //    .Report.ToInfluxDb(
+            //        options => {
+            //            //https://grafana.com/dashboards?search=app%20metrics
+            //            options.InfluxDb.BaseUri = new Uri("http://192.168.99.100:8083/");
+            //            //options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system.svc:8086");
+            //            options.InfluxDb.Database = "app-metrics";
+            //            options.InfluxDb.Consistenency = "consistency";
+            //            options.InfluxDb.UserName = "appm";
+            //            options.InfluxDb.Password = "appm";
+            //            options.InfluxDb.RetensionPolicy = "rp";
+            //            options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
+            //            options.HttpPolicy.FailuresBeforeBackoff = 5;
+            //            options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
+            //            options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
+            //            //options.Filter = filter;
+            //            options.FlushInterval = TimeSpan.FromSeconds(1);
+            //        })
+            //    .Build();
 
-            services.AddMetrics(metrics);
+            //services.AddMetrics(metrics);
             //services.AddMetricsTrackingMiddleware();
+            
 
             services.AddSingleton<InstanceInfo>();
         }
@@ -94,7 +98,7 @@ namespace Web
                 Log.Logger.Information("Gracefull shutdown.");
             });
 
-            app.UseMetricsAllMiddleware();
+            //app.UseMetricsAllMiddleware();
 
             // Or to cherry-pick the tracking of interest
             // app.UseMetricsActiveRequestMiddleware();
