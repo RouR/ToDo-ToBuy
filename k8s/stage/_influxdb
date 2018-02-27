@@ -1,0 +1,24 @@
+# node 207.244.95.62
+
+curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+source /etc/lsb-release
+echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+sudo apt-get update && sudo apt-get install influxdb
+sudo service influxdb start
+
+sudo service influxdb status
+# check - enabled, or run
+# sudo systemctl enable influxdb
+
+# use chronograf at http://localhost:8888/ connect to node_ip:8086
+# https://docs.influxdata.com/influxdb/v1.4/query_language/authentication_and_authorization/#set-up-authentication
+# add user - publicadmin publicpassword
+
+sudo nano /etc/influxdb/influxdb.conf
+# [http]
+# auth-enabled = true
+
+sudo service influxdb restart
+
+influxd config

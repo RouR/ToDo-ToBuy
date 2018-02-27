@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta2 # apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: web-deployment
+  namespace: dev
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  
+  minReadySeconds: 5
+  
+  template:
+    metadata:
+      namespace: dev
+      labels:
+        app: web
+        ci: somedataForOverride
+    spec:
+      containers:
+      - name: web
+        image: roured/tdtb-web:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5555
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5555
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5555
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        
+        
+        
+        
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: web-service
+  namespace: dev
+spec:
+  selector:
+    app: web
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 5555 
+    
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: dev
+#  namespace: ingress-nginx
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  
+  backend:          
+    serviceName: web-service
+    servicePort: 80
+    
+---   
+

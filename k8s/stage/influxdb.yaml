@@ -1,0 +1,17 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  labels:
+    task: monitoring
+    # For use as a Cluster add-on (https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)
+    # If you are NOT using this as an addon, you should comment out this line.
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: monitoring-influxdb
+  name: monitoring-influxdb
+  namespace: kube-system
+subsets:
+  - addresses:
+      # InternalIP of node with influxdb, outside the cluster
+      - ip: 207.244.95.62
+    ports:
+      - port: 8086

@@ -286,3 +286,5 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+tools/chronograf-v1.db
+tools/chronograf-v1.db.lock
