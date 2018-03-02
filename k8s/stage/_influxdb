@@ -12,8 +12,21 @@ sudo service influxdb status
 # sudo systemctl enable influxdb
 
 # use chronograf at http://localhost:8888/ connect to node_ip:8086
+# http://localhost:8888/sources/1/chronograf/data-explorer
 # https://docs.influxdata.com/influxdb/v1.4/query_language/authentication_and_authorization/#set-up-authentication
 # add user - publicadmin publicpassword
+
+# add db heapster
+# CREATE RETENTION POLICY "default" ON "heapster" DURATION 90d REPLICATION 1 DEFAULT
+# SHOW retention policies on heapster
+# add user for db=heapster - heapster heapster
+# GRANT ALL ON heapster TO heapster   
+
+# add db telegraf
+# CREATE RETENTION POLICY "default" ON "telegraf" DURATION 90d REPLICATION 1 DEFAULT
+# SHOW retention policies on heapster
+# add user for db=telegraf - telegraf telegraf
+# GRANT ALL ON telegraf TO telegraf  
 
 sudo nano /etc/influxdb/influxdb.conf
 # [http]
@@ -22,3 +35,5 @@ sudo nano /etc/influxdb/influxdb.conf
 sudo service influxdb restart
 
 influxd config
+
+

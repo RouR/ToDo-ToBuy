@@ -34,3 +34,13 @@ sudo nano /etc/grafana/grafana.ini
 # enabled = false
 
 sudo systemctl restart grafana-server
+
+# add DataSource
+# http://207.244.95.62:3000/datasources/new
+# influxdb isDefault  http://monitoring-influxdb.kube-system.svc:8086 heapster publicadmin  publicpassword 
+# influxdb isDefault  http://207.244.95.62:8086 heapster publicadmin  publicpassword 
+# dashboard https://grafana.com/dashboards/3646
+
+# add DataSource
+# nginx  http://207.244.95.62:8086 telegraf telegraf  telegraf 
+# https://grafana.com/dashboards/928

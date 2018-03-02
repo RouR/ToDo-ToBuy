@@ -5,6 +5,7 @@
 #kubectl exec -ti busybox -- rm healthz
 #kubectl exec -ti busybox -- wget http://default-http-backend.ingress-nginx/healthz
 #kubectl exec -ti busybox -- cat healthz
+#kubectl exec -ti busybox -- wget http://monitoring-influxdb.kube-system.svc:8086/ping
 
 #kubectl exec -ti busybox -- /bin/sh
 #wget http://default-http-backend.ingress-nginx/metrics -O /dev/null
