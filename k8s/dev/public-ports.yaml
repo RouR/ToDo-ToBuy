@@ -47,43 +47,63 @@ spec:
 #http://192.168.99.100:8123
 #default
 #password
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: kube-system
+  # name: logs-node  
+# spec:
+  # selector:
+    # component: clickhouse
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: http
+    # port: 8123
+    # targetPort: 8123
+    # protocol: TCP  
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: kube-system
+  # name: logs-dashboard-node  
+# spec:
+  # selector:
+    # component: tabix
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: http
+    # port: 8150
+    # targetPort: 80
+    # protocol: TCP   
+# ---
+
 ---
+# admin PASSWORD
 kind: Service
 apiVersion: v1
 metadata:
   namespace: kube-system
-  name: logs-node  
+  name: loghouse-public
+  labels:
+    component: loghouse
 spec:
   selector:
-    component: clickhouse
+    component: loghouse
   externalIPs:
   - 192.168.99.100  
   type: NodePort
   ports:
-  - name: http
-    port: 8123
-    targetPort: 8123
-    protocol: TCP  
----
-kind: Service
-apiVersion: v1
-metadata:
-  namespace: kube-system
-  name: logs-dashboard-node  
-spec:
-  selector:
-    component: tabix
-  externalIPs:
-  - 192.168.99.100  
-  type: NodePort
-  ports:
-  - name: http
-    port: 8150
+  - name: httpng
+    port: 8200
     targetPort: 80
-    protocol: TCP   
+    protocol: TCP     
 ---
-
-
 
 
 

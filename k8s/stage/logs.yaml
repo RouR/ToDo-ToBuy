@@ -1,4 +1,4 @@
-#https://github.com/flant/loghouse
+# https://github.com/flant/loghouse
 
 
 
@@ -249,24 +249,7 @@ spec:
           readOnly: true
         - name: config-volume
           mountPath: /etc/fluent/config.d
-      terminationGracePeriodSeconds: 30
-      tolerations:
-      - key: "node-role/logging"
-        operator: "Exists"
-      - key: "node-role/system"
-        operator: "Exists"
-      - key: "node-role/monitoring"
-        operator: "Exists"
-      - key: "node-role/ingress"
-        operator: "Exists"
-      - key: "node-role/frontend"
-        operator: "Exists"
-      - key: "dedicated"
-        operator: "Exists"
-
-      - key: "node-role.kubernetes.io/master"
-        operator: "Exists"
-
+      terminationGracePeriodSeconds: 30    
       volumes:
       - name: varlog
         hostPath:
@@ -289,6 +272,121 @@ spec:
 
 
 
+
+kind: ConfigMap
+apiVersion: v1
+data:
+  config.xml: |-
+    <?xml version="1.0"?>
+    <yandex>
+        <logger>
+            <level>warning</level>
+            <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+            <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+            <size>100M</size>
+            <count>7</count>
+        </logger>
+        <http_port>8123</http_port>
+        <tcp_port>9000</tcp_port>
+        <listen_host>0.0.0.0</listen_host>
+        <max_connections>4096</max_connections>
+        <keep_alive_timeout>3</keep_alive_timeout>
+        <max_concurrent_queries>100</max_concurrent_queries>
+        <uncompressed_cache_size>8589934592</uncompressed_cache_size>
+        <mark_cache_size>5368709120</mark_cache_size>
+        <path>/var/lib/clickhouse/</path>
+        <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+        <users_config>users.xml</users_config>
+        <default_profile>default</default_profile>
+        <default_database>default</default_database>
+        <remote_servers incl="clickhouse_remote_servers" />
+        <zookeeper incl="zookeeper-servers" optional="true" />
+        <macros incl="macros" optional="true" />
+        <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
+        <max_session_timeout>3600</max_session_timeout>
+        <default_session_timeout>60</default_session_timeout>
+        <query_log>
+            <database>system</database>
+            <table>query_log</table>
+            <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+        </query_log>
+        <dictionaries_config>*_dictionary.xml</dictionaries_config>
+        <compression incl="clickhouse_compression">
+        </compression>
+        <resharding>
+            <task_queue_path>/clickhouse/task_queue</task_queue_path>
+        </resharding>
+        <distributed_ddl>
+            <path>/clickhouse/task_queue/ddl</path>
+        </distributed_ddl>
+    </yandex>
+  users.xml: |-
+    <?xml version="1.0"?>
+    <yandex>
+        <profiles>
+            <default>
+                <max_memory_usage>10000000000</max_memory_usage>
+                <use_uncompressed_cache>0</use_uncompressed_cache>
+                <load_balancing>random</load_balancing>
+            </default>
+            <readonly>
+                <readonly>1</readonly>
+            </readonly>
+        </profiles>
+        <users>
+            <default>
+                <password_sha256_hex>5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8</password_sha256_hex>
+                <networks incl="networks" replace="replace">
+                    <ip>::/0</ip>
+                </networks>
+                <profile>default</profile>
+                <quota>default</quota>
+            </default>
+        </users>
+        <quotas>
+            <default>
+                <interval>
+                    <duration>3600</duration>
+                    <queries>0</queries>
+                    <errors>0</errors>
+                    <result_rows>0</result_rows>
+                    <read_rows>0</read_rows>
+                    <execution_time>0</execution_time>
+                </interval>
+            </default>
+        </quotas>
+    </yandex>
+metadata:
+  name: clickhouse-config
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile      
+---
+
+
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+  # name: clickhouse
+  # namespace: kube-system
+# spec:
+  # selector:
+    # component: clickhouse
+  # ports:
+  # - name: http
+    # port: 8123
+    # targetPort: 8123
+    # protocol: TCP
+  # - name: native
+    # port: 9000
+    # targetPort: 9000
+    # protocol: TCP  
+    
+
+
+
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -305,7 +403,7 @@ data:
       
       
 ---
-apiVersion: batch/v2alpha1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: logs-tables
@@ -320,10 +418,10 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          initContainers:
-          - name: wait-clickhouse
-            image: alpine:3.6
-            command: ['/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done']
+          # initContainers:
+          # - name: wait-clickhouse
+            # image: alpine:3.6
+            # command: ['/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done']
           containers:
             - name: cron
               image: flant/loghouse-dashboard:0.0.2
@@ -333,7 +431,7 @@ spec:
               - name: KUBERNETES_DEPLOYED
                 value: "now"
               - name: CLICKHOUSE_URL
-                value: "clickhouse:8123"
+                value: "207.244.95.63:8123"
               - name: CLICKHOUSE_USERNAME
                 value: "default"
               - name: CLICKHOUSE_PASSWORD
@@ -361,10 +459,10 @@ spec:
       name: logs-init-db
     spec:
       restartPolicy: OnFailure
-      initContainers:
-      - name: wait-clickhouse
-        image: alpine:3.6
-        command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
+      # initContainers:
+      # - name: wait-clickhouse
+        # image: alpine:3.6
+        # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init
         image: flant/loghouse-fluentd:0.0.2
@@ -374,7 +472,7 @@ spec:
         - name: KUBERNETES_DEPLOYED
           value: "now"
         - name: CLICKHOUSE_URL
-          value: "clickhouse"
+          value: "207.244.95.63"
         - name: CLICKHOUSE_USERNAME
           value: "default"
         - name: CLICKHOUSE_PASSWORD
@@ -401,10 +499,10 @@ spec:
       name: logs-init-tables
     spec:
       restartPolicy: OnFailure
-      initContainers:
-      - name: wait-clickhouse
-        image: alpine:3.6
-        command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
+      # initContainers:
+      # - name: wait-clickhouse
+        # image: alpine:3.6
+        # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init-tables
         image: flant/loghouse-dashboard:0.0.2
@@ -414,7 +512,7 @@ spec:
         - name: KUBERNETES_DEPLOYED
           value: "now"
         - name: CLICKHOUSE_URL
-          value: "clickhouse:8123"
+          value: "207.244.95.63:8123"
         - name: CLICKHOUSE_USERNAME
           value: "default"
         - name: CLICKHOUSE_PASSWORD
@@ -462,21 +560,78 @@ subjects:
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
----   
+---  
+
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: loghouse-nginx-conf
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  nginx.conf: |-
+    worker_processes auto;
+    daemon off;
+    error_log /dev/stderr info;
+    events {
+      worker_connections 1024;
+    }
+    http {
+      access_log /dev/stdout;
+      include /etc/nginx/mime.types;
+      gzip on;
+      gzip_disable "msie6";
+      gzip_types text/plain text/css text/xml text/javascript application/javascript application/x-javascript application/xml image/jpeg image/png;
+      set_real_ip_from 192.168.0.0/16;
+      set_real_ip_from 10.0.0.0/8;
+      set_real_ip_from 172.16.0.0/12;
+      server {
+        server_name _;
+        listen 80;
+        location / {
+          auth_basic "Authrentication Required";
+          auth_basic_user_file /nginx/passwd/auth;
+          proxy_redirect      off;
+          proxy_set_header    Host          $http_host;
+          proxy_set_header    X-Real-Ip     $remote_addr;
+          proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;
+          proxy_pass http://127.0.0.1:9292;
+        }
+      }
+    } 
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: loghouse-user-config
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  user.conf: |-
+    admin:
+      - ".*"
+---
+
+apiVersion: v1
+data:
+# command: echo "PASSWORD" | htpasswd -ni admin | base64 -w0
+# result: YWRtaW46JGFwcjEkMzdxSEwvTVIkcEFvdzEzZDUwMkd5VFc2VDNlQmJiMAoK
+  auth: "YWRtaW46JGFwcjEkelhESkU5YTkkRkU0OFdnZlBMZlJJQjk0bVhXZVprMAoK"
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: kube-system
+type: Opaque
+
+---
+
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: tabix
+  name: loghouse
   namespace: kube-system
 spec:
   revisionHistoryLimit: 1
@@ -486,83 +641,98 @@ spec:
   template:
     metadata:
       labels:
-        component: tabix
+        component: loghouse
     spec:
+      serviceAccountName: loghouse
       containers:
-      - name: tabix
-        image: flant/loghouse-tabix:0.0.2
-        imagePullPolicy: IfNotPresent
+      - name: frontend
+        image: nginx:alpine
+        command: ["/usr/sbin/nginx"]
         ports:
         - name: http
           containerPort: 80
+        env:
+        - name: KUBERNETES_DEPLOYED
+          value: "now"
+        volumeMounts:
+        - name: basic-auth
+          mountPath: "/nginx/passwd"
+          readOnly: true
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: backend
+        image: flant/loghouse-dashboard:0.0.2
+        imagePullPolicy: IfNotPresent
+        command: ["bundle", "exec", "puma"]
+        ports:
+        - name: http2
+          containerPort: 9292
+        env:
+        - name: KUBERNETES_DEPLOYED
+          value: "now"
+        - name: CLICKHOUSE_URL
+          value: "207.244.95.63:8123"
+        - name: CLICKHOUSE_USERNAME
+          value: "default"
+        - name: CLICKHOUSE_PASSWORD
+          value: "password"
+        - name: CLICKHOUSE_DATABASE
+          value: "logs"
+        - name: CLICKHOUSE_LOGS_TABLE
+          value: "logs"
+        - name: LOGS_TABLES_PARTITION_PERIOD
+          value: "1"
+        - name: PERMISSONS_FILE_PATH
+          value: "/config/user.conf"
+        - name: RACK_ENV
+          value: "production"
+        volumeMounts:
+        - name: user-config
+          mountPath: /config
         livenessProbe:
-          timeoutSeconds: 1
-          initialDelaySeconds: 60
           tcpSocket:
-            port: 80
+            port: 9292
         readinessProbe:
-          timeoutSeconds: 1
-          initialDelaySeconds: 5
           tcpSocket:
-            port: 80
+            port: 9292
         resources:
           requests:
-            cpu: 0.2
             memory: 256Mi
-          limits:
             cpu: 0.5
-            memory: 512Mi
----
-# apiVersion: v1
-# kind: Service
-# metadata:
-  # name: tabix
-  # namespace: kube-system
-# spec:
-  # selector:
-    # component: tabix
-  # ports:
-  # - name: http
-    # port: 80
-    # targetPort: 80
-    # protocol: TCP       
-
+          limits:
+            memory: 1Gi
+            cpu: 1
+      volumes:
+      - name: user-config
+        configMap:
+          name: loghouse-user-config
+      - name: basic-auth
+        secret:
+          secretName: basic-auth
+      - name: nginx-conf
+        configMap:
+          name: loghouse-nginx-conf
 
 ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-  # name: clickhouse
-  # namespace: kube-system
-# spec:
-  # selector:
-    # component: clickhouse
-  # ports:
-  # - name: http
-    # port: 8123
-    # targetPort: 8123
-    # protocol: TCP
-  # - name: native
-    # port: 9000
-    # targetPort: 9000
-    # protocol: TCP  
-  
-
----
-
-
-kind: Endpoints
+# admin PASSWORD
+kind: Service
 apiVersion: v1
-metadata:  
-  name: clickhouse
+metadata:
   namespace: kube-system
-subsets:
-  - addresses:
-      # InternalIP of node with clickhouse, outside the cluster
-      - ip: 207.244.95.63
-    ports:
-      - port: 8123
-        name: nn1
-      - port: 9000
-        name: nn2
-    
+  name: loghouse-public
+  labels:
+    component: loghouse
+spec:
+  selector:
+    component: loghouse
+  externalIPs:
+  - 207.244.95.63  
+  type: NodePort
+  ports:
+  - name: httpng
+    port: 8200
+    targetPort: 80
+    protocol: TCP     
+---
+

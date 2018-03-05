@@ -1,4 +1,4 @@
-#https://github.com/flant/loghouse
+# https://github.com/flant/loghouse
 
 
 
@@ -249,24 +249,7 @@ spec:
           readOnly: true
         - name: config-volume
           mountPath: /etc/fluent/config.d
-      terminationGracePeriodSeconds: 30
-      tolerations:
-      - key: "node-role/logging"
-        operator: "Exists"
-      - key: "node-role/system"
-        operator: "Exists"
-      - key: "node-role/monitoring"
-        operator: "Exists"
-      - key: "node-role/ingress"
-        operator: "Exists"
-      - key: "node-role/frontend"
-        operator: "Exists"
-      - key: "dedicated"
-        operator: "Exists"
-
-      - key: "node-role.kubernetes.io/master"
-        operator: "Exists"
-
+      terminationGracePeriodSeconds: 30    
       volumes:
       - name: varlog
         hostPath:
@@ -672,21 +655,78 @@ subjects:
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
----   
+---  
+
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: loghouse-nginx-conf
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  nginx.conf: |-
+    worker_processes auto;
+    daemon off;
+    error_log /dev/stderr info;
+    events {
+      worker_connections 1024;
+    }
+    http {
+      access_log /dev/stdout;
+      include /etc/nginx/mime.types;
+      gzip on;
+      gzip_disable "msie6";
+      gzip_types text/plain text/css text/xml text/javascript application/javascript application/x-javascript application/xml image/jpeg image/png;
+      set_real_ip_from 192.168.0.0/16;
+      set_real_ip_from 10.0.0.0/8;
+      set_real_ip_from 172.16.0.0/12;
+      server {
+        server_name _;
+        listen 80;
+        location / {
+          auth_basic "Authrentication Required";
+          auth_basic_user_file /nginx/passwd/auth;
+          proxy_redirect      off;
+          proxy_set_header    Host          $http_host;
+          proxy_set_header    X-Real-Ip     $remote_addr;
+          proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;
+          proxy_pass http://127.0.0.1:9292;
+        }
+      }
+    } 
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: loghouse-user-config
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  user.conf: |-
+    admin:
+      - ".*"
+---
+
+apiVersion: v1
+data:
+# command: echo "PASSWORD" | htpasswd -ni admin | base64 -w0
+# result: YWRtaW46JGFwcjEkMzdxSEwvTVIkcEFvdzEzZDUwMkd5VFc2VDNlQmJiMAoK
+  auth: "YWRtaW46JGFwcjEkelhESkU5YTkkRkU0OFdnZlBMZlJJQjk0bVhXZVprMAoK"
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: kube-system
+type: Opaque
+
+---
+
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: tabix
+  name: loghouse
   namespace: kube-system
 spec:
   revisionHistoryLimit: 1
@@ -696,32 +736,127 @@ spec:
   template:
     metadata:
       labels:
-        component: tabix
+        component: loghouse
     spec:
+      serviceAccountName: loghouse
       containers:
-      - name: tabix
-        image: flant/loghouse-tabix:0.0.2
-        imagePullPolicy: IfNotPresent
+      - name: frontend
+        image: nginx:alpine
+        command: ["/usr/sbin/nginx"]
         ports:
         - name: http
           containerPort: 80
+        env:
+        - name: KUBERNETES_DEPLOYED
+          value: "now"
+        volumeMounts:
+        - name: basic-auth
+          mountPath: "/nginx/passwd"
+          readOnly: true
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: backend
+        image: flant/loghouse-dashboard:0.0.2
+        imagePullPolicy: IfNotPresent
+        command: ["bundle", "exec", "puma"]
+        ports:
+        - name: http2
+          containerPort: 9292
+        env:
+        - name: KUBERNETES_DEPLOYED
+          value: "now"
+        - name: CLICKHOUSE_URL
+          value: "clickhouse:8123"
+        - name: CLICKHOUSE_USERNAME
+          value: "default"
+        - name: CLICKHOUSE_PASSWORD
+          value: "password"
+        - name: CLICKHOUSE_DATABASE
+          value: "logs"
+        - name: CLICKHOUSE_LOGS_TABLE
+          value: "logs"
+        - name: LOGS_TABLES_PARTITION_PERIOD
+          value: "1"
+        - name: PERMISSONS_FILE_PATH
+          value: "/config/user.conf"
+        - name: RACK_ENV
+          value: "production"
+        volumeMounts:
+        - name: user-config
+          mountPath: /config
         livenessProbe:
-          timeoutSeconds: 1
-          initialDelaySeconds: 60
           tcpSocket:
-            port: 80
+            port: 9292
         readinessProbe:
-          timeoutSeconds: 1
-          initialDelaySeconds: 5
           tcpSocket:
-            port: 80
+            port: 9292
         resources:
           requests:
-            cpu: 0.2
             memory: 256Mi
-          limits:
             cpu: 0.5
-            memory: 512Mi
+          limits:
+            memory: 1Gi
+            cpu: 1
+      volumes:
+      - name: user-config
+        configMap:
+          name: loghouse-user-config
+      - name: basic-auth
+        secret:
+          secretName: basic-auth
+      - name: nginx-conf
+        configMap:
+          name: loghouse-nginx-conf
+
+
+
+
+
+
+
+
+
+---
+# apiVersion: apps/v1beta1
+# kind: Deployment
+# metadata:
+  # name: tabix
+  # namespace: kube-system
+# spec:
+  # revisionHistoryLimit: 1
+  # replicas: 1
+  # strategy:
+    # type: Recreate
+  # template:
+    # metadata:
+      # labels:
+        # component: tabix
+    # spec:
+      # containers:
+      # - name: tabix
+        # image: flant/loghouse-tabix:0.0.2
+        # imagePullPolicy: IfNotPresent
+        # ports:
+        # - name: http
+          # containerPort: 80
+        # livenessProbe:
+          # timeoutSeconds: 1
+          # initialDelaySeconds: 60
+          # tcpSocket:
+            # port: 80
+        # readinessProbe:
+          # timeoutSeconds: 1
+          # initialDelaySeconds: 5
+          # tcpSocket:
+            # port: 80
+        # resources:
+          # requests:
+            # cpu: 0.2
+            # memory: 256Mi
+          # limits:
+            # cpu: 0.5
+            # memory: 512Mi
 ---
 # apiVersion: v1
 # kind: Service
@@ -737,3 +872,17 @@ spec:
     # targetPort: 80
     # protocol: TCP       
     
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+  # name: loghouse
+  # namespace: kube-system
+# spec:
+  # selector:
+    # component: loghouse
+  # ports:
+  # - name: http
+    # port: 80
+    # targetPort: 80
+    # protocol: TCP    
