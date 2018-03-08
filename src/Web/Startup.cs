@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Net;
-using System.Security;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Web.Utils;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Sinks.Fluentd;
 
 namespace Web
 {
@@ -21,19 +19,54 @@ namespace Web
      */
     public class Startup
     {
-        //public Startup(IConfiguration configuration)
-        //{
-        //    Configuration = configuration;
-        //}
+        public Startup(IConfiguration configuration)
+        {
+            //Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Fluentd(
+                    new FluentdSinkOptions("localhost", 24224) //see fluentd-config
+                    {
+                        Tag = "WebServer",
+                    }
+                )
+                .CreateLogger();
+
+            Log.Information("*********Starting...");
+           
+        }
 
         //public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMetrics();
+            var metrics = AppMetrics.CreateDefaultBuilder()
+                .Report.ToInfluxDb(
+                    options =>
+                    {
+                        options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system:8086");
+                        options.InfluxDb.Database = "appmetrics";
+                        //options.InfluxDb.Consistenency = "consistency";
+                        options.InfluxDb.UserName = "appmetrics";
+                        options.InfluxDb.Password = "appmetrics";
+                        options.InfluxDb.RetensionPolicy = "default";
+                        options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
+                        options.HttpPolicy.FailuresBeforeBackoff = 5;
+                        options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
+                        options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
+                        //options.Filter = null;
+                        options.FlushInterval = TimeSpan.FromSeconds(5);
+                    })
+                .Build();
 
-            services.AddMvc();
+            services.AddMetrics(metrics);
+            services.AddMetricsReportScheduler();
+
+            services.AddMvc( /*options => options.AddMetricsResourceFilter()*/);
 
             services.AddHealthChecks(checks =>
             {
@@ -47,69 +80,40 @@ namespace Web
                     () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
             });
 
-            //var metrics = AppMetrics.CreateDefaultBuilder()
-            //    //.Configuration.Configure(
-            //    //    options =>
-            //    //    {
-            //    //        //options.AddServerTag();
-            //    //        options.GlobalTags.Add("myTagKey", "myTagValue");
-            //    //    })
-            //    .Report.ToConsole(TimeSpan.FromSeconds(6))
-            //    .Report.ToInfluxDb(
-            //        options => {
-            //            //https://grafana.com/dashboards?search=app%20metrics
-            //            options.InfluxDb.BaseUri = new Uri("http://192.168.99.100:8083/");
-            //            //options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system.svc:8086");
-            //            options.InfluxDb.Database = "app-metrics";
-            //            options.InfluxDb.Consistenency = "consistency";
-            //            options.InfluxDb.UserName = "appm";
-            //            options.InfluxDb.Password = "appm";
-            //            options.InfluxDb.RetensionPolicy = "rp";
-            //            options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
-            //            options.HttpPolicy.FailuresBeforeBackoff = 5;
-            //            options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
-            //            options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
-            //            //options.Filter = filter;
-            //            options.FlushInterval = TimeSpan.FromSeconds(1);
-            //        })
-            //    .Build();
-
-            //services.AddMetrics(metrics);
-            //services.AddMetricsTrackingMiddleware();
-            
-
             services.AddSingleton<InstanceInfo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+            IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory, InstanceInfo instanceInfo)
         {
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
 
+
             loggerFactory.AddSerilog();
+
+            applicationLifetime.ApplicationStarted.Register(() =>
+            {
+                var isDebug = false;
+#if DEBUG
+                isDebug = true;
+#endif
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                var info = new { Action = "ApplicationStarted", InstanceInfo = instanceInfo, DebugMode = isDebug };
+                Log.Information("Application Started {@info}", info);
+            });
 
             applicationLifetime.ApplicationStopping.Register(() =>
             {
                 // server is not going to shutdown
                 // until the callback is done
-                Console.WriteLine("gracefull shutdown");
-                Log.Logger.Information("Gracefull shutdown.");
+                //Console.WriteLine("gracefull shutdown");
+                var info = new { Action = "ApplicationStarted", InstanceInfo = instanceInfo };
+                Log.Information("Gracefull shutdown {@info}", info);
             });
 
-            //app.UseMetricsAllMiddleware();
 
-            // Or to cherry-pick the tracking of interest
-            // app.UseMetricsActiveRequestMiddleware();
-            // app.UseMetricsErrorTrackingMiddleware();
-            // app.UseMetricsPostAndPutSizeTrackingMiddleware();
-            // app.UseMetricsRequestTrackingMiddleware();
-            // app.UseMetricsOAuth2TrackingMiddleware();
-            // app.UseMetricsApdexTrackingMiddleware();
-
-            app.UseMiddleware<LogMiddleware>();
-            
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {

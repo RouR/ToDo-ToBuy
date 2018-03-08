@@ -28,6 +28,12 @@ sudo service influxdb status
 # add user for db=telegraf - telegraf telegraf
 # GRANT ALL ON telegraf TO telegraf  
 
+# add db appmetrics
+# CREATE RETENTION POLICY "default" ON "telegraf" DURATION INF REPLICATION 1 DEFAULT
+# SHOW retention policies on appmetrics
+# add user for db=appmetrics - appmetrics appmetrics
+# GRANT ALL ON appmetrics TO appmetrics  
+
 sudo nano /etc/influxdb/influxdb.conf
 # [http]
 # auth-enabled = true

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Web.Areas.api
 {
@@ -18,7 +20,8 @@ namespace Web.Areas.api
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            Log.Debug("api/values {$id}", id);
+            return "value " + id;
         }
 
         // POST api/values
