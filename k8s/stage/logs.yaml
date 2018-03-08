@@ -40,6 +40,10 @@ data:
     <source>
       type forward
       port 24224
+      <labels>
+        host ${hostname}
+        src user
+      </labels>
     </source>
   monitoring.conf: |-
     # Prometheus Exporter Plugin

@@ -15,7 +15,7 @@ namespace Web
                 
 
                 BuildWebHost(args).Run();
-                Log.Information("*********Shutdown...");
+                Log.Information("Shutdown...");
                 return 0;
             }
             catch (Exception ex)
@@ -25,7 +25,7 @@ namespace Web
             }
             finally
             {
-                Log.Information("*****Shutdown finally");
+                Log.Information("Shutdown finally");
                 Log.CloseAndFlush();
             }
         }

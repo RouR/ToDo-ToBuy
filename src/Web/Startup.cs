@@ -26,7 +26,9 @@ namespace Web
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
+#if false //DEBUG
                 .WriteTo.Console()
+#endif
                 .WriteTo.Fluentd(
                     new FluentdSinkOptions("localhost", 24224) //see fluentd-config
                     {
@@ -35,20 +37,23 @@ namespace Web
                 )
                 .CreateLogger();
 
-            Log.Information("*********Starting...");
+            Log.Information("Starting...");
            
         }
 
         //public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
         {
+            var influxDB = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system:8086";
+            Log.Information("Write metrics to InfluxDB {$influxDB}", influxDB);
+
             var metrics = AppMetrics.CreateDefaultBuilder()
                 .Report.ToInfluxDb(
                     options =>
                     {
-                        options.InfluxDb.BaseUri = new Uri("http://monitoring-influxdb.kube-system:8086");
+                        options.InfluxDb.BaseUri = new Uri(influxDB);
                         options.InfluxDb.Database = "appmetrics";
                         //options.InfluxDb.Consistenency = "consistency";
                         options.InfluxDb.UserName = "appmetrics";

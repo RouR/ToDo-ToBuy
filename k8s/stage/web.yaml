@@ -41,7 +41,9 @@ spec:
             port: 5555
           initialDelaySeconds: 10
           timeoutSeconds: 1
-        
+        env:
+        - name: InfluxDB
+          value: http://207.244.95.62:8086
         
         
         

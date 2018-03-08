@@ -44,3 +44,7 @@ sudo systemctl restart grafana-server
 # add DataSource
 # nginx  http://207.244.95.62:8086 telegraf telegraf  telegraf 
 # https://grafana.com/dashboards/928
+
+# add DataSource
+# appmetrics  http://207.244.95.62:8086 appmetrics appmetrics  appmetrics 
+# https://grafana.com/dashboards/2125
