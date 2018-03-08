@@ -44,6 +44,11 @@ spec:
         env:
         - name: InfluxDB
           value: http://207.244.95.62:8086
+        - name: FluentD_Host
+          value: http://207.244.95.62:8086
+        - name: FluentD_Port
+          value: http://207.244.95.62:8086
+          
         
         
         

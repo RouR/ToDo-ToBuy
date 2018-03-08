@@ -23,6 +23,11 @@ namespace Web
         {
             //Configuration = configuration;
 
+            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
+            int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
+            Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
+            Log.Information("Write logs to fluentd {@fluentdHost}:{@fluentdPort}", fluentdHost, fluentdPort);
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
@@ -30,7 +35,7 @@ namespace Web
                 .WriteTo.Console()
 #endif
                 .WriteTo.Fluentd(
-                    new FluentdSinkOptions("localhost", 24224) //see fluentd-config
+                    new FluentdSinkOptions(fluentdHost, fluentdPort) //see fluentd-config
                     {
                         Tag = "WebServer",
                     }
@@ -46,14 +51,15 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var influxDB = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system:8086";
-            Log.Information("Write metrics to InfluxDB {$influxDB}", influxDB);
+            var influxDb = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system:8086";
+            Console.WriteLine("Write metrics to InfluxDB {0}", influxDb);
+            Log.Information("Write metrics to InfluxDB {@influxDB}", influxDb);
 
             var metrics = AppMetrics.CreateDefaultBuilder()
                 .Report.ToInfluxDb(
                     options =>
                     {
-                        options.InfluxDb.BaseUri = new Uri(influxDB);
+                        options.InfluxDb.BaseUri = new Uri(influxDb);
                         options.InfluxDb.Database = "appmetrics";
                         //options.InfluxDb.Consistenency = "consistency";
                         options.InfluxDb.UserName = "appmetrics";
