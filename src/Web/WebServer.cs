@@ -12,14 +12,13 @@ namespace Web
         {
             try
             {
-                
-
                 BuildWebHost(args).Run();
                 Log.Information("Shutdown...");
                 return 0;
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Host terminated unexpectedly" + ex.Message);
                 Log.Fatal(ex, "Host terminated unexpectedly");
                 return 1;
             }

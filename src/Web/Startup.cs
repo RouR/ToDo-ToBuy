@@ -120,7 +120,7 @@ namespace Web
                 // server is not going to shutdown
                 // until the callback is done
                 //Console.WriteLine("gracefull shutdown");
-                var info = new { Action = "ApplicationStarted", InstanceInfo = instanceInfo };
+                var info = new { Action = "ApplicationStopping", InstanceInfo = instanceInfo };
                 Log.Information("Gracefull shutdown {@info}", info);
             });
 
