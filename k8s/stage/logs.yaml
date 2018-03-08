@@ -38,8 +38,9 @@ data:
   forward.input.conf: |-
     # Takes the messages sent over TCP
     <source>
-      type forward
+      @type forward
       port 24224
+      bind 0.0.0.0
       <labels>
         host ${hostname}
         src user
@@ -254,6 +255,10 @@ spec:
           readOnly: true
         - name: config-volume
           mountPath: /etc/fluent/config.d
+      ports:
+        - name: http-input
+          containerPort: 24224
+          protocol: TCP      
       terminationGracePeriodSeconds: 30    
       volumes:
       - name: varlog
