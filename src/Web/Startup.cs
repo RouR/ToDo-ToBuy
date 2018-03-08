@@ -44,7 +44,7 @@ namespace Web
         //public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             var influxDB = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system:8086";
             Log.Information("Write metrics to InfluxDB {$influxDB}", influxDB);
