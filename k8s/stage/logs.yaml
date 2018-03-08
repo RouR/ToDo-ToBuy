@@ -39,6 +39,7 @@ data:
     # Takes the messages sent over TCP
     <source>
       type forward
+      port 24224
     </source>
   monitoring.conf: |-
     # Prometheus Exporter Plugin
@@ -220,7 +221,7 @@ spec:
         - name: FLUENTD_ARGS
           value: --no-supervisor -q
         - name: CLICKHOUSE_SERVER
-          value: "clickhouse"
+          value: "207.244.95.63"
         - name: CLICKHOUSE_PORT
           value: "9000"
         - name: CLICKHOUSE_USER
@@ -427,9 +428,7 @@ spec:
               image: flant/loghouse-dashboard:0.0.2
               imagePullPolicy: IfNotPresent
               command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
-              env:
-              - name: KUBERNETES_DEPLOYED
-                value: "now"
+              env:              
               - name: CLICKHOUSE_URL
                 value: "207.244.95.63:8123"
               - name: CLICKHOUSE_USERNAME
@@ -469,8 +468,6 @@ spec:
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'clickhouse-client --host=${CLICKHOUSE_URL} --port=9000 --user=${CLICKHOUSE_USERNAME} --password=${CLICKHOUSE_PASSWORD} --query="CREATE DATABASE ${CLICKHOUSE_DATABASE};"']
         env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
         - name: CLICKHOUSE_URL
           value: "207.244.95.63"
         - name: CLICKHOUSE_USERNAME
@@ -509,8 +506,6 @@ spec:
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
         env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
         - name: CLICKHOUSE_URL
           value: "207.244.95.63:8123"
         - name: CLICKHOUSE_USERNAME
@@ -650,10 +645,7 @@ spec:
         command: ["/usr/sbin/nginx"]
         ports:
         - name: http
-          containerPort: 80
-        env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
+          containerPort: 80        
         volumeMounts:
         - name: basic-auth
           mountPath: "/nginx/passwd"
@@ -668,9 +660,7 @@ spec:
         ports:
         - name: http2
           containerPort: 9292
-        env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
+        env:        
         - name: CLICKHOUSE_URL
           value: "207.244.95.63:8123"
         - name: CLICKHOUSE_USERNAME
