@@ -23,6 +23,8 @@ namespace Web
         {
             //Configuration = configuration;
 
+            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine("SeriLog" + msg));
+
             var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
             int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
             Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
