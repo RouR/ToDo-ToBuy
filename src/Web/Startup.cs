@@ -2,7 +2,8 @@
 using System;
 using System.Threading.Tasks;
 using App.Metrics;
-using App.Metrics.Formatters.Json;
+using App.Metrics.Logging;
+using App.Metrics.Scheduling;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ using Web.Utils;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Sinks.Fluentd;
+using Serilog.Events;
 
 namespace Web
 {
@@ -24,16 +25,21 @@ namespace Web
         {
             //Configuration = configuration;
 
-            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine("SeriLog" + msg));
+            // ReSharper disable once ConvertClosureToMethodGroup
+            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
 
             var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
             int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
             Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
             Log.Information("Write logs to fluentd {@fluentdHost}:{@fluentdPort}", fluentdHost, fluentdPort);
 
+            var d = LogProvider.For<DefaultMeterTickerScheduler>().IsDebugEnabled();
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("System", LogEventLevel.Warning)
+                .MinimumLevel.Override(typeof(DefaultMeterTickerScheduler).FullName, LogEventLevel.Information)
                 .Enrich.FromLogContext()
 #if ISSUE_NOT_SOLVED
                 .WriteTo.Console()
@@ -47,6 +53,10 @@ namespace Web
 #endif
 
                 .CreateLogger();
+#if DEBUG
+            if(LogProvider.For<DefaultMeterTickerScheduler>().IsDebugEnabled())
+                throw new Exception("Too many logs. Log configuration was failed");
+#endif
 
             Log.Information("Starting...");
            
@@ -54,36 +64,43 @@ namespace Web
 
         //public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var influxDb = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system:8086";
+            var inst = new InstanceInfo();
+
+            var influxDb = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://207.244.95.62:8086";
             Console.WriteLine("Write metrics to InfluxDB {0}", influxDb);
-            Log.Information("Write metrics to InfluxDB {@influxDB}", influxDb);
-
-            var metrics = AppMetrics.CreateDefaultBuilder()
-                .Report.ToInfluxDb(
-                    options =>
-                    {
-                        options.InfluxDb.BaseUri = new Uri(influxDb);
-                        options.InfluxDb.Database = "appmetrics";
-                        //options.InfluxDb.Consistenency = "consistency";
-                        options.InfluxDb.UserName = "appmetrics";
-                        options.InfluxDb.Password = "appmetrics";
-                        options.InfluxDb.RetensionPolicy = "default";
-                        options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
-                        options.HttpPolicy.FailuresBeforeBackoff = 5;
-                        options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
-                        options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
-                        //options.Filter = null;
-                        options.FlushInterval = TimeSpan.FromSeconds(5);
-                    })
-                .Build();
-
-            services.AddMetrics(metrics);
+            var metricsBuilder = AppMetrics.CreateDefaultBuilder();
+            var metrics = metricsBuilder
+                    .Report.ToInfluxDb(
+                        options => {
+                            options.InfluxDb.BaseUri = new Uri(influxDb);
+                            options.InfluxDb.Database = "appmetrics";
+                            //options.InfluxDb.Consistenency = "";
+                            options.InfluxDb.UserName = "appmetrics";
+                            options.InfluxDb.Password = "appmetrics";
+                            //options.InfluxDb.RetensionPolicy = "default";
+                            options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
+                            options.HttpPolicy.FailuresBeforeBackoff = 5;
+                            options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
+                            //options.MetricsOutputFormatter = new MetricsJsonOutputFormatter();
+                            //options.Filter = null;
+                            options.FlushInterval = TimeSpan.FromSeconds(10);
+                        })
+                    .Build();
+            metricsBuilder.Configuration.Configure(
+                options =>
+                {
+                    options.DefaultContextLabel = "WebFrontApp";
+                    options.GlobalTags.Add("instance", inst.Id.ToString());
+                    options.GlobalTags.Add("CodeVer", inst.CodeVer);
+                    options.Enabled = true;
+                    options.ReportingEnabled = true;
+                });
+            
+            services.AddMvc();
+            services.AddMetrics(metricsBuilder);
             services.AddMetricsReportScheduler();
-
-            services.AddMvc( /*options => options.AddMetricsResourceFilter()*/);
 
             services.AddHealthChecks(checks =>
             {
@@ -97,7 +114,7 @@ namespace Web
                     () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
             });
 
-            services.AddSingleton<InstanceInfo>();
+            services.AddSingleton(inst);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,8 +124,9 @@ namespace Web
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
 
-
             loggerFactory.AddSerilog();
+
+            app.UseMetricsAllMiddleware();
 
             applicationLifetime.ApplicationStarted.Register(() =>
             {

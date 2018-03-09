@@ -1,5 +1,4 @@
 ﻿using System;
-using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
@@ -35,7 +34,6 @@ namespace Web
                 .UseStartup<Startup>()
                 .UseHealthChecks("/healthz") //nginx-ingress require this path
                 .UseUrls("http://0.0.0.0:5555") // Take that 0.0.0.0 instead of localhost, Docker port forwarding!!!
-                .UseMetrics()
                 .Build();
     }
 }
