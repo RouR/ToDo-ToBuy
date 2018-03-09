@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define ISSUE_NOT_SOLVED //todo [Serilog.Sinks.Fluentd] Connection exception Connection refused 127.0.0.1:24224
+using System;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Formatters.Json;
@@ -30,18 +31,21 @@ namespace Web
             Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
             Log.Information("Write logs to fluentd {@fluentdHost}:{@fluentdPort}", fluentdHost, fluentdPort);
 
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
-#if false //DEBUG
+#if ISSUE_NOT_SOLVED
                 .WriteTo.Console()
-#endif
+#else
                 .WriteTo.Fluentd(
                     new FluentdSinkOptions(fluentdHost, fluentdPort) //see fluentd-config
                     {
                         Tag = "WebServer",
                     }
                 )
+#endif
+
                 .CreateLogger();
 
             Log.Information("Starting...");
