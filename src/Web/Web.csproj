@@ -15,6 +15,7 @@
   <ItemGroup>
     <Folder Include="Areas\home\ViewModels\" />
     <Folder Include="Areas\home\Views\Hello\" />
+    <Folder Include="Utils\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -23,19 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="2.0.0-preview1" />
-    <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="2.0.0-preview1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.1" />
-    <PackageReference Include="Serilog" Version="2.6.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.2" />
-    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
-    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
-    <PackageReference Include="Serilog.Sinks.Fluentd" Version="0.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CustomLogs\CustomLogs.csproj" />
+    <ProjectReference Include="..\CustomMetrics\CustomMetrics.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

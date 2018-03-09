@@ -1,7 +1,6 @@
 ﻿namespace k8s.KubeConfigModels
 {
     using System.Collections.Generic;
-    using YamlDotNet.RepresentationModel;
     using YamlDotNet.Serialization;
 
     public class UserCredentials

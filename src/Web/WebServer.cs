@@ -17,7 +17,7 @@ namespace Web
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Host terminated unexpectedly" + ex.Message);
+                Console.WriteLine("Host terminated unexpectedly " + ex.Message);
                 Log.Fatal(ex, "Host terminated unexpectedly");
                 return 1;
             }

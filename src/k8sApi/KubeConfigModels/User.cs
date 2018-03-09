@@ -1,6 +1,5 @@
 ﻿namespace k8s.KubeConfigModels
 {
-    using YamlDotNet.RepresentationModel;
     using YamlDotNet.Serialization;
 
     public class User
