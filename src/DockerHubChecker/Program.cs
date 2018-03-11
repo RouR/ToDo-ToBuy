@@ -7,27 +7,13 @@ using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 
-//Install-Package KubernetesClient -Version 0.3.0-beta
+//Install-Package KubernetesClient -Version 0.4.0-beta
 
 namespace DockerHubChecker
 {
     class Program
     {
-        private const string StagingTagName = "staging";
-        const string EnvName = "KUBERNETES_NAMESPACE";
-
-        private static string DetectNamespace()
-        {
-            
-            var envHost = Environment.GetEnvironmentVariable(EnvName);
-            if(string.IsNullOrWhiteSpace(envHost))
-                throw new ArgumentNullException(nameof(envHost));
-            return envHost;
-            //return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
-        }
-
-
-        private static void CheckNamespace(string k8Namespace)
+        private static void CheckNamespace(string k8Namespace, string k8Label)
         {
 #if false
             var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
@@ -37,16 +23,6 @@ namespace DockerHubChecker
 
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
-
-            var list = client.ListNamespacedPod(k8Namespace);
-            foreach (var item in list.Items)
-            {
-                Console.WriteLine($"Pod {item.Metadata.Name}");
-            }
-            if (list.Items.Count == 0)
-            {
-                Console.WriteLine("No Pods!");
-            }
 
 
             Console.WriteLine("\nList Deployments:");
@@ -58,11 +34,11 @@ namespace DockerHubChecker
                     Console.WriteLine($"Label {label.Key} = {label.Value}");
                 }
 
-                var ciLabel = item.Spec.Template.Metadata.Labels.SingleOrDefault(x => x.Key == "ci");
+                var ciLabel = item.Spec.Template.Metadata.Labels.SingleOrDefault(x => x.Key == k8Label);
                 if (ciLabel.Key != null)
                 {
                     Console.WriteLine($"\t\t\tFound!");
-                    var images = item.Spec.Template.Spec.Containers.Select(x => x.Image);
+                    var images = item.Spec.Template.Spec.Containers.Select(x => x.Image).ToArray();
                     Console.WriteLine($"\t\t\tImages = {string.Join("; ", images)}");
 
                     // await Task.Factory.StartNew<Tag>(clientDocker.GetTags(x[0],x[1]))
@@ -86,99 +62,33 @@ namespace DockerHubChecker
                         };
                         var patch = new JsonPatchDocument<Appsv1beta1Deployment>();
                         patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
-                        client.PatchNamespacedDeployment(patch, item.Metadata.Name, k8Namespace);
+                        client.PatchNamespacedDeployment(new V1Patch(patch), item.Metadata.Name, k8Namespace);
                     }
                     
                 }
-
-                foreach (var container in item.Spec.Template.Spec.Containers)
-                {
-                    Console.WriteLine($"Image {container.Image}");
-                }
             }
         }
 
-
-        private static void Check()
-        {
-            var clientDocker = new DockerHubClient();
-
-            //var repos = clientDocker.GetRepos("roured");
-            var tags = clientDocker.GetTags("roured","tdtb-web");
-
-            var tagStaging = tags.SingleOrDefault(x => x.Name == StagingTagName);
-
-            if(tagStaging != null)
-                Console.WriteLine($"{StagingTagName}: \tId={tagStaging.Id} \tLastUpdated={tagStaging.LastUpdated:R}");
-
-
-            KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
-            //KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
-
-            IKubernetes client = new Kubernetes(config);
-            Console.WriteLine("Starting Request!");
-
-            var list = client.ListNamespacedPod("default");
-            foreach (var item in list.Items)
-            {
-                Console.WriteLine(item.Metadata.Name);
-            }
-            if (list.Items.Count == 0)
-            {
-                Console.WriteLine("Empty!");
-            }
-
-            Console.WriteLine("ListNamespacedDeployment!");
-            foreach (var item in client.ListNamespacedDeployment("default").Items)
-            {
-                Console.WriteLine($"Name {item.Metadata.Name}");
-                foreach (var label in item.Spec.Template.Metadata.Labels)
-                {
-                    Console.WriteLine($"Label {label.Key} = {label.Value}");
-                    if (label.Key == "ci")
-                    {
-
-                        var newVal = "newdata";
-                        Console.WriteLine($"\t\t\tFound! try set to {newVal}");
-                        item.Spec.Template.Metadata.Labels.Add("ci2", "newVal");
-                        client.PatchNamespacedDeployment(item, item.Metadata.Name, "default");
-                        //client.PatchNamespacedDeployment(new
-                        //{
-                        //    op = "replace",
-                        //    path = "/spec/template/metadata/labels/"+ label.Key,
-                        //    value = newVal
-                        //},item.Metadata.Name, "default");
-
-                    }
-                }
-                foreach (var container in item.Spec.Template.Spec.Containers)
-                {
-                    Console.WriteLine($"Image {container.Image}");
-                }
-            }
-
-            var d = 0;
-        }
-      
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World! ");
+            const string envNameNamespace = "KUBERNETES_NAMESPACE";
+            const string envNameLabel = "LABEL";
 
-            //Check();
+            var k8Namespace = Environment.GetEnvironmentVariable(envNameNamespace);
+            if (string.IsNullOrWhiteSpace(k8Namespace))
+                throw new ArgumentNullException(envNameNamespace);
 
-            var k8Namespace = DetectNamespace();
-            Console.WriteLine($"k8l Namespace {k8Namespace}  from Environment {EnvName} {Environment.GetEnvironmentVariable(EnvName)}");
+            var k8Label = Environment.GetEnvironmentVariable(envNameLabel);
+            if (string.IsNullOrWhiteSpace(envNameLabel))
+                throw new ArgumentNullException(envNameLabel);
 
-            CheckNamespace(k8Namespace);
+            Console.WriteLine($"k8l Namespace {k8Namespace}");
+            Console.WriteLine($"k8l Label {k8Label}");
 
+            CheckNamespace(k8Namespace, k8Label);
 
-            Console.WriteLine("------------------------------------------------------------");
-            Thread.Sleep(TimeSpan.FromSeconds(20));
-            Console.WriteLine("------------------------------------------------------------");
-            Thread.Sleep(TimeSpan.FromSeconds(20));
-            Console.WriteLine("------------------------------------------------------------");
-            //Check();
+            Console.WriteLine("Finish");
         }
     }
 }
