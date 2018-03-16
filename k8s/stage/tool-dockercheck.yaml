@@ -1,4 +1,44 @@
 #kubectl get jobs --watch
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tool-dockercheck-serviceaccount
+  namespace: dev
+
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: dev
+  name: tool-dockercheck-role
+rules:
+    - apiGroups: [""] 
+      # "" indicates the core API group
+      resources: ["deployments", "namespaces"]
+      verbs: ["get", "list", "update", "patch"]
+  
+
+  
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tool-dockercheck-binding
+  namespace: dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tool-dockercheck-role
+subjects:
+  - kind: ServiceAccount
+    name: tool-dockercheck-serviceaccount
+    namespace: dev
+
+---
+
+
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -21,6 +61,7 @@ spec:
                 app: tool-dockercheck   
                 ci: someDataForOverride
             spec:
+              serviceAccountName: tool-dockercheck-serviceaccount
               restartPolicy: Never 
               #OnFailure
               containers:
