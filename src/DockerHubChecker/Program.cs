@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Rest;
 
 //Install-Package KubernetesClient -Version 0.4.0-beta
 
@@ -24,6 +25,7 @@ namespace DockerHubChecker
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
 
+            ServiceClientTracing.IsEnabled = true;
 
             Console.WriteLine("\nList Deployments:");
             foreach (var item in client.ListNamespacedDeployment(k8Namespace).Items)
