@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubernetesClient" Version="0.4.0-beta" />
+    <PackageReference Include="KubernetesClient" Version="0.6.0-beta" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="2.0.0" />
     <PackageReference Include="RestSharp" Version="106.2.1" />
   </ItemGroup>
