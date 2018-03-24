@@ -8,7 +8,7 @@ using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Rest;
 
-//Install-Package KubernetesClient -Version 0.4.0-beta
+//Install-Package KubernetesClient -Version 0.6.0-beta
 
 namespace DockerHubChecker
 {

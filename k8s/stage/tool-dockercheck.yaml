@@ -13,7 +13,7 @@ metadata:
   namespace: dev
   name: tool-dockercheck-role
 rules:
-    - apiGroups: [""] 
+    - apiGroups: ["", "apps"] 
       # "" indicates the core API group
       resources: ["deployments", "namespaces"]
       verbs: ["get", "list", "update", "patch"]
