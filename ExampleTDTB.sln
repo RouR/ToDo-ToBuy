@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomMetrics", "src\Custom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "src\Shared\Shared.csproj", "{7DC29265-B820-42B8-887C-3F9306345867}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubernetesClient", "src\k8s\KubernetesClient.csproj", "{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,10 +49,6 @@ Global
 		{7DC29265-B820-42B8-887C-3F9306345867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DC29265-B820-42B8-887C-3F9306345867}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DC29265-B820-42B8-887C-3F9306345867}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,7 +62,6 @@ Global
 		{A4191E1E-7647-40AD-94CA-3C8537D6AB98} = {3819EDB3-A78B-4284-ADBD-CBD6D81BF878}
 		{084B8995-DBE4-4891-9946-28C48F915648} = {3819EDB3-A78B-4284-ADBD-CBD6D81BF878}
 		{7DC29265-B820-42B8-887C-3F9306345867} = {3819EDB3-A78B-4284-ADBD-CBD6D81BF878}
-		{BC070D30-E2D9-4A1D-8EBC-2F2E0721341C} = {261F76A5-DF6B-4B25-9A88-8BDA0D797C34}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60475545-BB2D-4640-BE30-0A4289C1C368}
