@@ -88,7 +88,26 @@ namespace DockerHubChecker
             Console.WriteLine($"k8l Namespace {k8Namespace}");
             Console.WriteLine($"k8l Label {k8Label}");
 
-            CheckNamespace(k8Namespace, k8Label);
+            try
+            {
+                CheckNamespace(k8Namespace, k8Label);
+            }
+            catch (Microsoft.Rest.HttpOperationException ex)
+            {
+                var phase = ex.Response.ReasonPhrase;
+                var content = ex.Response.Content;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(content);
+                Console.WriteLine(phase);
+                throw;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+
+            
 
             Console.WriteLine("Finish");
         }
