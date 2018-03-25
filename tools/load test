@@ -1,0 +1,44 @@
+ab -k -n 1000 -c 200 "http://207.244.95.63/"
+
+================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster)
+
+Server Software:        nginx/1.13.7
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   279.621 seconds
+Complete requests:      1000
+Failed requests:        3
+   (Connect: 3, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      466000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.58 [#/sec] (mean)
+Time per request:       55924.199 [ms] (mean)
+Time per request:       279.621 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.63 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  216 750.9    153    9162
+Processing:   151 47691 35269.3  30638  129581
+Waiting:      150 25411 20517.3  20869   99590
+Total:        304 47908 35277.9  30793  129737
+
+Percentage of the requests served within a certain time (ms)
+  50%  30793
+  66%  48571
+  75%  57551
+  80%  78758
+  90%  111670
+  95%  120706
+  98%  129722
+  99%  129728
+ 100%  129737 (longest request)
+ 
+================================================================================
