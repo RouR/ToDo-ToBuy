@@ -2,12 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
+
+
 namespace Web.Areas.api
 {
     [Area("api")]
-    //[Route("api/[controller]")]
+    [ApiVersion("0.1")]
+    [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        /// <summary>
+        /// Some text from comments
+        /// </summary>
+        /// <returns></returns>
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
