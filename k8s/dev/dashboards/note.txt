@@ -1,0 +1,17 @@
+http://monitoring-influxdb.kube-system.svc:8086 see Database name in heapster.yaml
+
+Set IsDefault !
+
+pod name regex /^([.-\w\d]*)-[\w\d]{9,}-[\w\d]{5,}$/ for https://grafana.com/dashboards/3649
+
+https://grafana.com/dashboards/3646
+
+
+-- Telegraph
+
+see Database name in nginx.yaml
+https://grafana.com/dashboards/928
+
+
+
+

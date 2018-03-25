@@ -1,0 +1,80 @@
+#kubectl get jobs --watch
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tool-dockercheck-serviceaccount
+  namespace: dev
+
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: dev
+  name: tool-dockercheck-role
+rules:
+    - apiGroups: ["", "apps"] 
+      # "" indicates the core API group
+      resources: ["deployments", "namespaces"]
+      verbs: ["get", "list", "update", "patch"]
+  
+
+  
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tool-dockercheck-binding
+  namespace: dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tool-dockercheck-role
+subjects:
+  - kind: ServiceAccount
+    name: tool-dockercheck-serviceaccount
+    namespace: dev
+
+---
+
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: tool-dockercheck-cron
+  namespace: dev
+  labels:
+    app: tool-dockercheck
+spec:
+  schedule: "*/3 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3  
+  
+  jobTemplate:
+      spec:                  
+          template:
+            metadata:
+              namespace: dev
+              labels:
+                app: tool-dockercheck   
+                ci: someDataForOverride
+            spec:
+              serviceAccountName: tool-dockercheck-serviceaccount
+              restartPolicy: Never 
+              #OnFailure
+              containers:
+              - name: tool-dockercheck
+                image: roured/tdtb-dockercheck:dev
+                imagePullPolicy: Always
+                env:
+                #https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+                - name: KUBERNETES_NAMESPACE
+                  value: "dev"
+                - name: LABEL
+                  value: "ci"
+                
+              
+        
+---

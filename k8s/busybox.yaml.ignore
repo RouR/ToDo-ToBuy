@@ -1,0 +1,31 @@
+# https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
+#kubectl exec -ti busybox -- nslookup kubernetes.default
+#kubectl exec -ti busybox -- nslookup web-service
+#kubectl exec -ti busybox -- wget http://web-service.dev
+#kubectl exec -ti busybox -- rm healthz
+#kubectl exec -ti busybox -- wget http://default-http-backend.ingress-nginx/healthz
+#kubectl exec -ti busybox -- cat healthz
+#kubectl exec -ti busybox -- wget http://monitoring-influxdb.kube-system.svc:8086/ping
+
+#kubectl exec -ti busybox -- /bin/sh
+#wget http://default-http-backend.ingress-nginx/metrics -O /dev/null
+#wget http://default-http-backend.ingress-nginx:10254/metrics -O /dev/
+
+#kubectl -n ingress-nginx exec -ti nginx-ingress-controller-864d449cc6-cxnq9 -- /bin/bash 
+#curl http://127.0.0.1:10254/metrics
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+      - sleep
+      - "3600"
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always

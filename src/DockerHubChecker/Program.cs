@@ -1,44 +1,31 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using k8s;
+using k8s.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Rest;
 
+//Install-Package KubernetesClient -Version 0.6.0-beta
 
 namespace DockerHubChecker
 {
     class Program
     {
-        private const string StagingTagName = "staging";
-        const string EnvName = "KUBERNETES_NAMESPACE";
-
-        private static string DetectNamespace()
+        private static void CheckNamespace(string k8Namespace, string k8Label)
         {
-            
-            var envHost = Environment.GetEnvironmentVariable(EnvName);
-            return envHost;
-            //return new Regex("kubernetes.(?<name>.*).svc.cluster.local").Match(envHost).Groups["name"].Value;
-        }
+#if false
+            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
+#else
+            var config = KubernetesClientConfiguration.InClusterConfig(); //for docker image, both on Debug and in Release versions
+#endif
 
-
-        private static void CheckNamespace(string k8Namespace)
-        {
-            var config = KubernetesClientConfiguration.InClusterConfig();
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
 
-            var list = client.ListNamespacedPod(k8Namespace);
-            foreach (var item in list.Items)
-            {
-                Console.WriteLine($"Pod {item.Metadata.Name}");
-            }
-            if (list.Items.Count == 0)
-            {
-                Console.WriteLine("No Pods!");
-            }
-
+            ServiceClientTracing.IsEnabled = true;
 
             Console.WriteLine("\nList Deployments:");
             foreach (var item in client.ListNamespacedDeployment(k8Namespace).Items)
@@ -49,102 +36,80 @@ namespace DockerHubChecker
                     Console.WriteLine($"Label {label.Key} = {label.Value}");
                 }
 
-                var ciLabel = item.Spec.Template.Metadata.Labels.SingleOrDefault(x => x.Key == "ci");
+                var ciLabel = item.Spec.Template.Metadata.Labels.SingleOrDefault(x => x.Key == k8Label);
                 if (ciLabel.Key != null)
                 {
                     Console.WriteLine($"\t\t\tFound!");
-                    var images = item.Spec.Template.Spec.Containers.Select(x => x.Image);
+                    var images = item.Spec.Template.Spec.Containers.Select(x => x.Image).ToArray();
                     Console.WriteLine($"\t\t\tImages = {string.Join("; ", images)}");
-                }
 
-                foreach (var container in item.Spec.Template.Spec.Containers)
-                {
-                    Console.WriteLine($"Image {container.Image}");
-                }
-            }
-        }
+                    // await Task.Factory.StartNew<Tag>(clientDocker.GetTags(x[0],x[1]))
+                    var clientDocker = new DockerHubClient();
 
+                    var tasks = images
+                        .Select(x=> x.Split('/', '\\', ':'))
+                        .Select(async (x) => clientDocker.GetTags(x[0], x[1]).SingleOrDefault(y=> y.Name == x[2]));
 
-        private static void Check()
-        {
-            var clientDocker = new DockerHubClient();
+                    var result = Task.WhenAll(tasks);
 
-            //var repos = clientDocker.GetRepos("roured");
-            var tags = clientDocker.GetTags("roured","tdtb-web");
+                    var newTime = result.Result.Max(x => x.LastUpdated);
+                    var newTag = newTime.ToString("O").Replace(".", "").Replace(":", "").Replace("-", ""); //some symbols is not allowed;
 
-            var tagStaging = tags.SingleOrDefault(x => x.Name == StagingTagName);
-
-            if(tagStaging != null)
-                Console.WriteLine($"{StagingTagName}: \tId={tagStaging.Id} \tLastUpdated={tagStaging.LastUpdated:R}");
-
-
-            KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
-            //KubernetesClientConfiguration config = KubernetesClientConfiguration.InClusterConfig();
-
-            IKubernetes client = new Kubernetes(config);
-            Console.WriteLine("Starting Request!");
-
-            var list = client.ListNamespacedPod("default");
-            foreach (var item in list.Items)
-            {
-                Console.WriteLine(item.Metadata.Name);
-            }
-            if (list.Items.Count == 0)
-            {
-                Console.WriteLine("Empty!");
-            }
-
-            Console.WriteLine("ListNamespacedDeployment!");
-            foreach (var item in client.ListNamespacedDeployment("default").Items)
-            {
-                Console.WriteLine($"Name {item.Metadata.Name}");
-                foreach (var label in item.Spec.Template.Metadata.Labels)
-                {
-                    Console.WriteLine($"Label {label.Key} = {label.Value}");
-                    if (label.Key == "ci")
+                    if (ciLabel.Value != newTag)
                     {
-
-                        var newVal = "newdata";
-                        Console.WriteLine($"\t\t\tFound! try set to {newVal}");
-                        item.Spec.Template.Metadata.Labels.Add("ci2", "newVal");
-                        client.PatchNamespacedDeployment(item, item.Metadata.Name, "default");
-                        //client.PatchNamespacedDeployment(new
-                        //{
-                        //    op = "replace",
-                        //    path = "/spec/template/metadata/labels/"+ label.Key,
-                        //    value = newVal
-                        //},item.Metadata.Name, "default");
-
+                        Console.WriteLine($"change from {ciLabel.Value} to {newTag}");
+                        var newlables = new Dictionary<string, string>(item.Spec.Template.Metadata.Labels)
+                        {
+                            [ciLabel.Key] = newTag
+                        };
+                        var patch = new JsonPatchDocument<Appsv1beta1Deployment>();
+                        patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
+                        client.PatchNamespacedDeployment(new V1Patch(patch), item.Metadata.Name, k8Namespace);
                     }
-                }
-                foreach (var container in item.Spec.Template.Spec.Containers)
-                {
-                    Console.WriteLine($"Image {container.Image}");
+                    
                 }
             }
-
-            var d = 0;
         }
-      
+
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World! ");
+            const string envNameNamespace = "KUBERNETES_NAMESPACE";
+            const string envNameLabel = "LABEL";
 
-            //Check();
+            var k8Namespace = Environment.GetEnvironmentVariable(envNameNamespace);
+            if (string.IsNullOrWhiteSpace(k8Namespace))
+                throw new ArgumentNullException(envNameNamespace);
 
-            var k8Namespace = DetectNamespace();
-            Console.WriteLine($"k8l Namespace {k8Namespace}  from Environment {EnvName} {Environment.GetEnvironmentVariable(EnvName)}");
+            var k8Label = Environment.GetEnvironmentVariable(envNameLabel);
+            if (string.IsNullOrWhiteSpace(envNameLabel))
+                throw new ArgumentNullException(envNameLabel);
 
-            CheckNamespace(k8Namespace);
+            Console.WriteLine($"k8l Namespace {k8Namespace}");
+            Console.WriteLine($"k8l Label {k8Label}");
 
+            try
+            {
+                CheckNamespace(k8Namespace, k8Label);
+            }
+            catch (Microsoft.Rest.HttpOperationException ex)
+            {
+                var phase = ex.Response.ReasonPhrase;
+                var content = ex.Response.Content;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(content);
+                Console.WriteLine(phase);
+                throw;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
 
-            Console.WriteLine("------------------------------------------------------------");
-            Thread.Sleep(TimeSpan.FromSeconds(20));
-            Console.WriteLine("------------------------------------------------------------");
-            Thread.Sleep(TimeSpan.FromSeconds(20));
-            Console.WriteLine("------------------------------------------------------------");
-            //Check();
+            
+
+            Console.WriteLine("Finish");
         }
     }
 }

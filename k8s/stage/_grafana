@@ -1,0 +1,50 @@
+# node with influxdb 207.244.95.62
+
+apt-get install software-properties-common
+
+curl https://packagecloud.io/gpg.key | sudo apt-key add -
+sudo add-apt-repository "deb https://packagecloud.io/grafana/stable/debian/ stretch main"
+
+sudo apt-get update
+
+apt-cache policy grafana
+#check versions - 4.6.x from packagecloud.io
+
+sudo apt-get install grafana
+
+sudo service grafana-server start
+
+sudo service grafana-server status
+sudo systemctl enable grafana-server
+
+
+# http://207.244.95.62:3000/login
+# default - admin admin
+# http://207.244.95.62:3000/profile/password
+# pwd - publicadminpassword
+
+# https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-grafana-on-ubuntu-16-04
+
+sudo nano /etc/grafana/grafana.ini
+# [users]
+# disable user signup / registration
+# allow_sign_up = false
+# [auth.anonymous]
+# enable anonymous access
+# enabled = false
+
+sudo systemctl restart grafana-server
+
+# add DataSource
+# http://207.244.95.62:3000/datasources/new
+# influxdb isDefault  http://monitoring-influxdb.kube-system.svc:8086 heapster publicadmin  publicpassword 
+# influxdb isDefault  http://207.244.95.62:8086 heapster publicadmin  publicpassword 
+# dashboard https://grafana.com/dashboards/3646
+
+# add DataSource
+# nginx  http://207.244.95.62:8086 telegraf telegraf  telegraf 
+# https://grafana.com/dashboards/928
+
+# add DataSource
+# appmetrics  http://207.244.95.62:8086 appmetrics appmetrics  appmetrics 
+# https://grafana.com/dashboards/2125

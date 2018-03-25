@@ -1,0 +1,45 @@
+# node 207.244.95.62
+
+curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+source /etc/lsb-release
+echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+sudo apt-get update && sudo apt-get install influxdb
+sudo service influxdb start
+
+sudo service influxdb status
+# check - enabled, or run
+# sudo systemctl enable influxdb
+
+# use chronograf at http://localhost:8888/ connect to node_ip:8086
+# http://localhost:8888/sources/1/chronograf/data-explorer
+# https://docs.influxdata.com/influxdb/v1.4/query_language/authentication_and_authorization/#set-up-authentication
+# add user - publicadmin publicpassword
+
+# add db heapster
+# CREATE RETENTION POLICY "default" ON "heapster" DURATION 90d REPLICATION 1 DEFAULT
+# SHOW retention policies on heapster
+# add user for db=heapster - heapster heapster
+# GRANT ALL ON heapster TO heapster   
+
+# add db telegraf
+# CREATE RETENTION POLICY "default" ON "telegraf" DURATION 90d REPLICATION 1 DEFAULT
+# SHOW retention policies on heapster
+# add user for db=telegraf - telegraf telegraf
+# GRANT ALL ON telegraf TO telegraf  
+
+# add db appmetrics
+# CREATE RETENTION POLICY "default" ON "appmetrics" DURATION 90d REPLICATION 1 DEFAULT
+# SHOW retention policies on appmetrics
+# add user for db=appmetrics - appmetrics appmetrics
+# GRANT ALL ON appmetrics TO appmetrics  
+
+sudo nano /etc/influxdb/influxdb.conf
+# [http]
+# auth-enabled = true
+
+sudo service influxdb restart
+
+influxd config
+
+
