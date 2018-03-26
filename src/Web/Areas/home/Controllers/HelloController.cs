@@ -15,7 +15,7 @@ namespace Web.Areas.home.Controllers
         {
             _rnd = new Random();
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             Logger().Debug("get Index");
             Logger().Information("get Index rnd {R}", _rnd.Next(0, 10));

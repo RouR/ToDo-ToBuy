@@ -25,8 +25,6 @@ namespace DockerHubChecker
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
 
-            ServiceClientTracing.IsEnabled = true;
-
             Console.WriteLine("\nList Deployments:");
             foreach (var item in client.ListNamespacedDeployment(k8Namespace).Items)
             {
@@ -87,6 +85,8 @@ namespace DockerHubChecker
 
             Console.WriteLine($"k8l Namespace {k8Namespace}");
             Console.WriteLine($"k8l Label {k8Label}");
+
+            //ServiceClientTracing.IsEnabled = true;
 
             try
             {
