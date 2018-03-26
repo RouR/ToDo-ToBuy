@@ -23,47 +23,47 @@ namespace CustomLogs
         public static void ConfigureStartup()
         {
             // ReSharper disable once ConvertClosureToMethodGroup
-            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
+//            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
 
-            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
-            int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
-            Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
-            Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+//            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
+//            int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
+//            Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
+//            Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
 
-            // or: services.AddSingleton<Serilog.ILogger>(logger);
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .MinimumLevel.Override("System", LogEventLevel.Warning)
-                .MinimumLevel.Override(typeof(DefaultMeterTickerScheduler).FullName, LogEventLevel.Information)
-                .MinimumLevel.Override(typeof(DefaultMetricsRegistry).FullName, LogEventLevel.Information)
-                .MinimumLevel.Override(typeof(DefaultReservoirRescaleScheduler).FullName, LogEventLevel.Information)
-                .MinimumLevel.Override(typeof(DefaultForwardDecayingReservoir).FullName, LogEventLevel.Information)
-                .Enrich.FromLogContext() //LogContext.PushProperty("A", 1)
-#if ISSUE_NOT_SOLVED
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
-                //.WriteTo.RollingFile(new RenderedCompactJsonFormatter(), @"Logs/{Date}.json", retainedFileCountLimit: 10)
-#else
-                .WriteTo.Fluentd(
-                    new FluentdSinkOptions(fluentdHost, fluentdPort) //see fluentd-config
-                    {
-                        Tag = "WebServer",
-                    }
-                )
-#endif
-                .CreateLogger();
+//            // or: services.AddSingleton<Serilog.ILogger>(logger);
+//            Log.Logger = new LoggerConfiguration()
+//                .MinimumLevel.Debug()
+//                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+//                .MinimumLevel.Override("System", LogEventLevel.Warning)
+//                .MinimumLevel.Override(typeof(DefaultMeterTickerScheduler).FullName, LogEventLevel.Information)
+//                .MinimumLevel.Override(typeof(DefaultMetricsRegistry).FullName, LogEventLevel.Information)
+//                .MinimumLevel.Override(typeof(DefaultReservoirRescaleScheduler).FullName, LogEventLevel.Information)
+//                .MinimumLevel.Override(typeof(DefaultForwardDecayingReservoir).FullName, LogEventLevel.Information)
+//                .Enrich.FromLogContext() //LogContext.PushProperty("A", 1)
+//#if ISSUE_NOT_SOLVED
+//                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+//                .WriteTo.Console(new RenderedCompactJsonFormatter())
+//                //.WriteTo.RollingFile(new RenderedCompactJsonFormatter(), @"Logs/{Date}.json", retainedFileCountLimit: 10)
+//#else
+//                .WriteTo.Fluentd(
+//                    new FluentdSinkOptions(fluentdHost, fluentdPort) //see fluentd-config
+//                    {
+//                        Tag = "WebServer",
+//                    }
+//                )
+//#endif
+//                .CreateLogger();
 
-#if DEBUG
-            if (LogProvider.For<DefaultMeterTickerScheduler>().IsDebugEnabled())
-                throw new Exception("Too many logs. Log configuration was failed");
-#endif
+//#if DEBUG
+//            if (LogProvider.For<DefaultMeterTickerScheduler>().IsDebugEnabled())
+//                throw new Exception("Too many logs. Log configuration was failed");
+//#endif
         }
 
 
         public static void Configure(ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
-            loggerFactory.AddSerilog();
+            //loggerFactory.AddSerilog();
 
             applicationLifetime.ApplicationStarted.Register(() =>
             {
