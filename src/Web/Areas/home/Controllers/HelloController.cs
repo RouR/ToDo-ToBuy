@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using static CustomLogs.CustomLogs;
@@ -14,7 +15,7 @@ namespace Web.Areas.home.Controllers
         {
             _rnd = new Random();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             Logger().Debug("get Index");
             Logger().Information("get Index rnd {R}", _rnd.Next(0, 10));
