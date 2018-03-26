@@ -84,7 +84,34 @@ Percentage of the requests served within a certain time (ms)
 
 
 ================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) async Task<IActionResult>
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   255.802 seconds
+Complete requests:      1000
+Failed requests:        4
+   (Connect: 4, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.91 [#/sec] (mean)
+Time per request:       51160.326 [ms] (mean)
+Time per request:       255.802 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.53 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  172 402.5    152    9158
+Processing:   145 47820 42227.9  30615  132655
+Waiting:      145 16507 14398.7  15275  132616
+Total:        289 47992 42251.4  30770  132808
 
 
-
-
+================================================================================
