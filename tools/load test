@@ -42,3 +42,49 @@ Percentage of the requests served within a certain time (ms)
  100%  129737 (longest request)
  
 ================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) removed hsts and ssl
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   305.908 seconds
+Complete requests:      1000
+Failed requests:        2
+   (Connect: 2, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.27 [#/sec] (mean)
+Time per request:       61181.699 [ms] (mean)
+Time per request:       305.908 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  264 949.9    154    9179
+Processing:   163 57758 37580.3  43078  148954
+Waiting:      160 30429 27400.6  20318   95934
+Total:        326 58022 37598.5  43231  149106
+
+Percentage of the requests served within a certain time (ms)
+  50%  43231
+  66%  61159
+  75%  87070
+  80%  94146
+  90%  132075
+  95%  141073
+  98%  145152
+  99%  149071
+ 100%  149106 (longest request)
+
+
+================================================================================
+
+
+
+
