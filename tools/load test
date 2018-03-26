@@ -115,3 +115,48 @@ Total:        289 47992 42251.4  30770  132808
 
 
 ================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) remove metrics and logging
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   317.061 seconds
+Complete requests:      1000
+Failed requests:        4
+   (Connect: 4, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.15 [#/sec] (mean)
+Time per request:       63412.227 [ms] (mean)
+Time per request:       317.061 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.24 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      142  233 850.5    151    9157
+Processing:   152 60063 35527.6  49677  129308
+Waiting:      148 27830 27474.5  19336  129272
+Total:        302 60295 35530.5  49984  129463
+
+Percentage of the requests served within a certain time (ms)
+  50%  49984
+  66%  57507
+  75%  66547
+  80%  78450
+  90%  129353
+  95%  129390
+  98%  129441
+  99%  129449
+ 100%  129463 (longest request)
+
+
+
+
+
+================================================================================
