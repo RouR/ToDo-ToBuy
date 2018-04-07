@@ -1,7 +1,4 @@
 # https://github.com/flant/loghouse
-
-
-
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -38,7 +35,13 @@ data:
   forward.input.conf: |-
     # Takes the messages sent over TCP
     <source>
-      type forward
+      @type forward
+      port 24224
+      bind 0.0.0.0
+      <labels>
+        host ${hostname}
+        src user
+      </labels>
     </source>
   monitoring.conf: |-
     # Prometheus Exporter Plugin
@@ -192,6 +195,7 @@ roleRef:
   name: fluentd
   apiGroup: ""    
   
+  
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -249,6 +253,10 @@ spec:
           readOnly: true
         - name: config-volume
           mountPath: /etc/fluent/config.d
+        ports:
+        - name: http-input
+          containerPort: 24224
+          protocol: TCP     
       terminationGracePeriodSeconds: 30    
       volumes:
       - name: varlog
@@ -498,7 +506,7 @@ data:
       
       
 ---
-apiVersion: batch/v2alpha1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: logs-tables
@@ -522,9 +530,7 @@ spec:
               image: flant/loghouse-dashboard:0.0.2
               imagePullPolicy: IfNotPresent
               command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
-              env:
-              - name: KUBERNETES_DEPLOYED
-                value: "now"
+              env:            
               - name: CLICKHOUSE_URL
                 value: "clickhouse:8123"
               - name: CLICKHOUSE_USERNAME
@@ -563,9 +569,7 @@ spec:
         image: flant/loghouse-fluentd:0.0.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'clickhouse-client --host=${CLICKHOUSE_URL} --port=9000 --user=${CLICKHOUSE_USERNAME} --password=${CLICKHOUSE_PASSWORD} --query="CREATE DATABASE ${CLICKHOUSE_DATABASE};"']
-        env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
+        env:      
         - name: CLICKHOUSE_URL
           value: "clickhouse"
         - name: CLICKHOUSE_USERNAME
@@ -603,9 +607,7 @@ spec:
         image: flant/loghouse-dashboard:0.0.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
-        env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
+        env:             
         - name: CLICKHOUSE_URL
           value: "clickhouse:8123"
         - name: CLICKHOUSE_USERNAME
@@ -652,11 +654,6 @@ subjects:
 - kind: ServiceAccount
   name: loghouse
   namespace: kube-system
-  
-  
-  
----  
-
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -697,18 +694,6 @@ data:
       }
     } 
 ---
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: loghouse-user-config
-  namespace: kube-system
-  labels:
-    addonmanager.kubernetes.io/mode: Reconcile
-data:
-  user.conf: |-
-    admin:
-      - ".*"
----
 
 apiVersion: v1
 data:
@@ -747,8 +732,6 @@ spec:
         - name: http
           containerPort: 80
         env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
         volumeMounts:
         - name: basic-auth
           mountPath: "/nginx/passwd"
@@ -764,8 +747,6 @@ spec:
         - name: http2
           containerPort: 9292
         env:
-        - name: KUBERNETES_DEPLOYED
-          value: "now"
         - name: CLICKHOUSE_URL
           value: "clickhouse:8123"
         - name: CLICKHOUSE_USERNAME
@@ -873,8 +854,9 @@ spec:
     # protocol: TCP       
     
 ---
-# apiVersion: v1
+# # admin PASSWORD
 # kind: Service
+# apiVersion: v1
 # metadata:
   # name: loghouse
   # namespace: kube-system
@@ -882,7 +864,7 @@ spec:
   # selector:
     # component: loghouse
   # ports:
-  # - name: http
-    # port: 80
+  # - name: httpng
+    # port: 8200
     # targetPort: 80
     # protocol: TCP    

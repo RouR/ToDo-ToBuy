@@ -21,3 +21,21 @@ spec:
     app: ingress-nginx
 
 ---
+
+#admin PASSWORD
+kind: Service
+apiVersion: v1
+metadata:
+  name: loghouse
+  namespace: kube-system
+spec:
+  externalIPs:
+  - 192.168.99.100
+  selector:
+    component: loghouse
+  ports:
+  - name: httpng
+    port: 8200
+    targetPort: 80
+    protocol: TCP
+---  
