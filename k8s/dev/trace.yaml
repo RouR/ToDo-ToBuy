@@ -1,0 +1,299 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-zipkin-cassandra
+  namespace: kube-system
+  annotations:
+    volume.beta.kubernetes.io/mount-options: "discard"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+#      storage: 20Gi
+      storage: 1Gi
+#  storageClassName: slow
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-storage
+  namespace: kube-system
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: zipkin-storage
+    spec:     
+      containers:
+      - name: zipkin-cassandra
+        image: openzipkin/zipkin-cassandra:2.7
+        imagePullPolicy: IfNotPresent
+        ports:        
+        - name: native
+          containerPort: 9042        
+        livenessProbe:
+          timeoutSeconds: 120
+          initialDelaySeconds: 30
+          tcpSocket:
+            port: 9042
+        readinessProbe:
+          timeoutSeconds: 120
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 9042
+        resources:
+          limits:
+            cpu: 500m
+            memory: 3Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        volumeMounts:
+          - name: data-storage
+            mountPath: /cassandra/data          
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: pvc-zipkin-cassandra        
+#      nodeSelector:
+#        'node-role/logging': ''
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-cassandra 
+  namespace: kube-system
+spec:
+  ports:
+  - port: 9042
+#  clusterIP: None
+  selector:
+    app: zipkin-storage
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-collector
+  namespace: kube-system
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: zipkin-collector        
+    spec:
+      containers:
+        - name: zipkin-collector    
+          image: openzipkin/zipkin:2.7
+          ports:
+            - containerPort: 9411
+          # livenessProbe:
+            # initialDelaySeconds: 180
+            # tcpSocket:
+              # port: 9411
+          # readinessProbe:
+            # initialDelaySeconds: 180
+            # httpGet:
+              # path: /health
+              # port: 9411
+          resources:
+            limits:
+              cpu: 300m
+              memory: 900Mi 
+            requests:
+              cpu: 80m
+              memory: 900Mi
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: QUERY_PORT
+              value: "9411"
+            - name: JAVA_OPTS
+              value: "-XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Xms700M -Xmx700M -XX:+UseG1GC -server"
+            - name: COLLECTOR_SAMPLE_RATE
+              value: "0.1"
+            - name: QUERY_ENABLED
+              value: "false"
+            - name: STORAGE_TYPE
+              value: "cassandra3"
+            - name: CASSANDRA_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.username
+            - name: CASSANDRA_CONTACT_POINTS
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.contactpoints
+            - name: CASSANDRA_LOCAL_DC
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.localdc
+            - name: CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zipkin
+                  key: cassandra.password
+            - name: CASSANDRA_ENSURE_SCHEMA
+              value: "false"
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zipkin
+  namespace: kube-system
+type: Opaque
+data:
+#zipkin base64
+  cassandra.password: "emlwa2lu"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: zipkin-storage
+  namespace: kube-system
+data:
+  cassandra.username: "zipkin"
+  cassandra.localdc: "datacenter1"
+  cassandra.contactpoints: "zipkin-cassandra:9042"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zipkin
+  namespace: kube-system
+spec:
+  ports:
+   - port: 9411
+     name: "http"
+     targetPort: 9411
+  selector:
+    app: zipkin-collector
+---
+
+
+
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-ui
+  namespace: kube-system
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: zipkin-ui        
+    spec:
+      containers:
+        - name: zipkin-ui 
+          image: openzipkin/zipkin:2.7
+          ports:
+            - containerPort: 9411
+          # livenessProbe:
+            # initialDelaySeconds: 180
+            # tcpSocket:
+              # port: 9411
+          # readinessProbe:
+            # initialDelaySeconds: 180
+            # httpGet:
+              # path: /health
+              # port: 9411
+          resources:
+            limits:
+              cpu: 300m
+              memory: 900Mi
+            requests:
+              cpu: 150m
+              memory: 900Mi
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: QUERY_PORT
+              value: "9411"
+            - name: JAVA_OPTS
+              value: "-XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Xms700M -Xmx700M -XX:+UseG1GC -server"
+            - name: QUERY_ENABLED
+              value: "true"
+            - name: STORAGE_TYPE
+              value: "cassandra3"
+            - name: CASSANDRA_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.username
+            - name: CASSANDRA_CONTACT_POINTS
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.contactpoints
+            - name: CASSANDRA_LOCAL_DC
+              valueFrom:
+                configMapKeyRef:
+                  name: zipkin-storage
+                  key: cassandra.localdc
+            - name: CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zipkin
+                  key: cassandra.password
+            - name: CASSANDRA_ENSURE_SCHEMA
+              value: "false"
+---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # name: zipkin-ui-srv
+  # namespace: kube-system
+# spec:
+  # ports:
+   # - port: 9411
+     # name: "http"
+     # targetPort: 9411
+  # selector:
+    # app: zipkin-ui
+
+# ---
+
+
+
+
+
+
+
+
+
+
+
+
+    

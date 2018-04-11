@@ -125,3 +125,20 @@ spec:
     targetPort: 8086
     protocol: TCP   
 ---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: zipkin-ui-srv
+  namespace: kube-system
+spec:
+  ports:
+   - port: 9411
+     name: "http"
+     targetPort: 9411
+  selector:
+    app: zipkin-ui
+  externalIPs:
+  - 192.168.99.100  
+---
+
