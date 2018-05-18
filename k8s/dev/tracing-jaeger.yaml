@@ -68,7 +68,7 @@ data:
       jaeger-infra: cassandra-statefulset
   spec:
     serviceName: cassandra
-    replicas: 3
+    replicas: 1
     template:
       metadata:
         namespace: dev
@@ -157,7 +157,7 @@ data:
 
 
 
-# UI
+# UI  :31084/search
 ---
   apiVersion: extensions/v1beta1
   kind: Deployment
