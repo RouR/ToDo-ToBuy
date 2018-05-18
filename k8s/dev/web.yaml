@@ -41,7 +41,11 @@ spec:
             port: 5555
           initialDelaySeconds: 10
           timeoutSeconds: 1
-        
+        env:
+        - name: TRACING_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP   
         
         
         

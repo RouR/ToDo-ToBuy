@@ -48,7 +48,10 @@ spec:
           value: "localhost"
         - name: FluentD_Port
           value: "24224"
-          
+        - name: TRACING_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP  
         
         
         
