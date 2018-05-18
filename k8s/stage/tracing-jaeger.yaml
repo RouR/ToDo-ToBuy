@@ -157,7 +157,7 @@ data:
 
 
 
-# UI
+# UI :31084/search
 ---
   apiVersion: extensions/v1beta1
   kind: Deployment
@@ -251,6 +251,58 @@ data:
       jaeger-infra: collector-pod
     type: ClusterIP
 ---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: jaeger-nginx-conf
+  namespace: dev
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  nginx.conf: |-
+    worker_processes auto;
+    daemon off;
+    error_log /dev/stderr info;
+    events {
+      worker_connections 1024;
+    }
+    http {
+      access_log /dev/stdout;
+      include /etc/nginx/mime.types;
+      gzip on;
+      gzip_disable "msie6";
+      gzip_types text/plain text/css text/xml text/javascript application/javascript application/x-javascript application/xml image/jpeg image/png;
+      set_real_ip_from 192.168.0.0/16;
+      set_real_ip_from 10.0.0.0/8;
+      set_real_ip_from 172.16.0.0/12;
+      server {
+        server_name _;
+        listen 80;
+        location / {
+          auth_basic "Authrentication Required";
+          auth_basic_user_file /nginx/passwd/auth;
+          proxy_redirect      off;
+          proxy_set_header    Host          $http_host;
+          proxy_set_header    X-Real-Ip     $remote_addr;
+          proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;
+          proxy_pass http://127.0.0.1:16686;
+        }
+      }
+    } 
+---
+
+apiVersion: v1
+data:
+# command: echo "PASSWORD" | htpasswd -ni admin | base64 -w0
+# result: YWRtaW46JGFwcjEkMzdxSEwvTVIkcEFvdzEzZDUwMkd5VFc2VDNlQmJiMAoK
+  auth: "YWRtaW46JGFwcjEkelhESkU5YTkkRkU0OFdnZlBMZlJJQjk0bVhXZVprMAoK"
+kind: Secret
+metadata:
+  name: basic-auth-jaeger
+  namespace: dev
+type: Opaque
+---
   apiVersion: extensions/v1beta1
   kind: Deployment
   metadata:
@@ -292,6 +344,19 @@ data:
               configMapKeyRef:
                 name: jaeger-configuration
                 key: span-storage-type
+        - name: frontend
+          image: nginx:alpine
+          command: ["/usr/sbin/nginx"]
+          ports:
+          - name: http
+            containerPort: 16687        
+          volumeMounts:
+          - name: basic-auth-jaeger
+            mountPath: "/nginx/passwd"
+            readOnly: true
+          - name: nginx-conf-jaeger
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
         volumes:
           - configMap:
               name: jaeger-configuration
@@ -299,6 +364,12 @@ data:
                 - key: query
                   path: query.yaml
             name: jaeger-configuration-volume
+          - name: basic-auth-jaeger
+            secret:
+              secretName: basic-auth-jaeger
+          - name: nginx-conf-jaeger
+            configMap:
+              name: jaeger-nginx-conf
 ---
   apiVersion: v1
   kind: Service
@@ -313,7 +384,7 @@ data:
     - name: jaeger-query
       port: 80
       protocol: TCP
-      targetPort: 16686
+      targetPort: 80
     selector:
       jaeger-infra: query-pod
     type: LoadBalancer
