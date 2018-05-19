@@ -1,13 +1,26 @@
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-grafana
+  namespace: kube-system
+spec:
+  ports:
+  - name: app
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+#  clusterIP: None
+  type: ClusterIP
+---
 kind: Endpoints
 apiVersion: v1
 metadata:
   labels:
     # For use as a Cluster add-on (https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)
     # If you are NOT using this as an addon, you should comment out this line.
-    kubernetes.io/cluster-service: 'true'
-    kubernetes.io/name: monitoring-grafana
-  name: monitoring-grafana
+#    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: external-grafana
+  name: external-grafana
   namespace: kube-system
 subsets:
   - addresses:
@@ -15,3 +28,4 @@ subsets:
       - ip: 207.244.95.62
     ports:
       - port: 3000
+---

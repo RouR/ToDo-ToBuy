@@ -714,7 +714,7 @@ spec:
           name: loghouse-nginx-conf
 
 ---
-# admin PASSWORD
+# admin PASSWORD  http://207.244.95.63:8200/query
 kind: Service
 apiVersion: v1
 metadata:
@@ -724,13 +724,11 @@ metadata:
     component: loghouse
 spec:
   selector:
-    component: loghouse
-  externalIPs:
-  - 207.244.95.63  
-  type: NodePort
+    component: loghouse 
+  type: LoadBalancer
   ports:
   - name: httpng
-    port: 8200
+    port: 80
     targetPort: 80
     protocol: TCP     
 ---
