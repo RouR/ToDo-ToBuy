@@ -19,16 +19,16 @@ namespace CustomTracing
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services, bool isPublicWebService)
         {
             //var jaegerUri = Environment.GetEnvironmentVariable("JaegerUri") ?? "http://localhost:14268/api/traces";
-            var jaegerEndpoint = Environment.GetEnvironmentVariable("Jaeger") ?? "jaeger-collector:14267";
 
             services.AddSingleton<ITracer>(serviceProvider =>
             {
                 string serviceName = Assembly.GetEntryAssembly().GetName().Name;
 
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                var loggingReporter = new LoggingReporter(loggerFactory);
 
                 var reporter = new RemoteReporter.Builder()
-                    .WithSender(new HttpSender(jaegerEndpoint))
+                    .WithSender(new UdpSender())
                     .Build();
 
                 var sampler = new ConstSampler(sample: true);
@@ -38,7 +38,8 @@ namespace CustomTracing
                 ITracer tracer = new Tracer.Builder(serviceName)
                     .WithLoggerFactory(loggerFactory)
                     .WithSampler(sampler)
-                    .WithReporter(reporter)
+                    //.WithReporter(reporter)
+                    .WithReporter(new CompositeReporter(loggingReporter, reporter))
                     .Build();
 
                 GlobalTracer.Register(tracer);

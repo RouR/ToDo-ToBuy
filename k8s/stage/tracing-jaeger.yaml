@@ -12,7 +12,7 @@ metadata:
 data:
   span-storage-type: cassandra
   collector: |
-    collector:
+    collector:      
       zipkin:
         http-port: 9411
     cassandra:
@@ -183,6 +183,7 @@ data:
           command:
             - "/go/bin/collector-linux"
             - "--config-file=/conf/collector.yaml"
+            - "--log-level=debug"
           ports:
           - containerPort: 14267
             protocol: TCP
