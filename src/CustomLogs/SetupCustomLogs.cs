@@ -50,6 +50,8 @@ namespace CustomLogs
                 .WriteTo.Console(new RenderedCompactJsonFormatter())
                 //.WriteTo.RollingFile(new RenderedCompactJsonFormatter(), @"Logs/{Date}.json", retainedFileCountLimit: 10)
 #else
+                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.Console(new RenderedCompactJsonFormatter())
                 .WriteTo.Fluentd(
                     new FluentdSinkOptions(fluentdHost, fluentdPort) //see fluentd-config
                     {
