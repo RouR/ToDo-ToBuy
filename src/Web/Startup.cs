@@ -1,8 +1,6 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using CustomLogs;
+﻿using System.Threading.Tasks;
 using CustomMetrics;
+using CustomTracing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
-using Swashbuckle.AspNetCore.Swagger;
 using Web.Utils;
 
 namespace Web
@@ -35,8 +32,7 @@ namespace Web
 
             CustomLogs.CustomLogs.InstanceInfo = instanceInfo;
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
-
-           
+            SetupTracing.ConfigureServices(instanceInfo, services, true);
 
             services.AddMvc();
 

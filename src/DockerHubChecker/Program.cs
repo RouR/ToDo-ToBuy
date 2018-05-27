@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Rest;
 
 //Install-Package KubernetesClient -Version 0.6.0-beta
 
