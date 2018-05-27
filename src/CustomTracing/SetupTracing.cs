@@ -51,7 +51,9 @@ namespace CustomTracing
                 options.IgnorePatterns.Add(request =>
                 {
                     
-                    return (request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
+                    return (request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"))
+                        || (request.RequestUri.Port == 5555 && request.RequestUri.PathAndQuery.Contains("healthz"))
+                        ;
                 });
             });
                     
