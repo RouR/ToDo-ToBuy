@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using static CustomLogs.CustomLogs;
+using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.home.Controllers
 {

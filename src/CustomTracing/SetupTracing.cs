@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Jaeger;
 using Jaeger.Reporters;
 using Jaeger.Samplers;
@@ -8,7 +9,7 @@ using OpenTracing;
 using OpenTracing.Contrib.NetCore.CoreFx;
 using OpenTracing.Util;
 using Shared;
-using static CustomLogs.CustomLogs;
+using static CustomLogs.SetupCustomLogs;
 
 namespace CustomTracing
 {
@@ -17,6 +18,7 @@ namespace CustomTracing
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services, bool isPublicWebService)
         {
             //var jaegerUri = Environment.GetEnvironmentVariable("JaegerUri") ?? "http://localhost:14268/api/traces";
+            var jaegerEndpoint = Environment.GetEnvironmentVariable("Jaeger") ?? "jaeger-collector:14267";
 
             services.AddSingleton<ITracer>(serviceProvider =>
             {
@@ -25,7 +27,7 @@ namespace CustomTracing
                 //ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
                 var reporter = new RemoteReporter.Builder()
-                    .WithSender(new UdpSender())
+                    .WithSender(new HttpSender(jaegerEndpoint))
                     .Build();
 
                 var sampler = new ConstSampler(sample: true);

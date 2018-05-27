@@ -21,7 +21,7 @@ namespace Web
         {
             //Configuration = configuration;
 
-            CustomLogs.CustomLogs.ConfigureStartup();
+            CustomLogs.SetupCustomLogs.ConfigureStartup();
         }
 
 
@@ -29,10 +29,11 @@ namespace Web
         {
             var instanceInfo = new InstanceInfo();
             services.AddSingleton(instanceInfo);
-
-            CustomLogs.CustomLogs.InstanceInfo = instanceInfo;
+            CustomLogs.SetupCustomLogs.ConfigureServices(instanceInfo);
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, true);
+
+            CustomLogs.SetupCustomLogs.PrintAllEnv();
 
             services.AddMvc();
 
@@ -98,7 +99,7 @@ namespace Web
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
 
-            CustomLogs.CustomLogs.Configure(loggerFactory, applicationLifetime);
+            CustomLogs.SetupCustomLogs.Configure(loggerFactory, applicationLifetime);
             SetupDefaultWebMetrics.Configure(app);
 
             app.UseStaticFiles();

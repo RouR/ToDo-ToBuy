@@ -1,5 +1,7 @@
 ﻿#define ISSUE_NOT_SOLVED //todo [Serilog.Sinks.Fluentd] Connection exception Connection refused 127.0.0.1:24224
 using System;
+using System.Collections;
+using System.Text;
 using App.Metrics.Internal;
 using App.Metrics.Logging;
 using App.Metrics.ReservoirSampling.ExponentialDecay;
@@ -18,8 +20,10 @@ namespace CustomLogs
     /// https://marketplace.visualstudio.com/items?itemName=Suchiman.SerilogAnalyzer
     /// https://github.com/serilog/serilog/wiki/Writing-Log-Events
     /// </summary>
-    public static class CustomLogs
+    public static class SetupCustomLogs
     {
+        public static InstanceInfo InstanceInfo { get; private set; }
+
         public static void ConfigureStartup()
         {
             // ReSharper disable once ConvertClosureToMethodGroup
@@ -60,6 +64,10 @@ namespace CustomLogs
 #endif
         }
 
+        public static void ConfigureServices(InstanceInfo instanceInfo)
+        {
+            InstanceInfo = instanceInfo;
+        }
 
         public static void Configure(ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
@@ -88,17 +96,21 @@ namespace CustomLogs
             });
         }
 
-        public static InstanceInfo InstanceInfo;
-
+ 
 
         /// <summary>
-        /// using static CustomLogs.CustomLogs;
+        /// using static SetupCustomLogs.SetupCustomLogs;
         /// </summary>
         /// <returns></returns>
         public static ILogger Logger()
         {
             //use RenderedCompactJsonFormatter to Save all context properties
             return Log.Logger.ForContext("InstanceId", InstanceInfo.Id);
+        }
+
+        public static void PrintAllEnv()
+        {
+            Logger().Information("EnvironmentVariables {EnvironmentVariables}", Environment.GetEnvironmentVariables());
         }
     }
 }

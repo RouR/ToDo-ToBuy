@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using OpenTracing;
 using Serilog;
-
-
+using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.api
 {
@@ -11,6 +11,13 @@ namespace Web.Areas.api
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly ITracer _tracer;
+
+        public ValuesController(ITracer tracer)
+        {
+            _tracer = tracer;
+        }
+
         /// <summary>
         /// Some text from comments
         /// </summary>
@@ -26,8 +33,14 @@ namespace Web.Areas.api
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            Log.Debug("api/values {$id}", id);
-            return "value " + id;
+            Logger().Information("api/values {$id}", id);
+
+            _tracer.ActiveSpan?.Log(new Dictionary<string, object> {
+                { "test234234", id },
+            });
+
+
+            return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.SpanId;
         }
 
         // POST api/values
