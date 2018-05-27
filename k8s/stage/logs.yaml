@@ -413,7 +413,7 @@ data:
       
       
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1beta2
 kind: CronJob
 metadata:
   name: logs-tables
@@ -632,7 +632,7 @@ type: Opaque
 
 ---
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: loghouse
