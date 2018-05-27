@@ -40,7 +40,7 @@ data:
     <source>
       @type forward
       port 24224
-      bind 0.0.0.0      
+      bind 0.0.0.0 
     </source>
   monitoring.conf: |-
     # Prometheus Exporter Plugin
@@ -220,7 +220,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: FLUENTD_ARGS
-          value: --no-supervisor -q
+          value: --no-supervisor -q -vv
         - name: CLICKHOUSE_SERVER
           value: "207.244.95.63"
         - name: CLICKHOUSE_PORT
