@@ -42,6 +42,10 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 1
         env:
+        - name: JAEGER_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         - name: InfluxDB
           value: "http://207.244.95.62:8086"
         - name: FluentD_Host
@@ -52,7 +56,29 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP  
+      - name: agent-instance
+        image: jaegertracing/jaeger-agent:1.2
+        command:
+          - "/go/bin/agent-linux"
+          - "--config-file=/conf/agent.yaml"
+        volumeMounts:
+          - name: jaeger-configuration-volume
+            mountPath: /conf
+        ports:
+          - containerPort: 5775
+            protocol: UDP
+          - containerPort: 6831
+            protocol: UDP
+          - containerPort: 6832
+            protocol: UDP
         
+      volumes:
+          - configMap:
+              name: jaeger-configuration
+              items:
+                - key: agent
+                  path: agent.yaml
+            name: jaeger-configuration-volume  
         
         
 ---

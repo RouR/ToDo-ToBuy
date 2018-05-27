@@ -35,9 +35,11 @@ namespace Web.Areas.api
         {
             Logger().Information("api/values {$id}", id);
 
-            _tracer.ActiveSpan?.Log(new Dictionary<string, object> {
-                { "test234234", id },
-            });
+            _tracer.ActiveSpan?
+                .SetOperationName("api-values")
+                .Log(new Dictionary<string, object> {
+                    { "test234234", id }
+                });
 
 
             return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.SpanId;

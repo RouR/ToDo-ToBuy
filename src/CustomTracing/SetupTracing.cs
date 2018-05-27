@@ -18,14 +18,12 @@ namespace CustomTracing
     {
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services, bool isPublicWebService)
         {
-            //var jaegerUri = Environment.GetEnvironmentVariable("JaegerUri") ?? "http://localhost:14268/api/traces";
-
             services.AddSingleton<ITracer>(serviceProvider =>
             {
                 string serviceName = Assembly.GetEntryAssembly().GetName().Name;
 
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                var loggingReporter = new LoggingReporter(loggerFactory);
+                //ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                //var loggingReporter = new LoggingReporter(loggerFactory);
 
                 var reporter = new RemoteReporter.Builder()
                     .WithSender(new UdpSender())
@@ -36,10 +34,10 @@ namespace CustomTracing
                 Logger().Information("Tracer use sampler {Sampler}", sampler.GetType().Name);
 
                 ITracer tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
+                    //.WithLoggerFactory(loggerFactory)
                     .WithSampler(sampler)
-                    //.WithReporter(reporter)
-                    .WithReporter(new CompositeReporter(loggingReporter, reporter))
+                    .WithReporter(reporter)
+                    //.WithReporter(new CompositeReporter(loggingReporter, reporter))
                     .Build();
 
                 GlobalTracer.Register(tracer);
@@ -50,7 +48,11 @@ namespace CustomTracing
             // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
-                //options.IgnorePatterns.Add(request => jaegerUri.IsBaseOf(request.RequestUri));
+                options.IgnorePatterns.Add(request =>
+                {
+                    
+                    return (request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
+                });
             });
                     
             // Enables OpenTracing instrumentation for ASP.NET Core, CoreFx, EF Core
