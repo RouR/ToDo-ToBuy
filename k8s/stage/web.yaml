@@ -49,14 +49,12 @@ spec:
         - name: InfluxDB
           value: "http://207.244.95.62:8086"
         - name: FluentD_Host
-          value: "localhost"
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP  
         - name: FluentD_Port
           value: "24224"
         - name: TRACING_AGENT_HOST
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP        
-        - name: LOGS_AGENT_HOST
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP        

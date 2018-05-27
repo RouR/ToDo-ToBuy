@@ -42,8 +42,7 @@ data:
       port 24224
       bind 0.0.0.0
       <labels>
-        host ${hostname}
-        src user
+        host ${hostname}        
       </labels>
     </source>
   monitoring.conf: |-
@@ -413,7 +412,7 @@ data:
       
       
 ---
-apiVersion: batch/v1beta2
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: logs-tables
@@ -632,7 +631,7 @@ type: Opaque
 
 ---
 
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: loghouse
