@@ -42,7 +42,7 @@ namespace Web.Areas.api
                 });
 
 
-            return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.SpanId;
+            return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.TraceId;
         }
 
         // POST api/values
