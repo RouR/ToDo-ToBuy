@@ -20,13 +20,15 @@ namespace CustomTracing
         {
             services.AddSingleton<ITracer>(serviceProvider =>
             {
+                var JaegerAgentHost = Environment.GetEnvironmentVariable("TRACING_AGENT_HOST") ?? "localhost";
+
                 string serviceName = Assembly.GetEntryAssembly().GetName().Name;
 
                 //ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 //var loggingReporter = new LoggingReporter(loggerFactory);
 
                 var reporter = new RemoteReporter.Builder()
-                    .WithSender(new UdpSender())
+                    .WithSender(new UdpSender(JaegerAgentHost, 6831, 0))
                     .Build();
 
                 var sampler = new ConstSampler(sample: true);
