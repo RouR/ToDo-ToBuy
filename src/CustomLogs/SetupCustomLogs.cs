@@ -110,7 +110,7 @@ namespace CustomLogs
 
         public static void PrintAllEnv()
         {
-            Logger().Information("EnvironmentVariables {EnvironmentVariables}", Environment.GetEnvironmentVariables());
+            Logger().Information("EnvironmentVariables {@EnvironmentVariables}", Environment.GetEnvironmentVariables());
         }
     }
 }
