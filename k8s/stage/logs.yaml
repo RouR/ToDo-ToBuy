@@ -220,7 +220,7 @@ spec:
       serviceAccountName: fluentd
       containers:
       - name: fluentd
-        image: flant/loghouse-fluentd:0.0.2
+        image: flant/loghouse-fluentd:0.2.2
         imagePullPolicy: IfNotPresent
         env:
         - name: FLUENTD_ARGS
@@ -434,7 +434,7 @@ spec:
             # command: ['/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done']
           containers:
             - name: cron
-              image: flant/loghouse-dashboard:0.0.2
+              image: flant/loghouse-dashboard:0.2.2
               imagePullPolicy: IfNotPresent
               command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
               env:              
@@ -473,7 +473,7 @@ spec:
         # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init
-        image: flant/loghouse-fluentd:0.0.2
+        image: flant/loghouse-fluentd:0.2.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'clickhouse-client --host=${CLICKHOUSE_URL} --port=9000 --user=${CLICKHOUSE_USERNAME} --password=${CLICKHOUSE_PASSWORD} --query="CREATE DATABASE ${CLICKHOUSE_DATABASE};"']
         env:
@@ -511,7 +511,7 @@ spec:
         # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init-tables
-        image: flant/loghouse-dashboard:0.0.2
+        image: flant/loghouse-dashboard:0.2.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
         env:
@@ -663,7 +663,7 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       - name: backend
-        image: flant/loghouse-dashboard:0.0.2
+        image: flant/loghouse-dashboard:0.2.2
         imagePullPolicy: IfNotPresent
         command: ["bundle", "exec", "puma"]
         ports:

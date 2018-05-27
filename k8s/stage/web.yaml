@@ -56,6 +56,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP        
+        - name: LOGS_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP        
+              
         
 ---
 
