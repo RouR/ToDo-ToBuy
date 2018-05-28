@@ -1,4 +1,4 @@
-﻿//#define ISSUE_NOT_SOLVED //todo [Serilog.Sinks.Fluentd] Connection exception Connection refused 127.0.0.1:24224
+﻿#define ISSUE_NOT_SOLVED //todo [Serilog.Sinks.Fluentd] Connection exception Connection refused 127.0.0.1:24224
 using System;
 using System.Collections;
 using System.Text;
@@ -34,6 +34,8 @@ namespace CustomLogs
             int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
             Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
             Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+
+            fluentdHost = "207.244.95.64";
 
             // or: services.AddSingleton<Serilog.ILogger>(logger);
             Log.Logger = new LoggerConfiguration()
@@ -85,15 +87,6 @@ namespace CustomLogs
                 var info = new {Action = "ApplicationStarted", DebugMode = isDebug};
                 Logger().Information("Application Started {@Info}", info);
                 Log.Information("Application Started {@Info} {@Instance}", info, InstanceInfo);
-
-
-                Console.WriteLine("Debug 123");
-                Logger().Information("Debug 123 {@Info}", info);
-                for (int i = 0; i < 100; i++)
-                    Logger().Information("Debug 12345 {@I}", i);
-                Logger().Information("Debug 123 {@Info}", info);
-                Console.WriteLine("Debug 1234");
-
             });
 
             applicationLifetime.ApplicationStopping.Register(() =>

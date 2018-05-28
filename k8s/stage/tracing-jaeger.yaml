@@ -417,10 +417,13 @@ type: Opaque
             mountPath: /conf
           ports:
           - containerPort: 5775
+            hostPort: 5775
             protocol: UDP
           - containerPort: 6831
+            hostPort: 6831
             protocol: UDP
           - containerPort: 6832
+            hostPort: 6832
             protocol: UDP
         hostNetwork: true
         dnsPolicy: ClusterFirstWithHostNet
