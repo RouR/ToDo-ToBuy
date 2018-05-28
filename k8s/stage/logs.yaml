@@ -259,6 +259,8 @@ spec:
         - name: http-input
           containerPort: 24224
           hostPort: 24224
+# iptables -A INPUT -p tcp -s localhost --dport 24224 -j ACCEPT
+# iptables -A INPUT -p tcp --dport 24224 -j DROP          
           protocol: TCP      
       terminationGracePeriodSeconds: 30    
       hostNetwork: true

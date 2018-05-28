@@ -53,6 +53,8 @@ namespace CustomTracing
                 options.IgnorePatterns.Add(request => request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
                 options.IgnorePatterns.Add(request =>
                 {
+                    Logger().Information("request.RequestUri {@RequestUri}", request.RequestUri.PathAndQuery);
+                    Logger().Information("request.RequestUri2 {@RequestUri2}", request.RequestUri);
                     Console.WriteLine($"request.RequestUri {request.RequestUri}");
                     return request.RequestUri.PathAndQuery.Contains("healthz");
                 });
