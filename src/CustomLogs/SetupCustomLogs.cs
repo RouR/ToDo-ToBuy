@@ -85,6 +85,15 @@ namespace CustomLogs
                 var info = new {Action = "ApplicationStarted", DebugMode = isDebug};
                 Logger().Information("Application Started {@Info}", info);
                 Log.Information("Application Started {@Info} {@Instance}", info, InstanceInfo);
+
+
+                Log.Information("Debug 123 {@Info}", info);
+                Logger().Information("Debug 123 {@Info}", info);
+                for (int i = 0; i < 100; i++)
+                    Logger().Information("Debug 12345 {@I}", i);
+                Logger().Information("Debug 123 {@Info}", info);
+                Log.Information("Debug 123 {@Info}", info);
+
             });
 
             applicationLifetime.ApplicationStopping.Register(() =>

@@ -51,7 +51,11 @@ namespace CustomTracing
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
                 options.IgnorePatterns.Add(request => request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
-                options.IgnorePatterns.Add(request => request.RequestUri.PathAndQuery.Equals("healthz"));
+                options.IgnorePatterns.Add(request =>
+                {
+                    Logger().Debug("request.RequestUri {@RequestUri}", request.RequestUri);
+                    return request.RequestUri.PathAndQuery.Contains("healthz");
+                });
             });
                     
             // Enables OpenTracing instrumentation for ASP.NET Core, CoreFx, EF Core
