@@ -50,7 +50,7 @@ namespace CustomTracing
             // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
-                options.IgnorePatterns.Add(request => request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
+                options.IgnorePatterns.Clear();
                 options.IgnorePatterns.Add(request =>
                 {
                     Logger().Information("request.RequestUri {@RequestUri}", request.RequestUri.PathAndQuery);
@@ -58,6 +58,7 @@ namespace CustomTracing
                     Console.WriteLine($"request.RequestUri {request.RequestUri}");
                     return request.RequestUri.PathAndQuery.Contains("healthz");
                 });
+                options.IgnorePatterns.Add(request => request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
             });
                     
             // Enables OpenTracing instrumentation for ASP.NET Core, CoreFx, EF Core
