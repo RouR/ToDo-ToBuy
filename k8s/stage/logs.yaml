@@ -263,7 +263,7 @@ spec:
 # iptables -A INPUT -p tcp --dport 24224 -j DROP          
           protocol: TCP      
       terminationGracePeriodSeconds: 30    
-      hostNetwork: true
+      #hostNetwork: true
       volumes:
       - name: varlog
         hostPath:

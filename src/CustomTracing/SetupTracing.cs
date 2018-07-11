@@ -51,13 +51,6 @@ namespace CustomTracing
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
                 options.IgnorePatterns.Clear();
-                options.IgnorePatterns.Add(request =>
-                {
-                    Logger().Information("request.RequestUri {@RequestUri}", request.RequestUri.PathAndQuery);
-                    Logger().Information("request.RequestUri2 {@RequestUri2}", request.RequestUri);
-                    Console.WriteLine($"request.RequestUri {request.RequestUri}");
-                    return request.RequestUri.PathAndQuery.Contains("healthz");
-                });
                 options.IgnorePatterns.Add(request => request.RequestUri.Port == 8086 && request.RequestUri.PathAndQuery.Contains("write?db=appmetrics"));
             });
                     

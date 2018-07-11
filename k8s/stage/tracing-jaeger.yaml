@@ -68,7 +68,7 @@ data:
       jaeger-infra: cassandra-statefulset
   spec:
     serviceName: cassandra
-    replicas: 1
+    replicas: 3
     template:
       metadata:
         namespace: dev
@@ -419,6 +419,8 @@ type: Opaque
           - containerPort: 5775
             hostPort: 5775
             protocol: UDP
+# iptables -A INPUT -p udp -s localhost --dport 5775 -j ACCEPT
+# iptables -A INPUT -p udp --dport 5775 -j DROP                      
           - containerPort: 6831
             hostPort: 6831
             protocol: UDP
