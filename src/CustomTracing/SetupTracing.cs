@@ -19,10 +19,14 @@ namespace CustomTracing
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services, bool isPublicWebService)
         {
             var jaegerAgentHost = Environment.GetEnvironmentVariable("TRACING_AGENT_HOST");// ?? "localhost";
+            var samplingRateParam = Environment.GetEnvironmentVariable("TRACING_RATE") ?? "100";
+            int.TryParse(samplingRateParam, out var samplingRate);
+            if (samplingRate > 100) samplingRate = 100;
+            if (samplingRate < 0) samplingRate = 0;
 
-            if (string.IsNullOrEmpty(jaegerAgentHost))
+            if (string.IsNullOrEmpty(jaegerAgentHost) || samplingRate == 0)
             {
-                Console.WriteLine("Tracing is disabled (enviroment TRACING_AGENT_HOST)");
+                Console.WriteLine("Tracing is disabled (enviroments TRACING_AGENT_HOST, TRACING_RATE)");
                 return;
             }
 
@@ -37,7 +41,10 @@ namespace CustomTracing
                     .WithSender(new UdpSender(jaegerAgentHost, 6831, 0))
                     .Build();
 
-                var sampler = new ConstSampler(sample: true);
+                //https://www.jaegertracing.io/docs/sampling/
+                ISampler sampler = samplingRate == 100 
+                    ? new ConstSampler(sample: true) as ISampler
+                    : new ProbabilisticSampler(samplingRate/100) as ISampler;
 
                 Logger().Information("Tracer use sampler {Sampler}", sampler.GetType().Name);
 
