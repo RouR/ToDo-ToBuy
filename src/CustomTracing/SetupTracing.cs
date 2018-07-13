@@ -18,17 +18,23 @@ namespace CustomTracing
     {
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services, bool isPublicWebService)
         {
+            var jaegerAgentHost = Environment.GetEnvironmentVariable("TRACING_AGENT_HOST");// ?? "localhost";
+
+            if (string.IsNullOrEmpty(jaegerAgentHost))
+            {
+                Console.WriteLine("Tracing is disabled (enviroment TRACING_AGENT_HOST)");
+                return;
+            }
+
             services.AddSingleton<ITracer>(serviceProvider =>
             {
-                var JaegerAgentHost = Environment.GetEnvironmentVariable("TRACING_AGENT_HOST") ?? "localhost";
-
-                string serviceName = Assembly.GetEntryAssembly().GetName().Name;
+                var serviceName = Assembly.GetEntryAssembly().GetName().Name;
 
                 //ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 //var loggingReporter = new LoggingReporter(loggerFactory);
 
                 var reporter = new RemoteReporter.Builder()
-                    .WithSender(new UdpSender(JaegerAgentHost, 6831, 0))
+                    .WithSender(new UdpSender(jaegerAgentHost, 6831, 0))
                     .Build();
 
                 var sampler = new ConstSampler(sample: true);

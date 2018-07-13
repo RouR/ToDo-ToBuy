@@ -30,12 +30,25 @@ namespace CustomLogs
             // ReSharper disable once ConvertClosureToMethodGroup
             //Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
 
-            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
-            int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
-            Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
-            Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host");
 
-            fluentdHost = "207.244.95.64";
+            if (string.IsNullOrEmpty(fluentdHost))
+            {
+#if ISSUE_NOT_SOLVED
+                Console.WriteLine("Logs (fluentd) is disabled in code");
+                Log.Information("Logs (fluentd) is disabled in code");
+#else
+                Console.WriteLine("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
+                Log.Information("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
+#endif
+                
+            }
+            else
+            {
+                int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
+                Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
+                Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+            }
 
             // or: services.AddSingleton<Serilog.ILogger>(logger);
             Log.Logger = new LoggerConfiguration()
