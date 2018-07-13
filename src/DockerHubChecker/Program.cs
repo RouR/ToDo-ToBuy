@@ -62,6 +62,10 @@ namespace DockerHubChecker
                         patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
                         client.PatchNamespacedDeployment(new V1Patch(patch), item.Metadata.Name, k8Namespace);
                     }
+                    else
+                    {
+                        Console.WriteLine("same value, skip");
+                    }
                     
                 }
             }
