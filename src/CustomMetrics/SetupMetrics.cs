@@ -8,14 +8,25 @@ namespace CustomMetrics
 {
     public static class SetupDefaultWebMetrics
     {
+        private static bool isEnabled = false;
         public static void ConfigureServices(InstanceInfo instanceInfo, IServiceCollection services)
         {
-            var influxDb = Environment.GetEnvironmentVariable("InfluxDB") ?? "http://monitoring-influxdb.kube-system.svc:8086";
+            var influxDb = Environment.GetEnvironmentVariable("InfluxDB");// ?? "http://monitoring-influxdb.kube-system.svc:8086";
+
+            if (string.IsNullOrEmpty(influxDb))
+            {
+                Console.WriteLine("WebMetrics is disabled (enviroment InfluxDB)");
+                return;
+            }
+
+            isEnabled = true;
+
             Console.WriteLine("Write metrics to InfluxDB {0}", influxDb);
             var metricsBuilder = AppMetrics.CreateDefaultBuilder();
             var metrics = metricsBuilder
                 .Report.ToInfluxDb(
-                    options => {
+                    options =>
+                    {
                         options.InfluxDb.BaseUri = new Uri(influxDb);
                         options.InfluxDb.Database = "appmetrics";
                         //options.InfluxDb.Consistenency = "";
@@ -46,7 +57,8 @@ namespace CustomMetrics
 
         public static void Configure(IApplicationBuilder app)
         {
-            app.UseMetricsAllMiddleware();
+            if(isEnabled)
+                app.UseMetricsAllMiddleware();
         }
     }
 }

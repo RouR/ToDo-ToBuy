@@ -42,15 +42,23 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 1
         env:
+        - name: JAEGER_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         - name: InfluxDB
           value: "http://207.244.95.62:8086"
         - name: FluentD_Host
-          value: "localhost"
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP  
         - name: FluentD_Port
           value: "24224"
-          
-        
-        
+        - name: TRACING_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP        
+              
         
 ---
 
@@ -70,19 +78,4 @@ spec:
     
 ---
 
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: web-ingress
-  namespace: dev
-#  namespace: ingress-nginx
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-spec:
-  
-  backend:          
-    serviceName: web-service
-    servicePort: 80
-    
----   
 

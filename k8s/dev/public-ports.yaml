@@ -1,45 +1,84 @@
 #metrics http://192.168.99.100:18080/nginx_status
----
-kind: Service
-apiVersion: v1
-metadata:
-  namespace: ingress-nginx
-  name: nginx-ingress-prometheus-discovery
-  labels:
-    k8s-app: ingress
-spec:
-  selector:
-    app: ingress-nginx
-  externalIPs:
-  - 192.168.99.100  
-  type: NodePort
-  ports:
-  - name: metrics
-    port: 18080
-    protocol: TCP       
----
 
-  
+
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: kube-system
-  name: grafana-node
-  labels:
-    k8s-app: grafana
+  namespace: dev
+  name: web-node  
 spec:
   selector:
-    k8s-app: grafana
+    app: web
   externalIPs:
   - 192.168.99.100  
   type: NodePort
   ports:
-  - name: gr
-    port: 8100
-    targetPort: 3000
+  - name: web
+    port: 80
+    targetPort: 5555
     protocol: TCP     
 ---
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: dev
+  name: jagger-node
+spec:
+  selector:
+    jaeger-infra: query-pod
+  externalIPs:
+  - 192.168.99.100  
+  type: NodePort
+  ports:
+  - name: jj
+    port: 81
+    targetPort: 80
+    protocol: TCP     
+---
+
+---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: ingress-nginx
+  # name: nginx-ingress-prometheus-discovery
+  # labels:
+    # k8s-app: ingress
+# spec:
+  # selector:
+    # app: ingress-nginx
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: metrics
+    # port: 18080
+    # protocol: TCP       
+# ---
+
+  
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: kube-system
+  # name: grafana-node
+  # labels:
+    # k8s-app: grafana
+# spec:
+  # selector:
+    # k8s-app: grafana
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: gr
+    # port: 8100
+    # targetPort: 3000
+    # protocol: TCP     
+# ---
 
 #open tabix http://192.168.99.100:8150
 #connect to clickhouse:
@@ -85,43 +124,44 @@ spec:
 
 ---
 # admin PASSWORD
-kind: Service
-apiVersion: v1
-metadata:
-  namespace: kube-system
-  name: loghouse-public
-  labels:
-    component: loghouse
-spec:
-  selector:
-    component: loghouse
-  externalIPs:
-  - 192.168.99.100  
-  type: NodePort
-  ports:
-  - name: httpng
-    port: 8200
-    targetPort: 80
-    protocol: TCP     
----
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: kube-system
+  # name: loghouse-public
+  # labels:
+    # component: loghouse
+# spec:
+  # selector:
+    # component: loghouse
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: httpng
+    # port: 8200
+    # targetPort: 80
+    # protocol: TCP     
+# ---
 
 
 
 
-kind: Service
-apiVersion: v1
-metadata:
-  namespace: kube-system
-  name: infux-node  
-spec:
-  selector:
-    k8s-app: influxdb
-  externalIPs:
-  - 192.168.99.100  
-  type: NodePort
-  ports:
-  - name: http
-    port: 8083
-    targetPort: 8086
-    protocol: TCP   
----
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # namespace: kube-system
+  # name: infux-node  
+# spec:
+  # selector:
+    # k8s-app: influxdb
+  # externalIPs:
+  # - 192.168.99.100  
+  # type: NodePort
+  # ports:
+  # - name: http
+    # port: 8083
+    # targetPort: 8086
+    # protocol: TCP   
+# ---
+

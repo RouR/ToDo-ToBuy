@@ -1,5 +1,7 @@
 ﻿#define ISSUE_NOT_SOLVED //todo [Serilog.Sinks.Fluentd] Connection exception Connection refused 127.0.0.1:24224
 using System;
+using System.Collections;
+using System.Text;
 using App.Metrics.Internal;
 using App.Metrics.Logging;
 using App.Metrics.ReservoirSampling.ExponentialDecay;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
+using Serilog.Sinks.Fluentd;
 using Shared;
 using ILogger = Serilog.ILogger;
 
@@ -18,17 +21,34 @@ namespace CustomLogs
     /// https://marketplace.visualstudio.com/items?itemName=Suchiman.SerilogAnalyzer
     /// https://github.com/serilog/serilog/wiki/Writing-Log-Events
     /// </summary>
-    public static class CustomLogs
+    public static class SetupCustomLogs
     {
+        public static InstanceInfo InstanceInfo { get; private set; }
+
         public static void ConfigureStartup()
         {
             // ReSharper disable once ConvertClosureToMethodGroup
-            Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
+            //Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(msg));
 
-            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host") ?? "localhost";
-            int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
-            Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
-            Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+            var fluentdHost = Environment.GetEnvironmentVariable("FluentD_Host");
+
+            if (string.IsNullOrEmpty(fluentdHost))
+            {
+#if ISSUE_NOT_SOLVED
+                Console.WriteLine("Logs (fluentd) is disabled in code");
+                Log.Information("Logs (fluentd) is disabled in code");
+#else
+                Console.WriteLine("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
+                Log.Information("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
+#endif
+                
+            }
+            else
+            {
+                int.TryParse(Environment.GetEnvironmentVariable("FluentD_Port") ?? "24224", out var fluentdPort);
+                Console.WriteLine("Write logs to fluentd {0}:{1}", fluentdHost, fluentdPort);
+                Log.Information("Write logs to fluentd {FluentdHost}:{FluentdPort}", fluentdHost, fluentdPort);
+            }
 
             // or: services.AddSingleton<Serilog.ILogger>(logger);
             Log.Logger = new LoggerConfiguration()
@@ -60,10 +80,14 @@ namespace CustomLogs
 #endif
         }
 
+        public static void ConfigureServices(InstanceInfo instanceInfo)
+        {
+            InstanceInfo = instanceInfo;
+        }
 
         public static void Configure(ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
-            loggerFactory.AddSerilog();
+            //loggerFactory.AddSerilog();
 
             applicationLifetime.ApplicationStarted.Register(() =>
             {
@@ -88,17 +112,21 @@ namespace CustomLogs
             });
         }
 
-        public static InstanceInfo InstanceInfo;
-
+ 
 
         /// <summary>
-        /// using static CustomLogs.CustomLogs;
+        /// using static SetupCustomLogs.SetupCustomLogs;
         /// </summary>
         /// <returns></returns>
         public static ILogger Logger()
         {
             //use RenderedCompactJsonFormatter to Save all context properties
             return Log.Logger.ForContext("InstanceId", InstanceInfo.Id);
+        }
+
+        public static void PrintAllEnv()
+        {
+            Logger().Information("EnvironmentVariables {@EnvironmentVariables}", Environment.GetEnvironmentVariables());
         }
     }
 }

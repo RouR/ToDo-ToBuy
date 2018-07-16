@@ -1,8 +1,6 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using CustomLogs;
+﻿using System.Threading.Tasks;
 using CustomMetrics;
+using CustomTracing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
-using Swashbuckle.AspNetCore.Swagger;
 using Web.Utils;
 
 namespace Web
@@ -24,7 +21,7 @@ namespace Web
         {
             //Configuration = configuration;
 
-            CustomLogs.CustomLogs.ConfigureStartup();
+            CustomLogs.SetupCustomLogs.ConfigureStartup();
         }
 
 
@@ -32,14 +29,13 @@ namespace Web
         {
             var instanceInfo = new InstanceInfo();
             services.AddSingleton(instanceInfo);
-
-            CustomLogs.CustomLogs.InstanceInfo = instanceInfo;
+            CustomLogs.SetupCustomLogs.ConfigureServices(instanceInfo);
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
+            SetupTracing.ConfigureServices(instanceInfo, services, true);
 
-           
+            CustomLogs.SetupCustomLogs.PrintAllEnv();
 
             services.AddMvc();
-
 
             // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
             // note: the specified format code will format the version as "'v'major[.minor][-status]"
@@ -102,7 +98,7 @@ namespace Web
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
 
-            CustomLogs.CustomLogs.Configure(loggerFactory, applicationLifetime);
+            CustomLogs.SetupCustomLogs.Configure(loggerFactory, applicationLifetime);
             SetupDefaultWebMetrics.Configure(app);
 
             app.UseStaticFiles();

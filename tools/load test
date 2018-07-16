@@ -1,0 +1,162 @@
+ab -k -n 1000 -c 200 "http://207.244.95.63/"
+
+================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster)
+
+Server Software:        nginx/1.13.7
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   279.621 seconds
+Complete requests:      1000
+Failed requests:        3
+   (Connect: 3, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      466000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.58 [#/sec] (mean)
+Time per request:       55924.199 [ms] (mean)
+Time per request:       279.621 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.63 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  216 750.9    153    9162
+Processing:   151 47691 35269.3  30638  129581
+Waiting:      150 25411 20517.3  20869   99590
+Total:        304 47908 35277.9  30793  129737
+
+Percentage of the requests served within a certain time (ms)
+  50%  30793
+  66%  48571
+  75%  57551
+  80%  78758
+  90%  111670
+  95%  120706
+  98%  129722
+  99%  129728
+ 100%  129737 (longest request)
+ 
+================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) removed hsts and ssl
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   305.908 seconds
+Complete requests:      1000
+Failed requests:        2
+   (Connect: 2, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.27 [#/sec] (mean)
+Time per request:       61181.699 [ms] (mean)
+Time per request:       305.908 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  264 949.9    154    9179
+Processing:   163 57758 37580.3  43078  148954
+Waiting:      160 30429 27400.6  20318   95934
+Total:        326 58022 37598.5  43231  149106
+
+Percentage of the requests served within a certain time (ms)
+  50%  43231
+  66%  61159
+  75%  87070
+  80%  94146
+  90%  132075
+  95%  141073
+  98%  145152
+  99%  149071
+ 100%  149106 (longest request)
+
+
+================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) async Task<IActionResult>
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   255.802 seconds
+Complete requests:      1000
+Failed requests:        4
+   (Connect: 4, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.91 [#/sec] (mean)
+Time per request:       51160.326 [ms] (mean)
+Time per request:       255.802 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.53 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      143  172 402.5    152    9158
+Processing:   145 47820 42227.9  30615  132655
+Waiting:      145 16507 14398.7  15275  132616
+Total:        289 47992 42251.4  30770  132808
+
+
+================================================================================
+2018-03-26 (2 web-instances; 3 servers in cluster) remove metrics and logging
+
+Server Software:        nginx/1.13.9
+Server Hostname:        207.244.95.63
+Server Port:            80
+
+Document Path:          /
+Document Length:        212 bytes
+
+Concurrency Level:      200
+Time taken for tests:   317.061 seconds
+Complete requests:      1000
+Failed requests:        4
+   (Connect: 4, Receive: 0, Length: 0, Exceptions: 0)
+Keep-Alive requests:    0
+Total transferred:      401000 bytes
+HTML transferred:       212000 bytes
+Requests per second:    3.15 [#/sec] (mean)
+Time per request:       63412.227 [ms] (mean)
+Time per request:       317.061 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.24 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:      142  233 850.5    151    9157
+Processing:   152 60063 35527.6  49677  129308
+Waiting:      148 27830 27474.5  19336  129272
+Total:        302 60295 35530.5  49984  129463
+
+Percentage of the requests served within a certain time (ms)
+  50%  49984
+  66%  57507
+  75%  66547
+  80%  78450
+  90%  129353
+  95%  129390
+  98%  129441
+  99%  129449
+ 100%  129463 (longest request)
+
+
+
+
+
+================================================================================

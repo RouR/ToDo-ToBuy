@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Rest;
 
 //Install-Package KubernetesClient -Version 0.6.0-beta
 
@@ -24,8 +22,6 @@ namespace DockerHubChecker
 
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request to Kubernetes!");
-
-            ServiceClientTracing.IsEnabled = true;
 
             Console.WriteLine("\nList Deployments:");
             foreach (var item in client.ListNamespacedDeployment(k8Namespace).Items)
@@ -66,6 +62,10 @@ namespace DockerHubChecker
                         patch.Replace(e => e.Spec.Template.Metadata.Labels, newlables);
                         client.PatchNamespacedDeployment(new V1Patch(patch), item.Metadata.Name, k8Namespace);
                     }
+                    else
+                    {
+                        Console.WriteLine("same value, skip");
+                    }
                     
                 }
             }
@@ -87,6 +87,8 @@ namespace DockerHubChecker
 
             Console.WriteLine($"k8l Namespace {k8Namespace}");
             Console.WriteLine($"k8l Label {k8Label}");
+
+            //ServiceClientTracing.IsEnabled = true;
 
             try
             {

@@ -40,11 +40,7 @@ data:
     <source>
       @type forward
       port 24224
-      bind 0.0.0.0
-      <labels>
-        host ${hostname}
-        src user
-      </labels>
+      bind 0.0.0.0 
     </source>
   monitoring.conf: |-
     # Prometheus Exporter Plugin
@@ -131,7 +127,11 @@ data:
         string_fields.values   ${[record["MESSAGE"]]}
       </record>
       remove_keys _TRANSPORT, PRIORITY, SYSLOG_FACILITY, _UID, _GID, _CAP_EFFECTIVE, _SYSTEMD_SLICE, _BOOT_ID, _MACHINE_ID, _HOSTNAME, SYSLOG_IDENTIFIER, _PID, _COMM, _EXE, _CMDLINE, _SYSTEMD_CGROUP, _SYSTEMD_UNIT, MESSAGE
-    </filter> 
+    </filter>
+    <filter **>
+      @type record_modifier
+      whitelist_keys timestamp, nsec, source, namespace, host, pod_name, container_name, stream, labels.names, labels.values, string_fields.names, string_fields.values, number_fields.names, number_fields.values, boolean_fields.names, boolean_fields.values, null_fields.names 
+    </filter>    
     <match **>
       @type exec
       command bash /usr/local/bin/insert_ch.sh
@@ -146,7 +146,7 @@ data:
 
 metadata:
   name: fluentd-config
-  namespace: kube-system
+  namespace: dev
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
     
@@ -155,7 +155,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: fluentd
-  namespace: kube-system
+  namespace: dev
   labels:
     k8s-app: fluentd
     kubernetes.io/cluster-service: "true"
@@ -191,7 +191,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: fluentd
-  namespace: kube-system
+  namespace: dev
   apiGroup: ""
 roleRef:
   kind: ClusterRole
@@ -203,7 +203,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: fluentd
-  namespace: kube-system
+  namespace: dev
   labels:
     k8s-app: fluentd
     kubernetes.io/cluster-service: "true"
@@ -220,11 +220,11 @@ spec:
       serviceAccountName: fluentd
       containers:
       - name: fluentd
-        image: flant/loghouse-fluentd:0.0.2
+        image: flant/loghouse-fluentd:0.2.2
         imagePullPolicy: IfNotPresent
         env:
         - name: FLUENTD_ARGS
-          value: --no-supervisor -q
+          value: --no-supervisor -q -vv
         - name: CLICKHOUSE_SERVER
           value: "207.244.95.63"
         - name: CLICKHOUSE_PORT
@@ -258,8 +258,12 @@ spec:
         ports:
         - name: http-input
           containerPort: 24224
+          hostPort: 24224
+# iptables -A INPUT -p tcp -s localhost --dport 24224 -j ACCEPT
+# iptables -A INPUT -p tcp --dport 24224 -j DROP          
           protocol: TCP      
       terminationGracePeriodSeconds: 30    
+      #hostNetwork: true
       volumes:
       - name: varlog
         hostPath:
@@ -368,7 +372,7 @@ data:
     </yandex>
 metadata:
   name: clickhouse-config
-  namespace: kube-system
+  namespace: dev
   labels:
     addonmanager.kubernetes.io/mode: Reconcile      
 ---
@@ -380,7 +384,7 @@ metadata:
 # kind: Service
 # metadata:
   # name: clickhouse
-  # namespace: kube-system
+  # namespace: dev
 # spec:
   # selector:
     # component: clickhouse
@@ -402,7 +406,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: loghouse-user-config
-  namespace: kube-system
+  namespace: dev
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 data:
@@ -417,7 +421,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: logs-tables
-  namespace: kube-system
+  namespace: dev
 spec:
   schedule: "59 23 * * *"
   concurrencyPolicy: Forbid
@@ -434,7 +438,7 @@ spec:
             # command: ['/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done']
           containers:
             - name: cron
-              image: flant/loghouse-dashboard:0.0.2
+              image: flant/loghouse-dashboard:0.2.2
               imagePullPolicy: IfNotPresent
               command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
               env:              
@@ -459,7 +463,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: logs-init-db
-  namespace: kube-system
+  namespace: dev
 spec:
   activeDeadlineSeconds: 300
   template:
@@ -473,7 +477,7 @@ spec:
         # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init
-        image: flant/loghouse-fluentd:0.0.2
+        image: flant/loghouse-fluentd:0.2.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'clickhouse-client --host=${CLICKHOUSE_URL} --port=9000 --user=${CLICKHOUSE_USERNAME} --password=${CLICKHOUSE_PASSWORD} --query="CREATE DATABASE ${CLICKHOUSE_DATABASE};"']
         env:
@@ -497,7 +501,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: logs-init-tables
-  namespace: kube-system
+  namespace: dev
 spec:
   activeDeadlineSeconds: 160
   template:
@@ -511,7 +515,7 @@ spec:
         # command: [ '/bin/sh', '-c', 'while ! getent ahostsv4 clickhouse; do sleep 1; done' ]
       containers:
       - name: init-tables
-        image: flant/loghouse-dashboard:0.0.2
+        image: flant/loghouse-dashboard:0.2.2
         imagePullPolicy: IfNotPresent
         command: ['/bin/bash', '-l', '-c', 'rake create_logs_tables']
         env:
@@ -534,7 +538,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: loghouse
-  namespace: kube-system
+  namespace: dev
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -560,7 +564,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: loghouse
-  namespace: kube-system
+  namespace: dev
   
   
   
@@ -571,7 +575,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: loghouse-nginx-conf
-  namespace: kube-system
+  namespace: dev
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 data:
@@ -610,7 +614,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: loghouse-user-config
-  namespace: kube-system
+  namespace: dev
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 data:
@@ -627,7 +631,7 @@ data:
 kind: Secret
 metadata:
   name: basic-auth
-  namespace: kube-system
+  namespace: dev
 type: Opaque
 
 ---
@@ -636,7 +640,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: loghouse
-  namespace: kube-system
+  namespace: dev
 spec:
   revisionHistoryLimit: 1
   replicas: 1
@@ -663,7 +667,7 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       - name: backend
-        image: flant/loghouse-dashboard:0.0.2
+        image: flant/loghouse-dashboard:0.2.2
         imagePullPolicy: IfNotPresent
         command: ["bundle", "exec", "puma"]
         ports:
@@ -714,23 +718,21 @@ spec:
           name: loghouse-nginx-conf
 
 ---
-# admin PASSWORD
+# admin PASSWORD  http://207.244.95.63:8200/query
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: kube-system
+  namespace: dev
   name: loghouse-public
   labels:
     component: loghouse
 spec:
   selector:
-    component: loghouse
-  externalIPs:
-  - 207.244.95.63  
-  type: NodePort
+    component: loghouse 
+  type: LoadBalancer
   ports:
   - name: httpng
-    port: 8200
+    port: 80
     targetPort: 80
     protocol: TCP     
 ---
