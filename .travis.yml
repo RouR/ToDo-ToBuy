@@ -30,8 +30,9 @@ script:
     - docker version
     
     
-    - dotnet restore --runtime $DOTNETRUNTIME
-    - dotnet build    
+#    - dotnet restore --runtime $DOTNETRUNTIME
+#    - dotnet build    
+    - ./build.sh
     
     - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID    
     - echo TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_NUMBER    

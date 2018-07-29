@@ -31,9 +31,10 @@ for:
   configuration: Release
   build_script: 
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
-  - dotnet clean
-  - dotnet restore
-  - dotnet build -c Release  
+#  - dotnet clean
+#  - dotnet restore
+#  - dotnet build -c Release  
+  - ps: .\build.ps1 compile -configuration release
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
@@ -63,9 +64,10 @@ for:
   configuration: Debug
   build_script:     
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
-  - dotnet clean
-  - dotnet restore
-  - dotnet build -c Debug   
+#  - dotnet clean
+#  - dotnet restore
+#  - dotnet build -c Debug  
+  - ps: .\build.ps1 compile -configuration debug  
 # yes, build in Debug, publish in Release, check DockerFile - path to Release folder
 #  - dotnet publish -c Release 
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
