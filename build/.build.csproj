@@ -14,9 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nuke.Common" Version="$(NukeVersion)" />
+    <PackageReference Include="MicroDocum.Themes" Version="1.0.0" />
+    <PackageReference Include="Nuke.Common" Version="0.5.3" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
     <PackageReference Include="GitVersion.CommandLine" Version="3.6.5" />
+    <PackageReference Include="TypeLite" Version="1.8.4" />
   </ItemGroup>
 
   <ItemGroup>
