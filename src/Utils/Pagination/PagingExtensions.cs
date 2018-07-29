@@ -11,12 +11,10 @@ namespace Utils.Pagination
             return AsPagination<T>(query, DefaultPageSize);
         }
 
-        public static Pagination<T> AsPagination<T>(this IQueryable<T> query, int pageNumber, int pageSize)
+        public static Pagination<T> AsPagination<T>(this IQueryable<T> query, IPaginationSetting settings)
         {
-            int count = query.Count();
-
-            var results = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-            return new Pagination<T>(results, pageNumber, pageSize, count);
+            var results = query.Skip((settings.Page - 1) * settings.PageSize).Take(settings.PageSize);
+            return new Pagination<T>(results, settings.Page, settings);
         }
     }
 }
