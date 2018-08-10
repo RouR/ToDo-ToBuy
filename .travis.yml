@@ -20,7 +20,7 @@ env:
 install:
     - npm install -g bower
     - npm install -g gulp
-
+    - sudo apt-get install graphviz
 
    
 

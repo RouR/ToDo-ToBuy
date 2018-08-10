@@ -20,8 +20,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;NETCOREAPP;NETCOREAPP2_0;RELEASE;NETCOREAPP;NETCOREAPP2_0</DefineConstants>
   </PropertyGroup>
-
+  
+  
+    
   <ItemGroup>
+    <PackageReference Include="Graphviz" Version="2.38.0.2" PrivateAssets="none" ExcludeAssets="none" IncludeAssets="all"/>
     <PackageReference Include="MicroDocum.Themes" Version="1.0.0" />
     <PackageReference Include="Nuke.Common" Version="0.5.3" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />

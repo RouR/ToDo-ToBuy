@@ -4,7 +4,6 @@ using Nuke.Common.BuildServers;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using Nuke.Common.BuildServers;
 using static Nuke.Common.EnvironmentInfo;
 
 //https://github.com/nuke-build/nuke
@@ -24,6 +23,7 @@ partial class Build : NukeBuild
     public static int Main()
     {
         Console.WriteLine("Debug mode");
+        //return Execute<Build>(x => x.Microdocum);
         //return Execute<Build>(x => x.AllCustom);
         return Execute<Build>(x => x.Compile);
     }
@@ -96,11 +96,4 @@ partial class Build : NukeBuild
             DotNetBuild(s => DefaultDotNetBuild);
         });
 
-    private static void WriteError(string message)
-    {
-        var original = Console.BackgroundColor;
-        Console.BackgroundColor = ConsoleColor.Red;
-        Console.WriteLine(message);
-        Console.BackgroundColor = original;
-    }
 }

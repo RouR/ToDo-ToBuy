@@ -1,0 +1,17 @@
+digraph architecture {
+
+
+//GraphViz Engine: Dot
+//You can generate image by online generators, for example - https://dreampuf.github.io/GraphvizOnline/
+
+
+rankdir=LR; 
+
+
+forcelabels=true;
+
+
+
+
+
+}
