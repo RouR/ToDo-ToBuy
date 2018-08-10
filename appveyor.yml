@@ -18,6 +18,7 @@ install:
   - ps: echo "-------------------------------------------------"  
   - docker version
   - choco install "msbuild-sonarqube-runner" -y
+  - choco install "graphviz" -y
   
 for:
 
