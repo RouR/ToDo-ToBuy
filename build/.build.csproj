@@ -25,8 +25,8 @@
     
   <ItemGroup>
     <PackageReference Include="Graphviz" Version="2.38.0.2" PrivateAssets="none" ExcludeAssets="none" IncludeAssets="all" />
-    <PackageReference Include="MicroDocum.Themes" Version="1.1.0" />
-    <PackageReference Include="Nuke.Common" Version="0.10.2" />
+    <PackageReference Include="MicroDocum.Themes" Version="1.2.0" />
+    <PackageReference Include="Nuke.Common" Version="0.10.3" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
     <PackageReference Include="GitVersion.CommandLine" Version="3.6.5" />
     <PackageReference Include="TypeLite" Version="1.8.4" />
