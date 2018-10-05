@@ -11,7 +11,60 @@ rankdir=LR;
 forcelabels=true;
 
 
+/* DTO.Public.TODO.DeleteTODORequest */
+DTO_Public_TODO_DeleteTODORequest[label="DeleteTODORequest"];
+/* DTO.Public.TODO.DeleteTODOResponse */
+DTO_Public_TODO_DeleteTODOResponse[label="DeleteTODOResponse"];
+/* DTO.Public.TODO.ListTODORequest */
+DTO_Public_TODO_ListTODORequest[label="ListTODORequest"];
+/* DTO.Public.TODO.ListTODOResponse */
+DTO_Public_TODO_ListTODOResponse[label="ListTODOResponse"];
+/* DTO.Public.TODO.SaveTODORequest */
+DTO_Public_TODO_SaveTODORequest[label="SaveTODORequest"];
+/* DTO.Public.TODO.SaveTODOResponse */
+DTO_Public_TODO_SaveTODOResponse[label="SaveTODOResponse"];
+/* DTO.Internal.TODO.CreateTODO */
+DTO_Internal_TODO_CreateTODO[label="CreateTODO"];
+/* DTO.Internal.TODO.DeleteTODO */
+DTO_Internal_TODO_DeleteTODO[label="DeleteTODO"];
+/* DTO.Internal.TODO.ListTODO */
+DTO_Internal_TODO_ListTODO[label="ListTODO"];
+/* DTO.Internal.TODO.UpdateTODO */
+DTO_Internal_TODO_UpdateTODO[label="UpdateTODO"];
 
+
+
+
+subgraph _51c01886f6f148f98ced94b7c33dc7f1 {
+
+DTO_Public_TODO_SaveTODORequest -> DTO_Internal_TODO_CreateTODO[color="black"];
+DTO_Internal_TODO_CreateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
+DTO_Public_TODO_SaveTODORequest -> DTO_Internal_TODO_UpdateTODO[color="black"];
+DTO_Internal_TODO_UpdateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
+}
+
+
+
+
+subgraph _5d4f30a84089443db678bdb3f9bb6325 {
+
+DTO_Public_TODO_DeleteTODORequest -> DTO_Internal_TODO_DeleteTODO[color="black"];
+DTO_Internal_TODO_DeleteTODO -> DTO_Public_TODO_DeleteTODOResponse[color="black"];
+}
+
+
+
+
+subgraph _79d44956122c4de89678b5cf5b8748b7 {
+
+DTO_Public_TODO_ListTODORequest -> DTO_Internal_TODO_ListTODO[color="black"];
+DTO_Internal_TODO_ListTODO -> DTO_Public_TODO_ListTODOResponse[color="black"];
+}
+
+
+{/* ServiceName Web*/ rank=same;DTO_Public_TODO_DeleteTODORequest, DTO_Public_TODO_DeleteTODOResponse, DTO_Public_TODO_ListTODORequest, DTO_Public_TODO_ListTODOResponse, DTO_Public_TODO_SaveTODORequest, DTO_Public_TODO_SaveTODOResponse}
+
+{/* ServiceName ToDoSrv*/ rank=same;DTO_Internal_TODO_CreateTODO, DTO_Internal_TODO_DeleteTODO, DTO_Internal_TODO_ListTODO, DTO_Internal_TODO_UpdateTODO}
 
 
 }

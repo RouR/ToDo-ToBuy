@@ -5,7 +5,6 @@ using Jaeger.Reporters;
 using Jaeger.Samplers;
 using Jaeger.Senders;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenTracing;
 using OpenTracing.Contrib.NetCore.CoreFx;
 using OpenTracing.Util;

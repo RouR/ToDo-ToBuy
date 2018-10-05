@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using MicroDocum.Analyzers.Analizers;
-using MicroDocum.Analyzers.Interfaces;
-using MicroDocum.Analyzers.Models;
 using MicroDocum.Graphviz;
-using MicroDocum.Graphviz.Enums;
-using MicroDocum.Graphviz.Interfaces;
-using MicroDocum.Graphviz.Models;
 using MicroDocum.Themes.DefaultTheme;
 using Nuke.Common;
 using Nuke.Common.BuildServers;

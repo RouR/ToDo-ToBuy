@@ -22,9 +22,8 @@ partial class Build : NukeBuild
 #if DEBUG
     public static int Main()
     {
-        Console.WriteLine("Debug mode");
-        return Execute<Build>(x => x.Microdocum);
-        //return Execute<Build>(x => x.AllCustom);
+        //return Execute<Build>(x => x.Microdocum);
+        return Execute<Build>(x => x.AllCustom);
         //return Execute<Build>(x => x.Compile);
     }
 #else

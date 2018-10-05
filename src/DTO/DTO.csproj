@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <!--<TargetFramework>netcoreapp2.1</TargetFramework>-->
+    <TargetFrameworks>net47;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -9,7 +10,7 @@
 </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MicroDocum.Themes" Version="1.1.0" />
+    <PackageReference Include="MicroDocum.Themes" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using OpenTracing;
-using Serilog;
 using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.api
