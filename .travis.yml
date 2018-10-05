@@ -43,10 +43,10 @@ script:
     - echo DOTNETRUNTIME $DOTNETRUNTIME
     
     - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
-      dotnet publish -c Release --runtime $DOTNETRUNTIME ;
+      dotnet publish -c Release -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
       
       
-      cp -r ./src/Web/bin/Release/netcoreapp2.0/$DOTNETRUNTIME/publish ./pub-web ;
+      cp -r ./src/Web/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
@@ -58,11 +58,11 @@ script:
       fi
       
     - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
-      dotnet publish -c Debug --runtime $DOTNETRUNTIME ;
+      dotnet publish -c Debug -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
      
       
-       cp -r ./src/Web/bin/Debug/netcoreapp2.0/$DOTNETRUNTIME/publish ./pub-web ;
-      cp -r ./src/DockerHubChecker/bin/Debug/netcoreapp2.0/$DOTNETRUNTIME/publish ./pub-tool-dockercheck ;
+      cp -r ./src/Web/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
+      cp -r ./src/DockerHubChecker/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tool-dockercheck ;
       
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;      
       docker build -t tdtb-dockercheck -f docker/Dockerfile-Tool-dockercheck . ;      
