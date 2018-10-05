@@ -66,7 +66,7 @@ partial class Build : NukeBuild
     Target Debug => _ => _
         .Executes(() =>
         {
-            void TraceItem(string key, string value) => Logger.Trace($"  - {key} = {value}");
+            void TraceItem(string key, string value) => Console.WriteLine($"  - {key} = {value}");
 
             Logger.Trace("Environment variables:");
             char[] s_pathSeparators = { EnvironmentInfo.IsWin ? ';' : ':' }; 
@@ -74,6 +74,8 @@ partial class Build : NukeBuild
             {
                 if (pair.Key.EqualsOrdinalIgnoreCase("path"))
                 {
+                    TraceItem(pair.Key, pair.Value);
+
                     var paths = pair.Value.Split(s_pathSeparators);
                     var padding = paths.Length.ToString().Length;
 
@@ -88,7 +90,6 @@ partial class Build : NukeBuild
         });
 
     Target AllCustom => _ => _
-        .DependsOn(Debug)
         .DependsOn(Compile_For_Custom)
         .DependsOn(TS_Gen)
         .DependsOn(Microdocum)
