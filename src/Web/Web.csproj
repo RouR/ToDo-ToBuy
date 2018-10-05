@@ -1,12 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>    
-    <ApplicationIcon />
+    <TargetFramework>netcoreapp2.1</TargetFramework>    
     <OutputType>Exe</OutputType>
     <StartupObject>Web.WebServer</StartupObject>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
+  <Target Name="FixStartupObjectIssue" BeforeTargets="RazorCoreCompile">
+    <!--https://github.com/aspnet/Razor/issues/2398-->
+    <PropertyGroup>
+      <StartupObject />
+    </PropertyGroup>
+  </Target>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>true</Optimize>
@@ -27,16 +32,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="2.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
