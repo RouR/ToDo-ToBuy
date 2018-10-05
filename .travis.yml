@@ -4,7 +4,7 @@ sudo: required
 os: linux
 dist: trusty  
 mono: none
-dotnet: 2.0.2
+dotnet: 2.1
 services:
     - docker
 
