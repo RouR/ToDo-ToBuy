@@ -76,15 +76,22 @@ partial class Build : NukeBuild
                     if(loadedAssembiles.Any(x=> x.FileName == fileName))
                         continue;
 
-                    var newFilePath = Path.Combine(appDomain.BaseDirectory, fileName);
-                    File.Copy(file, newFilePath, true);
-                    var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
-                    loadedAssembiles.Add(new LoadedAssembly()
+                    try
                     {
-                        Assembly = asm,
-                        Path = newFilePath,
-                        FileName = fileName
-                    });
+                        var newFilePath = Path.Combine(appDomain.BaseDirectory, fileName);
+                        File.Copy(file, newFilePath, true);
+                        var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
+                        loadedAssembiles.Add(new LoadedAssembly()
+                        {
+                            Assembly = asm,
+                            Path = newFilePath,
+                            FileName = fileName
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        WriteError(e.Message);
+                    }
                 }
 
 

@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using MicroDocum.Analyzers.Analizers;
+using MicroDocum.Analyzers.Interfaces;
+using MicroDocum.Analyzers.Models;
 using MicroDocum.Graphviz;
+using MicroDocum.Graphviz.Enums;
+using MicroDocum.Graphviz.Interfaces;
+using MicroDocum.Graphviz.Models;
 using MicroDocum.Themes.DefaultTheme;
 using Nuke.Common;
 using Nuke.Common.BuildServers;
@@ -25,7 +32,9 @@ partial class Build : NukeBuild
             var a = new AssemblyAnalizer<DefaultLinkStyle>(theme);
             //var asm = AppDomain.CurrentDomain.GetAssemblies();
             //var c = a.Analize(asm, theme.GetAvailableThemeAttributes());
-            var c = a.Analize(loadedAssembiles.dto.Select(x=>x.Assembly).ToArray(), theme.GetAvailableThemeAttributes());
+            var assemblies = loadedAssembiles.dto.Select(x=>x.Assembly).ToArray();
+            var attributes = theme.GetAvailableThemeAttributes();
+            var c = a.Analize(assemblies, attributes);
 
             var gen = new GraphvizDotGenerator<DefaultLinkStyle>(new DefaultTheme());
             var graphwizFileData = gen.Generate(c);
