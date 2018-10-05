@@ -5,16 +5,19 @@ using MicroDocum.Analyzers.Analizers;
 using MicroDocum.Graphviz;
 using MicroDocum.Themes.DefaultTheme;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CommonTests
 {
     public class MicrodocumTests
     {
-        private ListTODORequest link;
+        private readonly ITestOutputHelper _outputHelper;
+        private ListTODORequest _linkForLoadAssembly;
 
-        public MicrodocumTests()
+        public MicrodocumTests(ITestOutputHelper outputHelper)
         {
-            link = new DTO.Public.TODO.ListTODORequest();
+            _outputHelper = outputHelper;
+            _linkForLoadAssembly = new DTO.Public.TODO.ListTODORequest();
         }
         [Fact]
         public void MicrodocumTests_Should_AnalizeDTO()
@@ -43,10 +46,11 @@ namespace CommonTests
             //Then
             Assert.True(!string.IsNullOrWhiteSpace(graphwizFileData));
             var path = Directory.GetCurrentDirectory();
+            path = Path.Combine(path, "DTO_routing.dot");
             using (var file = new StreamWriter(path, false))
             {
                 file.Write(graphwizFileData);
-                Console.WriteLine("saved to " + path);
+                _outputHelper.WriteLine("saved to " + path);
             }
         }
     }
