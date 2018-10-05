@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Nuke.Common;
 using Nuke.Common.BuildServers;
+using Nuke.Common.Utilities;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -61,7 +63,32 @@ partial class Build : NukeBuild
             DotNetRestore(s => DefaultDotNetRestore);
         });
 
+    Target Debug => _ => _
+        .Executes(() =>
+        {
+            void TraceItem(string key, string value) => Logger.Trace($"  - {key} = {value}");
+
+            Logger.Trace("Environment variables:");
+            char[] s_pathSeparators = { EnvironmentInfo.IsWin ? ';' : ':' }; 
+            foreach (var pair in EnvironmentInfo.Variables.OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase))
+            {
+                if (pair.Key.EqualsOrdinalIgnoreCase("path"))
+                {
+                    var paths = pair.Value.Split(s_pathSeparators);
+                    var padding = paths.Length.ToString().Length;
+
+                    for (var i = 0; i < paths.Length; i++)
+                        TraceItem($"{pair.Key}[{i.ToString().PadLeft(padding, paddingChar: '0')}]", paths[i]);
+                }
+                else
+                {
+                    TraceItem(pair.Key, pair.Value);
+                }
+            } 
+        });
+
     Target AllCustom => _ => _
+        .DependsOn(Debug)
         .DependsOn(Compile_For_Custom)
         .DependsOn(TS_Gen)
         .DependsOn(Microdocum)
@@ -78,6 +105,8 @@ partial class Build : NukeBuild
 
             if (Travis.Instance != null)
                 Console.WriteLine("Run inside Travis build server.");
+
+           
         });
 
     Target Compile => _ => _
