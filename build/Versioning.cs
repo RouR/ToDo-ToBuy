@@ -43,50 +43,52 @@ partial class Build : NukeBuild
     Target IncMinorVer => _ => _
         .Executes(() =>
         {
-            if (!CanChangeVersion)
-            {
-                var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
-                throw new Exception(message);
-            }
-            else
-            {
-                var oldVersion = GetVersion();
-                var newVersion = oldVersion.Copy();
+            CanChangeVersionAndThrow();
 
-                newVersion.IncreaseMinor();
+            var oldVersion = GetVersion();
+            var newVersion = oldVersion.Copy();
 
-                newVersion.SetSha(GitVersion.Sha);
-                SetVersion(oldVersion, newVersion);
+            newVersion.IncreaseMinor();
 
-                GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
-            }
+            newVersion.SetSha(GitVersion.Sha);
+            SetVersion(oldVersion, newVersion);
+
+            CommitGit(newVersion, oldVersion);
         });
 
     Target IncMajorVer => _ => _
         .Executes(() =>
         {
-            if (!CanChangeVersion)
-            {
-                var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
-                throw new Exception(message);
-            }
-            else
-            {
-                var oldVersion = GetVersion();
-                var newVersion = oldVersion.Copy();
+            CanChangeVersionAndThrow();
 
-                newVersion.IncreaseMajor();
+            var oldVersion = GetVersion();
+            var newVersion = oldVersion.Copy();
 
-                newVersion.SetSha(GitVersion.Sha);
-                SetVersion(oldVersion, newVersion);
+            newVersion.IncreaseMajor();
 
-                GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
-            }
+            newVersion.SetSha(GitVersion.Sha);
+            SetVersion(oldVersion, newVersion);
+
+            CommitGit(newVersion, oldVersion);
         });
+
+    void CommitGit(CustomVersion newVersion, CustomVersion oldVersion)
+    {
+        GitTasks.Git($"commit -a v{newVersion.ToGitTag()} -m \"Change version from {oldVersion} to {newVersion}\"");
+    }
 
     bool VersionFileIsOk()
     {
         return File.Exists(VersionFile);
+    }
+
+    void CanChangeVersionAndThrow()
+    {
+        if (!CanChangeVersion)
+        {
+            var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
+            throw new Exception(message);
+        }
     }
 
     CustomVersion GetVersion()

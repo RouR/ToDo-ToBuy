@@ -25,8 +25,8 @@ partial class Build : NukeBuild
     /// <returns></returns>
     public static int Main()
     {
-        return Execute<Build>(x => x.ShowVersion);
-        //return Execute<Build>(x => x.AllCustom);
+        //return Execute<Build>(x => x.ShowVersion);
+        return Execute<Build>(x => x.AllCustom);
         
     }
 
@@ -75,6 +75,7 @@ partial class Build : NukeBuild
 
             var oldVersion = GetVersion();
             var newVersion = oldVersion.Copy();
+            newVersion.IncreaseBuild();
             newVersion.SetSha(GitVersion.Sha);
             SetVersion(oldVersion, newVersion);
 
