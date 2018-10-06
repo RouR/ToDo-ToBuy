@@ -9,13 +9,12 @@ using static Nuke.Common.IO.PathConstruction;
 
 partial class Build : NukeBuild
 {
-    
-
     /// Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
     /// GitVersion.GetNormalizedFileVersion() is 0.1.0
     /// GitVersion.AssemblySemVer is 0.1.0.0
     [GitVersion]
     readonly GitVersion GitVersion;
+
     /// Parses origin, branch name and head from git config.
     [GitRepository]
     readonly GitRepository GitRepository;
@@ -36,7 +35,7 @@ partial class Build : NukeBuild
             Console.WriteLine($"GitVersion {GitVersion.GetNormalizedFileVersion()}");
             Console.WriteLine($"GitVersion {GitVersion.AssemblySemVer}");
             Console.WriteLine($"GitVersion {GitVersion.InformationalVersion}");
-          
+
             var currentVersion = GetVersion();
             Console.WriteLine($"VersionFile {currentVersion.ToString()}");
         });
@@ -44,23 +43,45 @@ partial class Build : NukeBuild
     Target IncMinorVer => _ => _
         .Executes(() =>
         {
-            // if (!CanChangeVersion)
-            // {
-            //     var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
-            //     throw new Exception(message);
-            // }
-            //else
-           {
-               var oldVersion = GetVersion();
-               var newVersion = oldVersion.Copy();
+            if (!CanChangeVersion)
+            {
+                var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
+                throw new Exception(message);
+            }
+            else
+            {
+                var oldVersion = GetVersion();
+                var newVersion = oldVersion.Copy();
 
-               newVersion.IncreaseMinor();
+                newVersion.IncreaseMinor();
 
-               newVersion.SetSha(GitVersion.Sha);
-               SetVersion(oldVersion, newVersion);
+                newVersion.SetSha(GitVersion.Sha);
+                SetVersion(oldVersion, newVersion);
 
-               GitTasks.Git($"commit -a -m \"WIP -  from {oldVersion} to {newVersion}\"");
-           }
+                GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
+            }
+        });
+
+    Target IncMajorVer => _ => _
+        .Executes(() =>
+        {
+            if (!CanChangeVersion)
+            {
+                var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
+                throw new Exception(message);
+            }
+            else
+            {
+                var oldVersion = GetVersion();
+                var newVersion = oldVersion.Copy();
+
+                newVersion.IncreaseMajor();
+
+                newVersion.SetSha(GitVersion.Sha);
+                SetVersion(oldVersion, newVersion);
+
+                GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
+            }
         });
 
     bool VersionFileIsOk()
@@ -77,7 +98,9 @@ partial class Build : NukeBuild
         }
 
         var data = File.ReadAllText(VersionFile);
-        var version = Regex.Match(data, "string CodeVer([\\s\\w{};]*)=(?<val>[\\w\\s\\d\\\"-.]*);", RegexOptions.Multiline).Groups["val"].Value;
+        var version = Regex
+            .Match(data, "string CodeVer([\\s\\w{};]*)=(?<val>[\\w\\s\\d\\\"-.]*);", RegexOptions.Multiline)
+            .Groups["val"].Value;
         version = version.Trim().Replace("\"", "");
 
         if (!version.StartsWith(VersionPrefix))
