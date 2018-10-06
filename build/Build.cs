@@ -17,7 +17,7 @@ partial class Build : NukeBuild
     //powershell -ExecutionPolicy ByPass -File ./build.ps1 -target AllCustom
     //powershell -ExecutionPolicy ByPass -File ./build.ps1
     
-    //or just run (F5) this project to debug Build Targets
+    //or just run (force rebuild this project and F5) this project to debug Build Targets
 
     /// <summary>
     ///  Console application entry point. Also defines the default target.
@@ -25,8 +25,9 @@ partial class Build : NukeBuild
     /// <returns></returns>
     public static int Main()
     {
-        return Execute<Build>(x => x.AllCustom);
-        //return Execute<Build>(x => x.Compile);
+        return Execute<Build>(x => x.Ver);
+        //return Execute<Build>(x => x.AllCustom);
+        
     }
 
     // Auto-injection fields:
