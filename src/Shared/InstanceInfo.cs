@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 
 namespace Shared
@@ -18,7 +18,7 @@ namespace Shared
 
         #region Autochanged, don`t touch
 
-        public string CodeVer { get; } = "ver-0.1";
+        public string CodeVer { get; } = "ver-0.2.377443b41c8f73d34926220101c0bf3b943fcced";
 
         #endregion
     }

@@ -44,12 +44,12 @@ partial class Build : NukeBuild
     Target IncMinorVer => _ => _
         .Executes(() =>
         {
-            if (!CanChangeVersion)
-            {
-                var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
-                throw new Exception(message);
-            }
-           else
+            // if (!CanChangeVersion)
+            // {
+            //     var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
+            //     throw new Exception(message);
+            // }
+            //else
            {
                var oldVersion = GetVersion();
                var newVersion = oldVersion.Copy();
@@ -58,6 +58,8 @@ partial class Build : NukeBuild
 
                newVersion.SetSha(GitVersion.Sha);
                SetVersion(oldVersion, newVersion);
+
+               GitTasks.Git($"commit -a -m \"WIP -  from {oldVersion} to {newVersion}\"");
            }
         });
 
