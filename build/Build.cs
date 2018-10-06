@@ -25,7 +25,7 @@ partial class Build : NukeBuild
     /// <returns></returns>
     public static int Main()
     {
-        return Execute<Build>(x => x.Ver);
+        return Execute<Build>(x => x.ShowVersion);
         //return Execute<Build>(x => x.AllCustom);
         
     }
@@ -67,19 +67,25 @@ partial class Build : NukeBuild
                 .SetProjectFile(MySolutionFile));
         });
 
-    Target Compile => _ => _
+    Target CompileDotNet => _ => _
         .DependsOn(Restore)
         .Executes(() =>
-        {
-            Console.WriteLine("Solution Compile");
+        {            
+            Console.WriteLine("Solution CompileDotNet");
+
+            var oldVersion = GetVersion();
+            var newVersion = oldVersion.Copy();
+            newVersion.SetSha(GitVersion.Sha);
+            SetVersion(oldVersion, newVersion);
+
             DotNetTasks.DotNetBuild(s => s
                 .SetWorkingDirectory(MySolutionDirectory)
                 .SetProjectFile(MySolutionFile)
                 .EnableNoRestore()
                 //.SetConfiguration(Configuration)
-                //.SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
-                //.SetFileVersion(GitVersion.GetNormalizedFileVersion())
-                //.SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetAssemblyVersion(newVersion.ToAssemblyVersion())
+                .SetFileVersion(newVersion.ToFileVersion())
+                .SetInformationalVersion(GitVersion.InformationalVersion)
                 );
         });
 
@@ -110,7 +116,7 @@ partial class Build : NukeBuild
         });
 
     Target AllCustom => _ => _
-        .DependsOn(Compile)
+        .DependsOn(CompileDotNet)
         .DependsOn(TsGen)
         .DependsOn(Microdocum)
         //.DependsOn(Test)

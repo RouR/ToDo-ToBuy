@@ -4,7 +4,7 @@
 partial class Build : NukeBuild
 {
     //Target Test => _ => _
-    //    .DependsOn(Compile)
+    //    .DependsOn(CompileDotNet)
     //    .Executes(() =>
     //    {
     //        var nunitSettings = new Nunit3Settings()

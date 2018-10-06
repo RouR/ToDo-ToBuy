@@ -12,7 +12,7 @@ using Nuke.Common.Tooling;
 partial class Build : NukeBuild
 {
     Target Microdocum => _ => _
-        .DependsOn(Compile)
+        .DependsOn(CompileDotNet)
         .Executes(() =>
         {
             Console.WriteLine("Run custom target - Microdocum!");

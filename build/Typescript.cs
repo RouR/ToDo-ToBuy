@@ -24,7 +24,7 @@ partial class Build : NukeBuild
 
     Target TsGen => _ => _
         .DependsOn(TsClean)
-        .DependsOn(Compile)
+        .DependsOn(CompileDotNet)
         .Executes(() =>
         {
             Console.WriteLine("Run custom target - TsGen!");

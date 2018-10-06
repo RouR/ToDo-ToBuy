@@ -15,7 +15,11 @@ namespace Shared
         public Guid Id { get; }
         public string ServiceName { get; }
         public string ServiceVersion { get; }
-        public string CodeVer { get; } = "v1";
-       
+
+        #region Autochanged, don`t touch
+
+        public string CodeVer { get; } = "ver-0.1";
+
+        #endregion
     }
 }
