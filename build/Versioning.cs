@@ -74,7 +74,8 @@ partial class Build : NukeBuild
 
     void CommitGit(CustomVersion newVersion, CustomVersion oldVersion)
     {
-        GitTasks.Git($"commit -a v{newVersion.ToGitTag()} -m \"Change version from {oldVersion} to {newVersion}\"");
+        GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
+        GitTasks.Git($"tag v{newVersion.ToGitTag()}");
     }
 
     bool VersionFileIsOk()
