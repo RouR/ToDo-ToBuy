@@ -36,7 +36,7 @@ for:
 #  - dotnet restore
 #  - dotnet build -c Release  
   - ps: .\build.ps1 AllCustom -configuration release
-  - ps: .\build.ps1 compile -configuration release
+#  - ps: .\build.ps1 compile -configuration release
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
   
   - ls -lha 
@@ -70,7 +70,7 @@ for:
 #  - dotnet restore
 #  - dotnet build -c Debug  
   - ps: .\build.ps1 AllCustom -configuration debug  
-  - ps: .\build.ps1 compile -configuration debug  
+#  - ps: .\build.ps1 compile -configuration debug  
 # yes, build in Debug, publish in Release, check DockerFile - path to Release folder
 #  - dotnet publish -c Release 
   - MSBuild.SonarQube.Runner.exe end /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
