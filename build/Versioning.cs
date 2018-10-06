@@ -23,6 +23,7 @@ partial class Build : NukeBuild
     bool HasUncommitedChanges => !GitTasks.GitHasCleanWorkingCopy();
 
     AbsolutePath VersionFile => MySourceDirectory / "Shared" / "InstanceInfo.cs";
+    AbsolutePath TravisFile => RootDirectory / ".travis.yml";
     const string VersionPrefix = "ver-";
 
     bool CanChangeVersion => !HasUncommitedChanges
@@ -122,5 +123,19 @@ partial class Build : NukeBuild
         var data = File.ReadAllText(VersionFile);
         data = data.Replace(VersionPrefix + oldVersion, VersionPrefix + newVersion);
         File.WriteAllText(VersionFile, data);
+
+        UpdateTravisDocker(newVersion);
     }
+
+    void UpdateTravisDocker(CustomVersion newVersion)
+    {
+        var data = File.ReadAllText(TravisFile);
+        var matches = Regex.Matches(data, "roured/tdtb-web:([\\d.]+)", RegexOptions.Multiline);
+        foreach (Match match in matches)
+        {
+            data = data.Replace(match.Value, $"roured/tdtb-web:{newVersion.ToDockerTag()}");
+        }
+        File.WriteAllText(TravisFile, data);
+    }
+
 }

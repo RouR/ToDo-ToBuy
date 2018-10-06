@@ -68,4 +68,9 @@ class CustomVersion
     {
         return new[] {Major.ToString(), Minor.ToString(), Build.ToString()}.Join(".");
     }
+    
+    public string ToDockerTag()
+    {
+        return new[] {Major.ToString(), Minor.ToString(), Build.ToString()}.Join(".");
+    }
 }
