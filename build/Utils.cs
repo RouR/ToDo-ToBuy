@@ -12,8 +12,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build : NukeBuild
 {
-    
-    private static void WriteError(string message)
+    static void WriteError(string message)
     {
         Logger.Error(message);
 
@@ -29,6 +28,7 @@ partial class Build : NukeBuild
         public string Path { get; set; }
         public Assembly Assembly { get; set; }
     }
+
     struct DtoInfo
     {
         public string Namespace { get; set; }
@@ -38,32 +38,33 @@ partial class Build : NukeBuild
 
     class AssemblyData
     {
-        public List<LoadedAssembly> allLoaded { get; set; }
-        public List<DtoInfo> dto { get; set; }
+        public List<LoadedAssembly> AllLoaded { get; set; }
+        public List<DtoInfo> Dto { get; set; }
     }
 
-    AssemblyData _cached = null;
+    AssemblyData Cached = null;
 
     AssemblyData LoadDtoAssemblies()
     {
-        if (_cached != null)
-            return _cached;
+        if (Cached != null)
+            return Cached;
 
-        var projects = ProjectModelTasks.ParseSolution(SolutionFile).Projects;
+        var projects = ProjectModelTasks.ParseSolution(MySolutionFile).Projects;
         var appDomain = AppDomain.CurrentDomain;
 
-        var loadedAssembiles = new List<LoadedAssembly>(100);
-        var dtoAssembiles = new List<DtoInfo>(100);
+        var loadedAssemblies = new List<LoadedAssembly>(100);
+        var dtoAssemblies = new List<DtoInfo>(100);
         foreach (var project in projects.Where(x => x.Name.Contains("DTO")))
         {
             try
             {
-                DotNetBuild(s => DefaultDotNetBuild.SetProjectFile(project.Path));
+                //DotNetBuild(s => DefaultDotNetBuild.SetProjectFile(project.Path));
+                DotNetBuild(s => s.SetProjectFile(project.Path));
 
                 //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
                 //var dllFile = BuildAssemblyDirectory ;
 
-                var dllFiles = GlobFiles(SourceDirectory, "*.dll")
+                var dllFiles = GlobFiles(MySourceDirectory, "*.dll")
                     .Where(x => !x.Contains("obj") && x.StartsWith(project.Directory))
                     .Distinct()
                     .ToArray();
@@ -73,7 +74,7 @@ partial class Build : NukeBuild
                     Console.WriteLine("Load assembly " + file);
                     var fileName = Path.GetFileName(file);
 
-                    if(loadedAssembiles.Any(x=> x.FileName == fileName))
+                    if (loadedAssemblies.Any(x => x.FileName == fileName))
                         continue;
 
                     try
@@ -81,7 +82,7 @@ partial class Build : NukeBuild
                         var newFilePath = Path.Combine(appDomain.BaseDirectory, fileName);
                         File.Copy(file, newFilePath, true);
                         var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
-                        loadedAssembiles.Add(new LoadedAssembly()
+                        loadedAssemblies.Add(new LoadedAssembly()
                         {
                             Assembly = asm,
                             Path = newFilePath,
@@ -96,14 +97,13 @@ partial class Build : NukeBuild
 
 
                 //var assembly = appDomain.GetAssemblies().Single(x => x.FullName.StartsWith(project.Name + ","));
-                var assembly = loadedAssembiles.Single(x => x.Assembly.FullName.StartsWith(project.Name + ","));
-                dtoAssembiles.Add(new DtoInfo()
+                var assembly = loadedAssemblies.Single(x => x.Assembly.FullName.StartsWith(project.Name + ","));
+                dtoAssemblies.Add(new DtoInfo()
                 {
                     Assembly = assembly.Assembly,
                     Namespace = assembly.Assembly.FullName,
                     ProjectName = project.Name
                 });
-                
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -125,11 +125,12 @@ partial class Build : NukeBuild
                 //throw;
             }
         }
-        _cached = new AssemblyData()
+
+        Cached = new AssemblyData()
         {
-            allLoaded = loadedAssembiles,
-            dto = dtoAssembiles
+            AllLoaded = loadedAssemblies,
+            Dto = dtoAssemblies
         };
-        return _cached;
+        return Cached;
     }
 }

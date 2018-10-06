@@ -32,7 +32,7 @@ script:
     
 #    - dotnet restore --runtime $DOTNETRUNTIME
 #    - dotnet build    
-    - ./build.sh Debug
+#    - ./build.sh Debug
     - ./build.sh AllCustom
 #    - ./build.sh compile
     

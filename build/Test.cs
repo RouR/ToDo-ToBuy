@@ -8,21 +8,21 @@ partial class Build : NukeBuild
     //    .Executes(() =>
     //    {
     //        var nunitSettings = new Nunit3Settings()
-    //            .AddTargetAssemblies(GlobFiles(SolutionDirectory, $"*/bin/{Configuration}/net4*/Nuke.*.Tests.dll").NotEmpty())
-    //            .AddResultReport(Xunit2ResultFormat.Xml, OutputDirectory / "tests.xml");
+    //            .AddTargetAssemblies(GlobFiles(mySolutionDirectory, $"*/bin/{Configuration}/net4*/Nuke.*.Tests.dll").NotEmpty())
+    //            .AddResultReport(Xunit2ResultFormat.Xml, myOutputDirectory / "tests.xml");
 
     //        if (IsWin)
     //        {
     //            OpenCover(s => DefaultOpenCover
-    //                .SetOutput(OutputDirectory / "coverage.xml")
+    //                .SetOutput(myOutputDirectory / "coverage.xml")
     //                .SetTargetSettings(xunitSettings)
     //                .SetSearchDirectories(xunitSettings.TargetAssemblyWithConfigs.Select(x => Path.GetDirectoryName(x.Key)))
     //                .AddFilters("-[Nuke.Common]Nuke.Core.*"));
 
     //            ReportGenerator(s => s
-    //                .AddReports(OutputDirectory / "coverage.xml")
+    //                .AddReports(myOutputDirectory / "coverage.xml")
     //                .AddReportTypes(ReportTypes.Html)
-    //                .SetTargetDirectory(OutputDirectory / "coverage"));
+    //                .SetTargetDirectory(myOutputDirectory / "coverage"));
     //        }
     //        else
     //            Nunit3(s => xunitSettings);

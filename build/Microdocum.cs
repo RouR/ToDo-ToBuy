@@ -12,20 +12,21 @@ using Nuke.Common.Tooling;
 partial class Build : NukeBuild
 {
     Target Microdocum => _ => _
+        .DependsOn(Compile)
         .Executes(() =>
         {
             Console.WriteLine("Run custom target - Microdocum!");
 
-            var pathDot = Path.Combine(SolutionDirectory.ToString(), "DTO_routing.dot");
-            var pathPng = Path.Combine(SolutionDirectory.ToString(), "DTO_routing.png");
+            var pathDot = Path.Combine(MySolutionDirectory.ToString(), "DTO_routing.dot");
+            var pathPng = Path.Combine(MySolutionDirectory.ToString(), "DTO_routing.png");
 
-            var loadedAssembiles = LoadDtoAssemblies();
+            var loadedAssemblies = LoadDtoAssemblies();
 
             var theme = new DefaultTheme();
             var a = new AssemblyAnalizer<DefaultLinkStyle>(theme);
             //var asm = AppDomain.CurrentDomain.GetAssemblies();
             //var c = a.Analize(asm, theme.GetAvailableThemeAttributes());
-            var assemblies = loadedAssembiles.dto.Select(x=>x.Assembly).ToArray();
+            var assemblies = loadedAssemblies.Dto.Select(x => x.Assembly).ToArray();
             var attributes = theme.GetAvailableThemeAttributes();
             var c = a.Analize(assemblies, attributes);
 
@@ -49,7 +50,7 @@ partial class Build : NukeBuild
                 var packagesDirectory = NuGetPackageResolver.GetPackagesDirectory();
                 var dir = Path.Combine(packagesDirectory, "graphviz");
                 dir = Path.Combine(dir, Directory.EnumerateDirectories(dir).First());
-                graphizBin =  Path.Combine(dir,"dot.exe");
+                graphizBin = Path.Combine(dir, "dot.exe");
             }
 
             if (AppVeyor.Instance != null)
@@ -67,7 +68,7 @@ partial class Build : NukeBuild
             var process = ProcessTasks.StartProcess(
                 graphizBin,
                 arguments: $"-Tpng  \"{pathDot}\" -o \"{pathPng}\""
-                );
+            );
             if (process != null)
             {
                 process.WaitForExit();

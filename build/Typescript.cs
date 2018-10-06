@@ -6,38 +6,39 @@ using TypeLite;
 
 partial class Build : NukeBuild
 {
-    string OutputPathForTypescriptDTO()
+    string OutputPathForTypescriptDto()
     {
-        var outputPath = Path.Combine(SolutionDirectory.ToString(), "_tsModels");
+        var outputPath = Path.Combine(MySolutionDirectory.ToString(), "_tsModels");
         return outputPath;
     }
 
-    Target TS_Clean => _ => _
+    Target TsClean => _ => _
         //.DependsOn(Clean) //After this target, will impossible run Clean, see https://github.com/dotnet/corefx/issues/14724
         .Executes(() =>
         {
-            var outputPath = OutputPathForTypescriptDTO();
+            var outputPath = OutputPathForTypescriptDto();
 
             if (Directory.Exists(outputPath))
                 Directory.Delete(outputPath, true);
         });
 
-    Target TS_Gen => _ => _
-        .DependsOn(TS_Clean)
-        .DependsOn(Compile_For_Custom)
+    Target TsGen => _ => _
+        .DependsOn(TsClean)
+        .DependsOn(Compile)
         .Executes(() =>
         {
-            Console.WriteLine("Run custom target - TS_Gen!");
+            Console.WriteLine("Run custom target - TsGen!");
 
-            var outputPath = Path.Combine(SolutionDirectory.ToString(), "_tsModels");
+            var outputPath = MyTsModelsDirectory;
 
             Directory.CreateDirectory(outputPath);
             var generator = new TypeScriptFluent().WithConvertor<Guid>(c => "string");
 
-            var loadedAssembiles = LoadDtoAssemblies();
-            foreach (var dtoAsm in loadedAssembiles.dto)
+            var loadedAssemblies = LoadDtoAssemblies();
+            foreach (var dtoAsm in loadedAssemblies.Dto)
             {
-                var models = dtoAsm.Assembly.GetTypes().Where(x => x.Namespace.StartsWith(dtoAsm.ProjectName + ".Public"));
+                var models = dtoAsm.Assembly.GetTypes()
+                    .Where(x => x.Namespace.StartsWith(dtoAsm.ProjectName + ".Public"));
 
                 foreach (var model in models)
                 {
@@ -53,8 +54,4 @@ partial class Build : NukeBuild
                 generator.Generate(TsGeneratorOutput.Properties | TsGeneratorOutput.Fields);
             File.WriteAllText(Path.Combine(outputPath, "classes.d.ts"), tsClassDefinitions);
         });
-
- 
-
-    
 }

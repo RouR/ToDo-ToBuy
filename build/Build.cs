@@ -2,6 +2,9 @@
 using System.Linq;
 using Nuke.Common;
 using Nuke.Common.BuildServers;
+using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
+using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -14,24 +17,17 @@ partial class Build : NukeBuild
     //powershell -ExecutionPolicy ByPass -File ./build.ps1 -target AllCustom
     //powershell -ExecutionPolicy ByPass -File ./build.ps1
     
-    
-    //just run (F5) this project to debug Build Targets
+    //or just run (F5) this project to debug Build Targets
 
     /// <summary>
     ///  Console application entry point. Also defines the default target.
     /// </summary>
     /// <returns></returns>
-#if DEBUG
     public static int Main()
     {
-        //return Execute<Build>(x => x.Microdocum);
         return Execute<Build>(x => x.AllCustom);
         //return Execute<Build>(x => x.Compile);
     }
-#else
-    this never call
-    public static int Main() => Execute<Build>(x => x.Compile);
-#endif
 
     // Auto-injection fields:
 
@@ -45,22 +41,45 @@ partial class Build : NukeBuild
     // Returns command-line arguments and environment variables.
 
     /// Provides access to the structure of the solution.
-    //[Solution] readonly Solution Solution;
-    
+    [Solution(MySolutionFile)] readonly Solution Solution;
+
+    const string MySolutionFile = "ExampleTDTB.sln";
+    AbsolutePath MySolutionDirectory => RootDirectory;
+    AbsolutePath MySourceDirectory => RootDirectory / "src";
+    AbsolutePath MyOutputDirectory => RootDirectory / "output";
+    AbsolutePath MyTsModelsDirectory => RootDirectory / "_tsModels";
 
     Target Clean => _ => _
         //.OnlyWhen(() => false) // Disabled for safety.
         .Executes(() =>
         {
-            DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
-            EnsureCleanDirectory(OutputDirectory);
+            DeleteDirectories(GlobDirectories(MySourceDirectory, "**/bin", "**/obj"));
+            EnsureCleanDirectory(MyOutputDirectory);
         });
 
     Target Restore => _ => _
         .DependsOn(Clean)
         .Executes(() =>
         {
-            DotNetRestore(s => DefaultDotNetRestore);
+            DotNetRestore(s => s
+                .SetWorkingDirectory(MySolutionDirectory)
+                .SetProjectFile(MySolutionFile));
+        });
+
+    Target Compile => _ => _
+        .DependsOn(Restore)
+        .Executes(() =>
+        {
+            Console.WriteLine("Solution Compile");
+            DotNetTasks.DotNetBuild(s => s
+                .SetWorkingDirectory(MySolutionDirectory)
+                .SetProjectFile(MySolutionFile)
+                .EnableNoRestore()
+                //.SetConfiguration(Configuration)
+                //.SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
+                //.SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                //.SetInformationalVersion(GitVersion.InformationalVersion)
+                );
         });
 
     Target Debug => _ => _
@@ -69,14 +88,14 @@ partial class Build : NukeBuild
             void TraceItem(string key, string value) => Console.WriteLine($"  - {key} = {value}");
 
             Logger.Trace("Environment variables:");
-            char[] s_pathSeparators = { EnvironmentInfo.IsWin ? ';' : ':' }; 
+            char[] pathSeparators = { EnvironmentInfo.IsWin ? ';' : ':' }; 
             foreach (var pair in EnvironmentInfo.Variables.OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase))
             {
                 if (pair.Key.EqualsOrdinalIgnoreCase("path"))
                 {
                     TraceItem(pair.Key, pair.Value);
 
-                    var paths = pair.Value.Split(s_pathSeparators);
+                    var paths = pair.Value.Split(pathSeparators);
                     var padding = paths.Length.ToString().Length;
 
                     for (var i = 0; i < paths.Length; i++)
@@ -90,8 +109,8 @@ partial class Build : NukeBuild
         });
 
     Target AllCustom => _ => _
-        .DependsOn(Compile_For_Custom)
-        .DependsOn(TS_Gen)
+        .DependsOn(Compile)
+        .DependsOn(TsGen)
         .DependsOn(Microdocum)
         //.DependsOn(Test)
         .Executes(() =>
@@ -110,19 +129,8 @@ partial class Build : NukeBuild
            
         });
 
-    Target Compile => _ => _
-        //.DependsOn(AllCustom)
-        .Executes(() =>
-        {
-            Console.WriteLine("Solution Compile");
-            DotNetBuild(s => DefaultDotNetBuild);
-        });
+  
 
-    Target Compile_For_Custom => _ => _
-        .DependsOn(Restore)
-        .Executes(() =>
-        {
-            DotNetBuild(s => DefaultDotNetBuild);
-        });
+   
 
 }
