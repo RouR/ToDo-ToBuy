@@ -16,12 +16,15 @@ env:
 #    DOCKER_PASS:
 #    BUILD_VER
       
-    
+      
+before_install:
+  
+      
 install:
     - npm install -g bower
     - npm install -g gulp
     - sudo apt-get install graphviz
-
+    - export PATH=`echo $PATH | sed -e 's/:\/home\/travis\/\.local\/bin//'` || true
    
 
 
