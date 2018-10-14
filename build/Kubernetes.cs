@@ -20,9 +20,14 @@ partial class Build : NukeBuild
     AbsolutePath MyK8sDirectory => RootDirectory / "k8s";
     AbsolutePath MyK8sTemplatesDirectory => MyK8sDirectory / "templates";
     AbsolutePath MyK8sTemplatesValueFile => MyK8sDirectory / "templates" / "_values.json";
+   
     protected internal const string TemplateFileNamePattern = ".template";
+
+    AbsolutePath TravisTemplateFile => RootDirectory / ".travis.template";
+    AbsolutePath TravisFile => RootDirectory / ".travis.yml";
     // ReSharper restore InconsistentNaming
     Target RunTemplate => _ => _
+        .DependsOn(TemplateTravis)
         .Executes(() =>
         {
             var version = GetVersion();
@@ -52,13 +57,30 @@ partial class Build : NukeBuild
                 using (var streamReader = new StreamReader(file, Encoding.UTF8))
                 {
                     var content = stubble.Render(streamReader.ReadToEnd(), dataHash, stubbleRenderSettings);
-                    // Do Stuff
                     var pathOutput = MyK8sDirectory / selectedNamespace /
                                      (Path.GetFileName(file).Replace( TemplateFileNamePattern, ".yaml"));
                     File.WriteAllText(pathOutput, content);
                 }
             }
 
+        });
+
+    Target TemplateTravis => _ => _
+        .Executes(() =>
+        {
+            var version = GetVersion();
+
+            var dataHash = new Dictionary<string, object>()
+            {
+                {"dockerVer", version.ToDockerTag()},
+            };
+            var stubble = new StubbleBuilder().Build();
+
+            using (var streamReader = new StreamReader(TravisTemplateFile, Encoding.UTF8))
+            {
+                var content = stubble.Render(streamReader.ReadToEnd(), dataHash);
+                File.WriteAllText(TravisFile, content);
+            }
         });
 
     Dictionary<string, object> BuildTemplateValue(ValuesTemplating values,
