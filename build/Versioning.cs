@@ -54,6 +54,9 @@ partial class Build : NukeBuild
             newVersion.SetSha(GitVersion.Sha);
             SetVersion(oldVersion, newVersion);
 
+            k8sOverrideTemplates(newVersion);
+            travisOverrideTemplates(newVersion);
+
             CommitGit(newVersion, oldVersion);
         });
 
@@ -69,6 +72,9 @@ partial class Build : NukeBuild
 
             newVersion.SetSha(GitVersion.Sha);
             SetVersion(oldVersion, newVersion);
+
+            k8sOverrideTemplates(newVersion);
+            travisOverrideTemplates(newVersion);
 
             CommitGit(newVersion, oldVersion);
         });
