@@ -6,7 +6,7 @@ metadata:
   labels:
     app: web
 spec:
-  replicas: 1
+  replicas: {{web-replicas}}
   selector:
     matchLabels:
       app: web
@@ -23,12 +23,12 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride1358
-        updated: "15 октября 2018 г. 1:04:06"
+        ci: somedataForOverride{{#random}}2000{{/random}}
+        updated: "{{$now}}"
     spec:
       containers:
       - name: web
-        image: roured/tdtb-web:dev
+        image: roured/tdtb-web:{{docker-ver}}
         imagePullPolicy: Always
         ports:
         - containerPort: 5555
@@ -43,6 +43,20 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 1
         env:
+        {{#jaeger_enable}}
+        - name: JAEGER_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: InfluxDB
+          value: "{{jaeger_url}}"
+        - name: FluentD_Host
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP  
+        - name: FluentD_Port
+          value: "24224"
+        {{/jaeger_enable}}              
         - name: TRACING_AGENT_HOST
           valueFrom:
             fieldRef:

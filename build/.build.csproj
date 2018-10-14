@@ -28,7 +28,8 @@
     <PackageReference Include="MicroDocum.Themes" Version="1.2.0" />
     <PackageReference Include="Nuke.Common" Version="0.10.3" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
-    <PackageReference Include="GitVersion.CommandLine" Version="3.6.5" />
+    <PackageReference Include="GitVersion.CommandLine" Version="4.0.0" />
+    <PackageReference Include="Stubble.Core" Version="1.1.2" />
     <PackageReference Include="TypeLite" Version="1.8.4" />
   </ItemGroup>
 

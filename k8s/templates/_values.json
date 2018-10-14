@@ -1,0 +1,20 @@
+{
+	"DefaultNamespace": "dev",	
+	"Values": {
+		"a1": {
+			"dev": "111",
+			"stage": "23232"
+		},
+		"web-replicas": {
+			"dev": 1,
+			"stage": 2
+		},
+		"jaeger_enable": {
+			"dev": false,
+			"stage": true
+		},
+		"jaeger_url": {			
+			"stage": "http://207.244.95.62:8086"
+		},
+	}
+}

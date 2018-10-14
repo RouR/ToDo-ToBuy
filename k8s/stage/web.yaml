@@ -23,11 +23,12 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride
+        ci: somedataForOverride124
+        updated: "15 октября 2018 г. 0:58:13"
     spec:
       containers:
       - name: web
-        image: roured/tdtb-web:dev
+        image: roured/tdtb-web:0.7
         imagePullPolicy: Always
         ports:
         - containerPort: 5555

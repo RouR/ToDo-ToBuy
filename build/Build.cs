@@ -25,7 +25,6 @@ partial class Build : NukeBuild
     /// <returns></returns>
     public static int Main()
     {
-        //return Execute<Build>(x => x.ShowVersion);
         return Execute<Build>(x => x.AllCustom);
         
     }
@@ -120,6 +119,7 @@ partial class Build : NukeBuild
         .DependsOn(CompileDotNet)
         .DependsOn(TsGen)
         .DependsOn(Microdocum)
+        .DependsOn(RunTemplate)
         //.DependsOn(Test)
         .Executes(() =>
         {

@@ -22,6 +22,11 @@ partial class Build : NukeBuild
         //Console.BackgroundColor = original;
     }
 
+    static void WriteWarning(string message)
+    {
+        Logger.Warn(message);
+    }
+
     struct LoadedAssembly
     {
         public string FileName { get; set; }
