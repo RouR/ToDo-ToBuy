@@ -54,9 +54,9 @@ script:
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
-      docker tag tdtb-web roured/tdtb-web:0.8 ;
+      docker tag tdtb-web roured/tdtb-web:0.9 ;
       docker tag tdtb-web roured/tdtb-web:latest ;
-      docker push roured/tdtb-web:0.8 ;
+      docker push roured/tdtb-web:0.9 ;
       docker push roured/tdtb-web:latest ;
       docker logout ;      
       fi
