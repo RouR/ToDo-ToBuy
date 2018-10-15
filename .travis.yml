@@ -33,6 +33,7 @@ script:
     - dotnet --info
     - docker version
     
+    - dotnet remove build package GitVersion.CommandLine
     
 #    - dotnet restore --runtime $DOTNETRUNTIME
 #    - dotnet build    
