@@ -72,10 +72,14 @@ partial class Build : NukeBuild
         {            
             Console.WriteLine("Solution CompileDotNet");
 
+
+
             var oldVersion = GetVersion();
             var newVersion = oldVersion.Copy();
             newVersion.IncreaseBuild();
+#if CANUSEGIT
             newVersion.SetSha(GitVersion.Sha);
+ #endif
             SetVersion(oldVersion, newVersion);
 
             DotNetTasks.DotNetBuild(s => s
@@ -85,7 +89,9 @@ partial class Build : NukeBuild
                 //.SetConfiguration(Configuration)
                 .SetAssemblyVersion(newVersion.ToAssemblyVersion())
                 .SetFileVersion(newVersion.ToFileVersion())
+#if CANUSEGIT
                 .SetInformationalVersion(GitVersion.InformationalVersion)
+#endif
                 );
         });
 

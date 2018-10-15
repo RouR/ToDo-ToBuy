@@ -1,4 +1,9 @@
-﻿using Nuke.Common;
+﻿#if DEBUG
+#define CANUSEGIT
+#else
+#endif
+
+using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.Tools.GitVersion;
 using System;
@@ -7,14 +12,15 @@ using System.Text.RegularExpressions;
 using Nuke.Common.Tools.Git;
 using static Nuke.Common.IO.PathConstruction;
 
+
 partial class Build : NukeBuild
 {
+#if CANUSEGIT
     /// Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
     /// GitVersion.GetNormalizedFileVersion() is 0.1.0
     /// GitVersion.AssemblySemVer is 0.1.0.0
-    [GitVersion]
-    readonly GitVersion GitVersion;
-
+    [GitVersion] readonly GitVersion GitVersion;
+#endif
     /// Parses origin, branch name and head from git config.
     [GitRepository]
     readonly GitRepository GitRepository;
@@ -29,7 +35,7 @@ partial class Build : NukeBuild
     bool CanChangeVersion => !HasUncommitedChanges
                              && (Branch.Equals("dev") || Branch.Equals("master"))
                              && VersionFileIsOk();
-
+#if CANUSEGIT
     Target ShowVersion => _ => _
         .Executes(() =>
         {
@@ -40,7 +46,7 @@ partial class Build : NukeBuild
             var currentVersion = GetVersion();
             Console.WriteLine($"VersionFile {currentVersion.ToString()}");
         });
-
+ #endif
     Target IncMinorVer => _ => _
         .Executes(() =>
         {
@@ -50,8 +56,9 @@ partial class Build : NukeBuild
             var newVersion = oldVersion.Copy();
 
             newVersion.IncreaseMinor();
-
+#if CANUSEGIT
             newVersion.SetSha(GitVersion.Sha);
+#endif
             SetVersion(oldVersion, newVersion);
 
             k8sOverrideTemplates(newVersion);
@@ -70,7 +77,9 @@ partial class Build : NukeBuild
 
             newVersion.IncreaseMajor();
 
+#if CANUSEGIT
             newVersion.SetSha(GitVersion.Sha);
+#endif
             SetVersion(oldVersion, newVersion);
 
             k8sOverrideTemplates(newVersion);
@@ -101,6 +110,12 @@ partial class Build : NukeBuild
 
     CustomVersion GetVersion()
     {
+#if CANUSEGIT
+        Console.WriteLine("CANUSEGIT");
+#else
+        WriteWarning("git disabled");
+#endif
+
         if (!VersionFileIsOk())
         {
             var message = $"Not Valid VersionFile {VersionFile}";
