@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "src\Utils\Utils.csproj", "{DDDCE9C0-CEFA-4424-9D21-EA2A53761335}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTests", "tests\CommonTests\CommonTests.csproj", "{00C0DD6E-D9C8-46F3-ADC3-89B1E267ADAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonTests", "tests\CommonTests\CommonTests.csproj", "{00C0DD6E-D9C8-46F3-ADC3-89B1E267ADAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +43,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DA37BFC5-6B9A-4744-838B-C9389F14DA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA37BFC5-6B9A-4744-838B-C9389F14DA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA37BFC5-6B9A-4744-838B-C9389F14DA5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B27DD2E5-C587-444A-A535-CA8AC3605AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU

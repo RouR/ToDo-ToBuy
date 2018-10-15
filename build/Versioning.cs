@@ -1,15 +1,15 @@
 ﻿#if DEBUG
 #define CANUSEGIT
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.Git;
+using Nuke.Common.Git;
 #else
 #endif
 
 using Nuke.Common;
-using Nuke.Common.Git;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Nuke.Common.Tools.Git;
 using static Nuke.Common.IO.PathConstruction;
 
 
@@ -20,21 +20,22 @@ partial class Build : NukeBuild
     /// GitVersion.GetNormalizedFileVersion() is 0.1.0
     /// GitVersion.AssemblySemVer is 0.1.0.0
     [GitVersion] readonly GitVersion GitVersion;
-#endif
+
     /// Parses origin, branch name and head from git config.
     [GitRepository]
     readonly GitRepository GitRepository;
 
     string Branch => GitTasks.GitCurrentBranch();
     bool HasUncommitedChanges => !GitTasks.GitHasCleanWorkingCopy();
-
+    bool CanChangeVersion => !HasUncommitedChanges
+                             && (Branch.Equals("dev") || Branch.Equals("master"))
+                             && VersionFileIsOk();
+#endif
     AbsolutePath VersionFile => MySourceDirectory / "Shared" / "InstanceInfo.cs";
    
     const string VersionPrefix = "ver-";
 
-    bool CanChangeVersion => !HasUncommitedChanges
-                             && (Branch.Equals("dev") || Branch.Equals("master"))
-                             && VersionFileIsOk();
+
 #if CANUSEGIT
     Target ShowVersion => _ => _
         .Executes(() =>
@@ -90,8 +91,10 @@ partial class Build : NukeBuild
 
     void CommitGit(CustomVersion newVersion, CustomVersion oldVersion)
     {
+#if CANUSEGIT
         GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
         GitTasks.Git($"tag v{newVersion.ToGitTag()}");
+#endif
     }
 
     bool VersionFileIsOk()
@@ -101,11 +104,13 @@ partial class Build : NukeBuild
 
     void CanChangeVersionAndThrow()
     {
+#if CANUSEGIT
         if (!CanChangeVersion)
         {
             var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
             throw new Exception(message);
         }
+#endif
     }
 
     CustomVersion GetVersion()
