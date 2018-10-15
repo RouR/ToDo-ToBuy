@@ -24,6 +24,7 @@ install:
     - npm install -g bower
     - npm install -g gulp
     - sudo apt-get install graphviz
+	- apt install mono-devel
     - export PATH=`echo $PATH | sed -e 's/:\/home\/travis\/\.local\/bin//'` || true
    
 
