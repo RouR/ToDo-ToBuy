@@ -1,11 +1,11 @@
 ﻿#if DEBUG
 #define CANUSEGIT
+using Nuke.Common.Tools.GitVersion;
 #else
 #endif
 
 using Nuke.Common;
 using Nuke.Common.Git;
-using Nuke.Common.Tools.GitVersion;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;

@@ -3,7 +3,6 @@
 class ValuesTemplating
 {
     public string DefaultNamespace { get; set; }
-    public string[] Namespaces { get; set; }
     /// <summary>
     /// [name, [namespace,valueForNamespace]
     /// </summary>
