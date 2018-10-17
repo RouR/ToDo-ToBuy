@@ -1,11 +1,6 @@
-﻿#if DEBUG
-#define CANUSEGIT
-using Nuke.Common.Tools.GitVersion;
+﻿using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.Git;
 using Nuke.Common.Git;
-#else
-#endif
-
 using Nuke.Common;
 using System;
 using System.IO;
@@ -15,7 +10,6 @@ using static Nuke.Common.IO.PathConstruction;
 
 partial class Build : NukeBuild
 {
-#if CANUSEGIT
     /// Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
     /// GitVersion.GetNormalizedFileVersion() is 0.1.0
     /// GitVersion.AssemblySemVer is 0.1.0.0
@@ -30,13 +24,11 @@ partial class Build : NukeBuild
     bool CanChangeVersion => !HasUncommitedChanges
                              && (Branch.Equals("dev") || Branch.Equals("master"))
                              && VersionFileIsOk();
-#endif
     AbsolutePath VersionFile => MySourceDirectory / "Shared" / "InstanceInfo.cs";
    
     const string VersionPrefix = "ver-";
 
 
-#if CANUSEGIT
     Target ShowVersion => _ => _
         .Executes(() =>
         {
@@ -47,7 +39,7 @@ partial class Build : NukeBuild
             var currentVersion = GetVersion();
             Console.WriteLine($"VersionFile {currentVersion.ToString()}");
         });
- #endif
+
     Target IncMinorVer => _ => _
         .Executes(() =>
         {
@@ -57,9 +49,7 @@ partial class Build : NukeBuild
             var newVersion = oldVersion.Copy();
 
             newVersion.IncreaseMinor();
-#if CANUSEGIT
             newVersion.SetSha(GitVersion.Sha);
-#endif
             SetVersion(oldVersion, newVersion);
 
             k8sOverrideTemplates(newVersion);
@@ -78,9 +68,7 @@ partial class Build : NukeBuild
 
             newVersion.IncreaseMajor();
 
-#if CANUSEGIT
             newVersion.SetSha(GitVersion.Sha);
-#endif
             SetVersion(oldVersion, newVersion);
 
             k8sOverrideTemplates(newVersion);
@@ -91,10 +79,8 @@ partial class Build : NukeBuild
 
     void CommitGit(CustomVersion newVersion, CustomVersion oldVersion)
     {
-#if CANUSEGIT
         GitTasks.Git($"commit -a -m \"Change version from {oldVersion} to {newVersion}\"");
         GitTasks.Git($"tag v{newVersion.ToGitTag()}");
-#endif
     }
 
     bool VersionFileIsOk()
@@ -104,22 +90,16 @@ partial class Build : NukeBuild
 
     void CanChangeVersionAndThrow()
     {
-#if CANUSEGIT
         if (!CanChangeVersion)
         {
             var message = $"can`t change version (commit all, use branch 'dev' or 'master')";
             throw new Exception(message);
         }
-#endif
     }
 
     CustomVersion GetVersion()
     {
-#if CANUSEGIT
-        Console.WriteLine("CANUSEGIT");
-#else
-        WriteWarning("git disabled");
-#endif
+
 
         if (!VersionFileIsOk())
         {

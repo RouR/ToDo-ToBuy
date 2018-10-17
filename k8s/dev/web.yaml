@@ -23,8 +23,8 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride1655
-        updated: "15 октября 2018 г. 22:44:34"
+        ci: somedataForOverride1977
+        updated: "17 октября 2018 г. 20:24:13"
     spec:
       containers:
       - name: web

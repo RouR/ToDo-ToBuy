@@ -46,11 +46,8 @@ partial class Build : NukeBuild
 
     void k8sOverrideTemplates(CustomVersion version)
     {
-#if CANUSEGIT
         var selectedNamespace = K8sNamespace ?? Branch;
-#else
-        var selectedNamespace = K8sNamespace ?? "dev";
-#endif
+
         var values = JsonConvert.DeserializeObject<ValuesTemplating>(File.ReadAllText(MyK8sTemplatesValueFile));
         //values.Values["a1"]["dev"]
 
