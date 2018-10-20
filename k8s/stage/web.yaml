@@ -23,12 +23,11 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride811
-        updated: "15 октября 2018 г. 1:28:09"
+        ci: somedataForOverride793        
     spec:
       containers:
       - name: web
-        image: roured/tdtb-web:0.9
+        image: roured/tdtb-web:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 5555
@@ -42,7 +41,10 @@ spec:
             port: 5555
           initialDelaySeconds: 10
           timeoutSeconds: 1
-        env:
+		envFrom:
+         - configMapRef:
+             name: api-urls-config  
+        env:		
         - name: JAEGER_AGENT_HOST
           valueFrom:
             fieldRef:
@@ -66,7 +68,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: web-service
+  name: web-public-main
   namespace: dev
 spec:
   selector:

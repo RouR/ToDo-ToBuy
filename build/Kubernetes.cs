@@ -40,7 +40,6 @@ partial class Build : NukeBuild
         .Executes(() =>
         {
             var version = GetVersion();
-
             travisOverrideTemplates(version);
         });
 
@@ -51,7 +50,7 @@ partial class Build : NukeBuild
         var values = JsonConvert.DeserializeObject<ValuesTemplating>(File.ReadAllText(MyK8sTemplatesValueFile));
         //values.Values["a1"]["dev"]
 
-        var dataHash = BuildTemplateValue(values, version, selectedNamespace);
+        var dataHash = BuildTemplateValue(values, version);
         //https://github.com/StubbleOrg/Stubble/blob/master/docs/how-to.md
         var stubble = new StubbleBuilder()
             .Configure(settings => { })
@@ -77,11 +76,15 @@ partial class Build : NukeBuild
 
    
 
-    void travisOverrideTemplates(CustomVersion version)
+    void travisOverrideTemplates(CustomVersion version, string selectedNamespace = null)
     {
+        if(selectedNamespace == null)
+            selectedNamespace = K8sNamespace ?? Branch;
+
         var dataHash = new Dictionary<string, object>()
         {
             {"dockerVer", version.ToDockerTag()},
+            {"namespace", selectedNamespace},
         };
         var stubble = new StubbleBuilder().Build();
 
@@ -93,13 +96,16 @@ partial class Build : NukeBuild
     }
 
     Dictionary<string, object> BuildTemplateValue(ValuesTemplating values,
-        CustomVersion version,
-        string selectedNamespace)
+        CustomVersion version, string selectedNamespace = null)
     {
+        if(selectedNamespace == null)
+            selectedNamespace = K8sNamespace ?? Branch;
+
         var rnd = new Random();
         var dataHash = new Dictionary<string, object>()
         {
             {"docker-ver", selectedNamespace == "dev" ? "dev" : version.ToDockerTag()},
+            {"namespace", selectedNamespace },
             {"$now", DateTime.Now.ToString("F")},
             {"random", new Func<string, object>((data) => //always type Func<string, object>
             {

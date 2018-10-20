@@ -32,6 +32,7 @@ namespace Web
             CustomLogs.SetupCustomLogs.ConfigureServices(instanceInfo);
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, true);
+            ServiceClients.ConfigureServices(services);
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
@@ -82,11 +83,11 @@ namespace Web
             {
                 //However, the MVC web application has multiple dependencies on the rest of the microservices. Therefore, it calls one AddUrlCheck method for each microservice
                 //checks.AddSqlCheck("CatalogDb", Configuration["ConnectionString"]);
-                //checks.AddUrlCheck(Configuration["CatalogUrl"]);
+                
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account));
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
-                checks.AddValueTaskCheck("HTTP Endpoint",
-                    () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
+                //checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
             });
         }
 

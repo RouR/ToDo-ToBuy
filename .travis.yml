@@ -54,12 +54,18 @@ script:
       
       cp -r ./src/Web/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
+      cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
+      docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
       docker tag tdtb-web roured/tdtb-web:1.0 ;
+      docker tag tdtb-acc roured/tdtb-acc:1.0 ;
       docker tag tdtb-web roured/tdtb-web:latest ;
+      docker tag tdtb-acc roured/tdtb-acc:latest ;
+      docker push roured/tdtb-acc:1.0 ;
       docker push roured/tdtb-web:1.0 ;
       docker push roured/tdtb-web:latest ;
+      docker push roured/tdtb-acc:latest ;
       docker logout ;      
       fi
       
@@ -67,17 +73,17 @@ script:
       dotnet publish -c Debug -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
      
       
-      cp -r ./src/Web/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
-      cp -r ./src/DockerHubChecker/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tool-dockercheck ;
+      cp -r ./src/Web/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
+      docker build -t tdtb-web -f docker/Dockerfile-Web . ;
+      cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
+      docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
       
-      docker build -t tdtb-web -f docker/Dockerfile-Web . ;      
-      docker build -t tdtb-dockercheck -f docker/Dockerfile-Tool-dockercheck . ;      
-      docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;      
-      docker tag tdtb-web roured/tdtb-web:dev ;      
-      docker tag tdtb-dockercheck roured/tdtb-dockercheck:dev ;      
-      docker push roured/tdtb-web:dev ;
-      docker push roured/tdtb-dockercheck:dev ;
-      docker logout ;      
+      docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
+      docker tag tdtb-web roured/tdtb-web:1.0 ;
+      docker tag tdtb-acc roured/tdtb-acc:1.0 ;
+      docker push roured/tdtb-acc:1.0 ;
+      docker push roured/tdtb-web:1.0 ;      
+      docker logout ;       
       fi
     
 

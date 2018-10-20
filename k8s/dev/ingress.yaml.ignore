@@ -13,7 +13,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: web-service
+          serviceName: web-public-main
           servicePort: 80  
   - host: trace.192.168.99.100.nip.io
     http:

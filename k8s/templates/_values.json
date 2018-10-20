@@ -1,11 +1,26 @@
 {
 	"DefaultNamespace": "dev",	
 	"Values": {
-		"a1": {
+		"_some_key_": {
 			"dev": "111",
 			"stage": "23232"
 		},
+		"webPort": {
+			"dev": 5555,			
+		},
+		"readinessProbePath": {
+			"dev": "/healthz",			
+		},
+		"livenessProbePath": {
+			"dev": "/healthz",			
+		},
+		
+		
 		"web-replicas": {
+			"dev": 1,
+			"stage": 2
+		},
+		"accountService-replicas": {
 			"dev": 1,
 			"stage": 2
 		},

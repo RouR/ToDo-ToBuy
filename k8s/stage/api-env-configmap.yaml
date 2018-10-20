@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-urls-config
+  namespace: dev
+data:
+  apiAccount: http://web-account/
+  

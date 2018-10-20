@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\home\ViewModels\" />
-    <Folder Include="Areas\home\Views\Hello\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -49,6 +48,12 @@
     <ProjectReference Include="..\CustomMetrics\CustomMetrics.csproj" />
     <ProjectReference Include="..\CustomTracing\CustomTracing.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\home\Views\Hello\simple.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

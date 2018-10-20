@@ -5,9 +5,9 @@ using Serilog;
 using Shared;
 
 //Install-Package Microsoft.AspNet.HealthChecks
-namespace Web
+namespace AccountService
 {
-    public static class WebServer
+    public class Program
     {
         public static int Main(string[] args)
         {

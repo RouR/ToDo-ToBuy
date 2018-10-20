@@ -31,7 +31,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: web-service
+          serviceName: web-public-main
           servicePort: 80  
   - host: trace.rour.test
     http:
