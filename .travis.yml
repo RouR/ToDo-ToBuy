@@ -73,9 +73,9 @@ script:
       dotnet publish -c Debug -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
      
       
-      cp -r ./src/Web/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
+      cp -r ./src/Web/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
-      cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
+      cp -r ./src/AccountService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
