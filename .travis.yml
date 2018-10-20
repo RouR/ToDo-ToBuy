@@ -82,7 +82,9 @@ script:
       docker tag tdtb-web roured/tdtb-web:1.0 ;
       docker tag tdtb-acc roured/tdtb-acc:1.0 ;
       docker push roured/tdtb-acc:1.0 ;
-      docker push roured/tdtb-web:1.0 ;      
+      docker push roured/tdtb-web:1.0 ;
+      docker push roured/tdtb-web:dev ;
+      docker push roured/tdtb-acc:dev ;      
       docker logout ;       
       fi
     
