@@ -41,7 +41,7 @@ spec:
             port: {{webPort}}
           initialDelaySeconds: 10
           timeoutSeconds: 1
-		envFrom:
+        envFrom:
         - configMapRef:
              name: api-urls-config  
         env:		
