@@ -1,15 +1,15 @@
 apiVersion: apps/v1beta2 # apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: accountService-deployment
+  name: account-service-deployment
   namespace: dev
   labels:
-    app: accountService
+    app: account-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: accountService
+      app: account-service
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,11 +22,11 @@ spec:
     metadata:
       namespace: dev
       labels:
-        app: accountService
+        app: account-service
         ci: somedataForOverride1115        
     spec:
       containers:
-      - name: accountService
+      - name: account-service
         image: roured/tdtb-acc:dev
         imagePullPolicy: Always
         ports:
@@ -40,9 +40,9 @@ spec:
             path: /healthz
             port: 5555
           initialDelaySeconds: 10
-          timeoutSeconds: 1
-		envFrom:
-         - configMapRef:
+          timeoutSeconds: 1		
+        envFrom:
+        - configMapRef:
              name: api-urls-config  
         env:		
         - name: TRACING_AGENT_HOST
@@ -60,7 +60,7 @@ metadata:
   namespace: dev
 spec:
   selector:
-    app: accountService
+    app: account-service
   ports:
   - name: http
     protocol: TCP
