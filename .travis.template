@@ -81,6 +81,8 @@ script:
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
       docker tag tdtb-web roured/tdtb-web:{{dockerVer}} ;
       docker tag tdtb-acc roured/tdtb-acc:{{dockerVer}} ;
+      docker tag tdtb-web roured/tdtb-web:dev ;
+      docker tag tdtb-acc roured/tdtb-acc:dev ;
       docker push roured/tdtb-acc:{{dockerVer}} ;
       docker push roured/tdtb-web:{{dockerVer}} ;
       docker push roured/tdtb-web:dev ;
