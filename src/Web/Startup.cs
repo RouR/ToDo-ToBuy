@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 using CustomMetrics;
 using CustomTracing;
 using Microsoft.AspNetCore.Builder;

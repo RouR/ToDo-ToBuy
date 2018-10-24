@@ -48,7 +48,7 @@ namespace Shared
         public static string HealthUrl(Service srv)
         {
             var uri = new Uri(GetUri(srv), HealthCheck);
-            return uri.AbsolutePath;
+            return uri.GetLeftPart(System.UriPartial.Authority);
         }
     }
 }
