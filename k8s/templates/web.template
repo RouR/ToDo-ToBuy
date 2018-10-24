@@ -41,10 +41,10 @@ spec:
             port: {{webPort}}
           initialDelaySeconds: 10
           timeoutSeconds: 1
-		envFrom:
+        envFrom:
          - configMapRef:
              name: api-urls-config  
-        env:		
+        env:
         {{#jaeger_enable}}
         - name: JAEGER_AGENT_HOST
           valueFrom:

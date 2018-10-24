@@ -4,5 +4,5 @@ metadata:
   name: api-urls-config
   namespace: dev
 data:
-  apiAccount: http://web-account/
+  apiAccount: http://web-account.dev/
   

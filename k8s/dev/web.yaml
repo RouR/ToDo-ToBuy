@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride860        
+        ci: somedataForOverride1887        
     spec:
       containers:
       - name: web
@@ -41,10 +41,10 @@ spec:
             port: 5555
           initialDelaySeconds: 10
           timeoutSeconds: 1
-		envFrom:
+        envFrom:
          - configMapRef:
              name: api-urls-config  
-        env:		
+        env:
         - name: TRACING_AGENT_HOST
           valueFrom:
             fieldRef:

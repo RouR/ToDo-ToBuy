@@ -47,7 +47,7 @@ metadata:
   labels:
     app: tool-dockercheck
 spec:
-  schedule: "*/3 * * * *"
+  schedule: "*/8 * * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 3  
