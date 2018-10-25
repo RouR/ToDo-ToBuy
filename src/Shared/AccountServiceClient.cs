@@ -24,7 +24,7 @@ namespace Shared
 
         public async Task<string> TestCall(string data)
         {
-            var response = await _client.PostAsJsonAsync("/Test1", data);
+            var response = await _client.PostAsJsonAsync("/Test/Test1", data);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<string>();
@@ -33,7 +33,7 @@ namespace Shared
 
         public async Task<string> TestDelay(string data)
         {
-            var response = await _client.PostAsJsonAsync("/TestDelay", data);
+            var response = await _client.PostAsJsonAsync("/Test/TestDelay", data);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<string>();
