@@ -42,13 +42,13 @@ namespace Shared
 
         public static string Url(Service srv)
         {
-            return GetUri(srv).Authority;
+            return GetUri(srv).GetLeftPart(System.UriPartial.Authority);
         }
 
         public static string HealthUrl(Service srv)
         {
             var uri = new Uri(GetUri(srv), HealthCheck);
-            return uri.GetLeftPart(System.UriPartial.Authority);
+            return uri.AbsoluteUri;
         }
     }
 }

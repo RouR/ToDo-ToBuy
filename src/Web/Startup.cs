@@ -1,5 +1,4 @@
-﻿using System;
-using CustomMetrics;
+﻿using CustomMetrics;
 using CustomTracing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
