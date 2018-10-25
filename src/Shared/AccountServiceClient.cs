@@ -11,9 +11,13 @@ namespace Shared
 
         public AccountServiceClient()
         {
+            var url = ServiceClients.Url(Service.Account);
+            Console.WriteLine($"AccountServiceClient Url {url}");
+            var uri = new Uri(url);
+            Console.WriteLine($"AccountServiceClient Uri {uri}");
             _client = new HttpClient
             {
-                BaseAddress = new Uri(ServiceClients.Url(Service.Account))
+                BaseAddress = uri
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
