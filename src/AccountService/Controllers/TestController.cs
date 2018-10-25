@@ -19,7 +19,7 @@ namespace AccountService.Controllers
         }
 
         [HttpPost]
-        public IActionResult Test1(string request)
+        public IActionResult Test1([FromBody] string request)
         {
             Logger().Debug("call Test1");
             _tracer.ActiveSpan?
@@ -31,7 +31,7 @@ namespace AccountService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TestDelay(string request)
+        public async Task<IActionResult> TestDelay([FromBody] string request)
         {
             var delay = _rnd.Next(100, 2900);
             Logger().Debug("call TestDelay for request {0} with delay {1}", request, delay);
