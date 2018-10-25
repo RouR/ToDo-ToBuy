@@ -26,6 +26,7 @@ namespace CustomTracing
             if (string.IsNullOrEmpty(jaegerAgentHost) || samplingRate == 0)
             {
                 Console.WriteLine("Tracing is disabled (enviroments TRACING_AGENT_HOST, TRACING_RATE)");
+                services.AddSingleton<ITracer>(new NoTracer());
                 return;
             }
 
