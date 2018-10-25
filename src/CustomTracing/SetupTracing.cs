@@ -5,7 +5,6 @@ using Jaeger.Reporters;
 using Jaeger.Samplers;
 using Jaeger.Senders;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenTracing;
 using OpenTracing.Contrib.NetCore.CoreFx;
 using OpenTracing.Util;
@@ -34,7 +33,7 @@ namespace CustomTracing
             {
                 var serviceName = Assembly.GetEntryAssembly().GetName().Name;
 
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                //ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 //var loggingReporter = new LoggingReporter(loggerFactory);
 
                 var reporter = new RemoteReporter.Builder()
@@ -49,7 +48,7 @@ namespace CustomTracing
                 Logger().Information("Tracer use sampler {Sampler}", sampler.GetType().Name);
 
                 ITracer tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
+                    //.WithLoggerFactory(loggerFactory)
                     .WithSampler(sampler)
                     .WithReporter(reporter)
                     //.WithReporter(new CompositeReporter(loggingReporter, reporter))
