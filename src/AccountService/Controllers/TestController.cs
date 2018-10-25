@@ -22,6 +22,11 @@ namespace AccountService.Controllers
         public IActionResult Test1(string request)
         {
             Logger().Debug("call Test1");
+            _tracer.ActiveSpan?
+                .SetOperationName("TestController/Test1 " + request)
+                .Log(new Dictionary<string, object> {
+                    { "request", request },
+                });
             return Ok(request+" *-*" + request);
         }
 

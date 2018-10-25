@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Shared
 {
@@ -24,7 +25,7 @@ namespace Shared
 
         public async Task<string> TestCall(string data)
         {
-            var response = await _client.PostAsJsonAsync("/Test/Test1", data);
+            var response = await _client.PostAsJsonAsync("/Test/Test1", new {request=data});
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<string>();
@@ -33,7 +34,7 @@ namespace Shared
 
         public async Task<string> TestDelay(string data)
         {
-            var response = await _client.PostAsJsonAsync("/Test/TestDelay", data);
+            var response = await _client.PostAsJsonAsync("/Test/TestDelay", new {request=data} );
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<string>();
