@@ -1,5 +1,6 @@
 ﻿using CustomMetrics;
 using CustomTracing;
+using DTO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

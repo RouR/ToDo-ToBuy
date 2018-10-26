@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using DTO;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Shared
 {
-    /// <summary>
-    /// Microservices
-    /// </summary>
-    public enum Service
-    {
-        Account = 1,
-    }
-
     public static class ServiceClients
     {
         public const string HealthCheck = "/healthz";
@@ -33,7 +26,7 @@ namespace Shared
             }
             else
             {
-                var url = Environment.GetEnvironmentVariable($"api{srv.ToString()}");
+                var url = Environment.GetEnvironmentVariable($"api{srv.ToString()}") ?? $"http://web-{srv.ToString()}.dev/".ToLower();
                 var uri = new Uri(url);
                 CacheUrl.TryAdd(srv, uri);
                 return uri;
