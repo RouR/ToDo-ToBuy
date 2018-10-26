@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text.RegularExpressions;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
@@ -32,6 +33,11 @@ partial class Build : NukeBuild
         public string FileName { get; set; }
         public string Path { get; set; }
         public Assembly Assembly { get; set; }
+    }
+
+    string ReplaceMultipleSpaces(string str)
+    {
+        return Regex.Replace(str, @" {2,}", " ", RegexOptions.Multiline);
     }
 
     struct DtoInfo

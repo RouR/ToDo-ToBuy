@@ -48,6 +48,7 @@ partial class Build : NukeBuild
     AbsolutePath MySourceDirectory => RootDirectory / "src";
     AbsolutePath MyOutputDirectory => RootDirectory / "output";
     AbsolutePath MyTsModelsDirectory => RootDirectory / "_tsModels";
+    AbsolutePath MyRestClientsDirectory => RootDirectory / "_csREST";
 
     Target Clean => _ => _
         //.OnlyWhen(() => false) // Disabled for safety.

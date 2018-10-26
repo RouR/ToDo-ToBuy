@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Shared
 {
-    public class AccountServiceClient
+    public sealed partial class AccountServiceClient
     {
         private HttpClient _client;
 

@@ -13,6 +13,15 @@ declare namespace Domain.DBEnities {
 		UserId: string;
 	}
 }
+declare namespace DTO.Public.Account {
+	interface RegisterRequest {
+	}
+	interface RegisterResponse {
+		Data: string;
+		HasError: boolean;
+		Message: string;
+	}
+}
 declare namespace DTO.Public.TODO {
 	interface DeleteTODORequest {
 		PublicId: string;

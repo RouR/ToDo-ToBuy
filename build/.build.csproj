@@ -24,6 +24,7 @@
   
     
   <ItemGroup>
+    <PackageReference Include="dnlib-new" Version="2.1.0" />
     <PackageReference Include="Graphviz" Version="2.38.0.2" PrivateAssets="none" ExcludeAssets="none" IncludeAssets="all" />
     <PackageReference Include="MicroDocum.Themes" Version="1.2.0" />
     <PackageReference Include="Nuke.Common" Version="0.11.0" />

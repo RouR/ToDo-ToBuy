@@ -21,7 +21,7 @@ partial class Build : NukeBuild
     AbsolutePath MyK8sTemplatesDirectory => MyK8sDirectory / "templates";
     AbsolutePath MyK8sTemplatesValueFile => MyK8sDirectory / "templates" / "_values.json";
    
-    protected internal const string TemplateFileNamePattern = ".template";
+    protected internal const string TemplateTravisFileNamePattern = ".template";
 
     AbsolutePath TravisTemplateFile => RootDirectory / ".travis.template";
     AbsolutePath TravisFile => RootDirectory / ".travis.yml";
@@ -62,13 +62,13 @@ partial class Build : NukeBuild
             ThrowOnDataMiss = true,
         };
 
-        foreach (var file in Directory.EnumerateFiles(MyK8sTemplatesDirectory, "*" + TemplateFileNamePattern))
+        foreach (var file in Directory.EnumerateFiles(MyK8sTemplatesDirectory, "*" + TemplateTravisFileNamePattern))
         {
             using (var streamReader = new StreamReader(file, Encoding.UTF8))
             {
                 var content = stubble.Render(streamReader.ReadToEnd(), dataHash, stubbleRenderSettings);
                 var pathOutput = MyK8sDirectory / selectedNamespace /
-                                 (Path.GetFileName(file).Replace(TemplateFileNamePattern, ".yaml"));
+                                 (Path.GetFileName(file).Replace(TemplateTravisFileNamePattern, ".yaml"));
                 File.WriteAllText(pathOutput, content);
             }
         }

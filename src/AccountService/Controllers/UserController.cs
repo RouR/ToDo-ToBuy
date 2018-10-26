@@ -15,6 +15,12 @@ namespace AccountService.Controllers
         }
 
 
+        /// <summary>
+        /// Register new User
+        /// UserId must be pregenerated
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Erroable Guid UserId</returns>
         [HttpPost]
         public async Task<CreateUserResponse> Register([FromBody] CreateUserRequest model)
         {

@@ -6,17 +6,13 @@ using TypeLite;
 
 partial class Build : NukeBuild
 {
-    string OutputPathForTypescriptDto()
-    {
-        var outputPath = Path.Combine(MySolutionDirectory.ToString(), "_tsModels");
-        return outputPath;
-    }
+   
 
     Target TsClean => _ => _
         //.DependsOn(Clean) //After this target, will impossible run Clean, see https://github.com/dotnet/corefx/issues/14724
         .Executes(() =>
         {
-            var outputPath = OutputPathForTypescriptDto();
+            var outputPath = MyTsModelsDirectory;
 
             if (Directory.Exists(outputPath))
                 Directory.Delete(outputPath, true);

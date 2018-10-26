@@ -1,0 +1,10 @@
+
+{{Description}}
+public async Task<{{ResponseType}}> {{ControllerName}}_{{ActionName}}({{RequestType}} data)
+{
+	var response = await _client.GetAsJsonAsync("/{{ControllerName}}/{{ActionName}}", data);
+	response.EnsureSuccessStatusCode();
+
+	var result = await response.Content.ReadAsAsync<{{ResponseType}}>();
+	return result;
+}
