@@ -5,12 +5,12 @@ using MicroDocum.Themes.DefaultTheme.Interfaces;
 
 namespace DTO.Public.Account
 {
-    [ServiceName(nameof(Service.Account))]
+    [ServiceName("Web")]
     public class RegisterRequest : IProduce<CreateUserRequest>
     {
         
     }
-    [ServiceName(nameof(Service.Account))]
+    [ServiceName("Web")]
     public class RegisterResponse: IErrorable<Guid>
     {
         public bool HasError { get; set; }

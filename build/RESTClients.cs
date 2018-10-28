@@ -51,9 +51,7 @@ partial class Build : NukeBuild
 
             Directory.CreateDirectory(outputPath);
 
-            var projects = Solution.Projects;
-
-            var meta = FindAssemblyForRestClient(clients, projects);
+            var meta = FindAssemblyForRestClient(clients);
             var files = CreateRestFiles(meta, outputPath);
 
             foreach (var file in files)
@@ -134,57 +132,16 @@ partial class Build : NukeBuild
         return result;
     }
 
-    List<RestClientMeta> FindAssemblyForRestClient(Dictionary<string, string> clients,
-        IReadOnlyCollection<Project> projects)
+    List<RestClientMeta> FindAssemblyForRestClient(Dictionary<string, string> clients)
     {
         var result = new List<RestClientMeta>();
 
-        var appDomain = AppDomain.CurrentDomain;
-        var loadedAssemblies = new List<AssemblyMeta>(100);
+        var projects = Solution.Projects;
 
         foreach (var client in clients)
-        foreach (var project in projects.Where(x =>
-            x.Name.Equals(client.Key, StringComparison.InvariantCultureIgnoreCase)))
-        {
-            try
+            foreach (var project in projects.Where(x => x.Name.Equals(client.Key, StringComparison.InvariantCultureIgnoreCase)))
             {
-                //DotNetBuild(s => DefaultDotNetBuild.SetProjectFile(project.Path));
-                DotNetTasks.DotNetBuild(s => s.SetProjectFile(project.Path));
-
-                //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
-                //var dllFile = BuildAssemblyDirectory ;
-
-                var dllFiles = GlobFiles(MySourceDirectory, "*.dll")
-                    .Where(x => !x.Contains("obj") && x.StartsWith(project.Directory))
-                    .Distinct()
-                    .ToArray();
-
-                foreach (var file in dllFiles)
-                {
-                    Console.WriteLine("Load assembly " + file);
-                    var fileName = Path.GetFileName(file);
-
-                    if (loadedAssemblies.Any(x => x.Assembly.FullName == fileName))
-                        continue;
-
-                    try
-                    {
-                        var asm = ModuleDefMD.Load(file);
-                        loadedAssemblies.Add(new AssemblyMeta
-                        {
-                            Assembly = asm,
-                            Path = file
-                        });
-                    }
-                    catch (Exception e)
-                    {
-                        WriteError(e.Message);
-                    }
-                }
-
-
-                //var assembly = appDomain.GetAssemblies().Single(x => x.FullName.StartsWith(project.Name + ","));
-                var assembly = loadedAssemblies.Single(x => x.Assembly.FullName.StartsWith(project.Name));
+                var assembly = LoadAssemblies().Single(x => x.Assembly.FullName.StartsWith(project.Name));
                 var info = GetRestClientMeta(client, project, assembly.Assembly);
                 var clientMeta = new RestClientMeta()
                 {
@@ -194,26 +151,6 @@ partial class Build : NukeBuild
                 LoadXMLComments(clientMeta, assembly);
                 result.Add(clientMeta);
             }
-            catch (ReflectionTypeLoadException ex)
-            {
-                /*
-                         To get NuGet assemblies in build folder add in csproj of your module
-                            <PropertyGroup>
-                                <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-                            </PropertyGroup>
-                         */
-                WriteError(ex.Message);
-                foreach (var loaderException in ex.LoaderExceptions)
-                {
-                    WriteError("Can`t load " + loaderException.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteError(ex.Message);
-                //throw;
-            }
-        }
 
         return result;
     }
@@ -330,12 +267,7 @@ partial class Build : NukeBuild
         return result.Where(x=>x.Actions.Any()).ToList();
     }
 
-    struct AssemblyMeta
-    {
-        public ModuleDefMD Assembly { get; set; }
-        public string Path { get; set; }
-    }
-
+   
     class RestClientMeta
     {
         public string RestClientName { get; set; }

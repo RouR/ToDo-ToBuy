@@ -23,6 +23,10 @@ DTO_Public_TODO_ListTODOResponse[label="ListTODOResponse"];
 DTO_Public_TODO_SaveTODORequest[label="SaveTODORequest"];
 /* DTO.Public.TODO.SaveTODOResponse */
 DTO_Public_TODO_SaveTODOResponse[label="SaveTODOResponse"];
+/* DTO.Public.Account.RegisterRequest */
+DTO_Public_Account_RegisterRequest[label="RegisterRequest"];
+/* DTO.Public.Account.RegisterResponse */
+DTO_Public_Account_RegisterResponse[label="RegisterResponse"];
 /* DTO.Internal.TODO.CreateTODO */
 DTO_Internal_TODO_CreateTODO[label="CreateTODO"];
 /* DTO.Internal.TODO.DeleteTODO */
@@ -31,11 +35,15 @@ DTO_Internal_TODO_DeleteTODO[label="DeleteTODO"];
 DTO_Internal_TODO_ListTODO[label="ListTODO"];
 /* DTO.Internal.TODO.UpdateTODO */
 DTO_Internal_TODO_UpdateTODO[label="UpdateTODO"];
+/* DTO.Internal.Account.CreateUserRequest */
+DTO_Internal_Account_CreateUserRequest[label="CreateUserRequest"];
+/* DTO.Internal.Account.CreateUserResponse */
+DTO_Internal_Account_CreateUserResponse[label="CreateUserResponse"];
 
 
 
 
-subgraph d646a7cbdc724940917e4604d0ab2420 {
+subgraph _41488b54812746999b549ffadb6c5420 {
 
 DTO_Public_TODO_SaveTODORequest -> DTO_Internal_TODO_CreateTODO[color="black"];
 DTO_Internal_TODO_CreateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
@@ -46,7 +54,7 @@ DTO_Internal_TODO_UpdateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
 
 
 
-subgraph f33e5827edd843649a19814e718ae9fd {
+subgraph _617d1c254127426c8d37eb24899f449d {
 
 DTO_Public_TODO_DeleteTODORequest -> DTO_Internal_TODO_DeleteTODO[color="black"];
 DTO_Internal_TODO_DeleteTODO -> DTO_Public_TODO_DeleteTODOResponse[color="black"];
@@ -55,16 +63,28 @@ DTO_Internal_TODO_DeleteTODO -> DTO_Public_TODO_DeleteTODOResponse[color="black"
 
 
 
-subgraph _336e557ad3c046e5bfa16b9e8500b974 {
+subgraph b7c396aac5984c2b9f2a6f1087937a73 {
 
 DTO_Public_TODO_ListTODORequest -> DTO_Internal_TODO_ListTODO[color="black"];
 DTO_Internal_TODO_ListTODO -> DTO_Public_TODO_ListTODOResponse[color="black"];
 }
 
 
-{/* ServiceName Web*/ rank=same;DTO_Public_TODO_DeleteTODORequest, DTO_Public_TODO_DeleteTODOResponse, DTO_Public_TODO_ListTODORequest, DTO_Public_TODO_ListTODOResponse, DTO_Public_TODO_SaveTODORequest, DTO_Public_TODO_SaveTODOResponse}
+
+
+subgraph _7c64e7cbd5524d54836595a075a0e7b5 {
+
+DTO_Public_Account_RegisterRequest -> DTO_Internal_Account_CreateUserRequest[color="black"];
+DTO_Internal_Account_CreateUserRequest -> DTO_Internal_Account_CreateUserResponse[color="black"];
+DTO_Internal_Account_CreateUserResponse -> DTO_Public_Account_RegisterResponse[color="black"];
+}
+
+
+{/* ServiceName Web*/ rank=same;DTO_Public_TODO_DeleteTODORequest, DTO_Public_TODO_DeleteTODOResponse, DTO_Public_TODO_ListTODORequest, DTO_Public_TODO_ListTODOResponse, DTO_Public_TODO_SaveTODORequest, DTO_Public_TODO_SaveTODOResponse, DTO_Public_Account_RegisterRequest, DTO_Public_Account_RegisterResponse}
 
 {/* ServiceName ToDoSrv*/ rank=same;DTO_Internal_TODO_CreateTODO, DTO_Internal_TODO_DeleteTODO, DTO_Internal_TODO_ListTODO, DTO_Internal_TODO_UpdateTODO}
+
+{/* ServiceName Account*/ rank=same;DTO_Internal_Account_CreateUserRequest, DTO_Internal_Account_CreateUserResponse}
 
 
 }
