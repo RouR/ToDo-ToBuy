@@ -26,7 +26,13 @@ partial class Build : NukeBuild
     AbsolutePath RestClientGetTemplateFile => RootDirectory / "templates" / "rest_get.template";
     AbsolutePath RestClientsCopyTo => RootDirectory / "src" / "Shared";
     Func<string, string> RestClientFilename = (className) => className + "Auto.cs";
-
+    Dictionary<string, string> RestClients = new Dictionary<string, string>(){
+        // (projectName, className)
+        {"AccountService", "AccountServiceClient"},
+        {"ToDoService", "ToDoServiceClient"},
+        {"ToBuyService", "ToBuyServiceClient"},
+    };
+    
     Target RESTClean => _ => _
         //.DependsOn(Clean) //After this target, will impossible run Clean, see https://github.com/dotnet/corefx/issues/14724
         .Executes(() =>
@@ -44,15 +50,9 @@ partial class Build : NukeBuild
         {
             var outputPath = MyRestClientsDirectory;
 
-            var clients = new Dictionary<string, string>
-            {
-                // (projectName, className)
-                {"AccountService", "AccountServiceClient"}
-            };
-
             Directory.CreateDirectory(outputPath);
 
-            var meta = FindAssemblyForRestClient(clients);
+            var meta = FindAssemblyForRestClient(RestClients);
             var files = CreateRestFiles(meta, outputPath);
 
             foreach (var file in files)

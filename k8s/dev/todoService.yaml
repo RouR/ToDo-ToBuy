@@ -1,15 +1,15 @@
 apiVersion: apps/v1beta2 # apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: account-service-deployment
+  name: todo-service-deployment
   namespace: dev
   labels:
-    app: account-service
+    app: todo-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: account-service
+      app: todo-service
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,12 +22,12 @@ spec:
     metadata:
       namespace: dev
       labels:
-        app: account-service
-        ci: somedataForOverride858        
+        app: todo-service
+        ci: somedataForOverride796        
     spec:
       containers:
-      - name: account-service
-        image: roured/tdtb-acc:dev
+      - name: todo-service
+        image: roured/tdtb-todo:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 5555
@@ -56,11 +56,11 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: web-account
+  name: web-todo
   namespace: dev
 spec:
   selector:
-    app: account-service
+    app: todo-service
   ports:
   - name: http
     protocol: TCP

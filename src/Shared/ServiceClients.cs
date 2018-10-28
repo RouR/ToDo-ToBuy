@@ -12,6 +12,8 @@ namespace Shared
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AccountServiceClient>();
+            services.AddSingleton<ToDoServiceClient>();
+            services.AddSingleton<ToBuyServiceClient>();
         }
 
 

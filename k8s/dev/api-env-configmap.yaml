@@ -5,4 +5,6 @@ metadata:
   namespace: dev
 data:
   apiAccount: http://web-account.dev/
+  apiToDo: http://web-todo.dev/
+  apiToBuy: http://web-tobuy.dev/
   

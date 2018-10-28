@@ -56,16 +56,30 @@ script:
       
       cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
+	  
+	  cp -r ./src/ToDoService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
+	  
+	  cp -r ./src/ToBuyService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
       docker tag tdtb-web roured/tdtb-web:{{dockerVer}} ;
       docker tag tdtb-acc roured/tdtb-acc:{{dockerVer}} ;
+      docker tag tdtb-todo  roured/tdtb-todo:{{dockerVer}} ;
+      docker tag tdtb-tobuy roured/tdtb-tobuy:{{dockerVer}} ;
       docker tag tdtb-web roured/tdtb-web:latest ;
       docker tag tdtb-acc roured/tdtb-acc:latest ;
+      docker tag tdtb-todo  roured/tdtb-todo:latest ;
+      docker tag tdtb-tobuy roured/tdtb-tobuy:latest ;
       docker push roured/tdtb-acc:{{dockerVer}} ;
       docker push roured/tdtb-web:{{dockerVer}} ;
+      docker push roured/tdtb-tobuy:{{dockerVer}} ;
+      docker push roured/tdtb-todo:{{dockerVer}} ;
       docker push roured/tdtb-web:latest ;
       docker push roured/tdtb-acc:latest ;
+      docker push roured/tdtb-tobuy:latest ;
+      docker push roured/tdtb-todo:latest ;
       docker logout ;      
       fi
       
@@ -77,16 +91,30 @@ script:
       
       cp -r ./src/AccountService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
+	  
+	   cp -r ./src/ToDoService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
+	  
+	  cp -r ./src/ToBuyService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
       docker tag tdtb-web roured/tdtb-web:{{dockerVer}} ;
       docker tag tdtb-acc roured/tdtb-acc:{{dockerVer}} ;
+      docker tag tdtb-todo roured/tdtb-todo:{{dockerVer}} ;
+      docker tag tdtb-tobuy roured/tdtb-tobuy:{{dockerVer}} ;
       docker tag tdtb-web roured/tdtb-web:dev ;
       docker tag tdtb-acc roured/tdtb-acc:dev ;
+      docker tag tdtb-tobuy roured/tdtb-tobuy:dev ;
+      docker tag tdtb-todo roured/tdtb-todo:dev ;
       docker push roured/tdtb-acc:{{dockerVer}} ;
       docker push roured/tdtb-web:{{dockerVer}} ;
+      docker push roured/tdtb-todo:{{dockerVer}} ;
+      docker push roured/tdtb-tobuy:{{dockerVer}} ;
       docker push roured/tdtb-web:dev ;
       docker push roured/tdtb-acc:dev ;      
+      docker push roured/tdtb-todo:dev ;      
+      docker push roured/tdtb-tobuy:dev ;      
       docker logout ;       
       fi
     

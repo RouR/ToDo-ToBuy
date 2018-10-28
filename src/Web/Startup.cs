@@ -87,6 +87,8 @@ namespace Web
                 //checks.AddSqlCheck("CatalogDb", Configuration["ConnectionString"]);
                 
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account));
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToDo));
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToBuy));
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
                 //checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));

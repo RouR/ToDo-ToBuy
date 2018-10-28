@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenTracing;
 using Serilog;
 using Shared;
+using Utils;
 using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.home.Controllers
@@ -16,20 +17,31 @@ namespace Web.Areas.home.Controllers
     [Area("home")]
     public class HelloController : Controller
     {
-        private readonly ITracer _tracer;
-        private readonly AccountServiceClient _accountServiceClient;
         private readonly Random _rnd;
+        private readonly ITracer _tracer;
+        // ReSharper disable NotAccessedField.Local
+        private readonly AccountServiceClient _accountServiceClient;
+        private readonly ToDoServiceClient _todoServiceClient;
+        private readonly ToBuyServiceClient _tobuyServiceClient;
+        // ReSharper restore NotAccessedField.Local
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="tracer"></param>
         /// <param name="accountServiceClient"></param>
+        /// <param name="todoServiceClient"></param>
+        /// <param name="tobuyServiceClient"></param>
         public HelloController(ITracer tracer,
-            AccountServiceClient accountServiceClient)
+            AccountServiceClient accountServiceClient,
+            ToDoServiceClient todoServiceClient,
+            ToBuyServiceClient tobuyServiceClient
+            )
         {
             _tracer = tracer;
             _accountServiceClient = accountServiceClient;
+            _todoServiceClient = todoServiceClient;
+            _tobuyServiceClient = tobuyServiceClient;
             _rnd = new Random();
         }
         
@@ -108,6 +120,69 @@ namespace Web.Areas.home.Controllers
             var response = await _accountServiceClient.TestDelay(request);
             sb.AppendLine("Response:");
             sb.AppendLine(response);
+
+            return View("simple", sb.ToString());
+        }
+        
+        
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> Test3()
+        {
+            var sb = new StringBuilder();
+            var request = $"req{_rnd.Next(2000, 9000)}";
+            sb.AppendLine("Request:");
+            sb.AppendLine(request);
+            
+            
+            var responseAcc = await _accountServiceClient.TestDelay(request);
+
+            var (toToResult, toBuyResult) = await TaskEx.WhenAll(
+                _todoServiceClient.TestDelay(request),
+                _tobuyServiceClient.TestDelay(request)
+                );
+
+            sb.AppendLine("Response AccountService:");
+            sb.AppendLine(responseAcc);
+            
+            sb.AppendLine("Response ToDoService:");
+            sb.AppendLine(toToResult);
+            
+            sb.AppendLine("Response ToBuyService:");
+            sb.AppendLine(toBuyResult);
+
+            return View("simple", sb.ToString());
+        }
+        
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> Test4()
+        {
+            var sb = new StringBuilder();
+            var request = $"req{_rnd.Next(2000, 9000)}";
+            sb.AppendLine("Request:");
+            sb.AppendLine(request);
+            
+            
+            var responseAcc = await _accountServiceClient.TestDelay(request);
+
+            var (toToResult, toBuyResult) = await TaskEx.WhenAll(
+                _todoServiceClient.TestFail(request),
+                _tobuyServiceClient.TestFail(request)
+            );
+
+            sb.AppendLine("Response AccountService:");
+            sb.AppendLine(responseAcc);
+            
+            sb.AppendLine("Response ToDoService:");
+            sb.AppendLine(toToResult);
+            
+            sb.AppendLine("Response ToBuyService:");
+            sb.AppendLine(toBuyResult);
 
             return View("simple", sb.ToString());
         }

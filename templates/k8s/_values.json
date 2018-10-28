@@ -15,12 +15,23 @@
 			"dev": "/healthz",			
 		},
 		
+		"docker-pull-policy": {
+			"dev": "Always",			
+		},
 		
 		"web-replicas": {
 			"dev": 1,
 			"stage": 2
 		},
 		"accountService-replicas": {
+			"dev": 1,
+			"stage": 2
+		},
+		"todoService-replicas": {
+			"dev": 1,
+			"stage": 2
+		},
+		"tobuyService-replicas": {
 			"dev": 1,
 			"stage": 2
 		},

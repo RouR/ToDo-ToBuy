@@ -28,7 +28,7 @@ spec:
       containers:
       - name: account-service
         image: roured/tdtb-acc:{{docker-ver}}
-        imagePullPolicy: Always
+        imagePullPolicy: {{docker-pull-policy}}
         ports:
         - containerPort: {{webPort}}
         readinessProbe:
