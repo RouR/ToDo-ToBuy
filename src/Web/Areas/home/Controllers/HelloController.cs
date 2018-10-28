@@ -10,6 +10,9 @@ using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.home.Controllers
 {
+    /// <summary>
+    /// default route
+    /// </summary>
     [Area("home")]
     public class HelloController : Controller
     {
@@ -17,6 +20,11 @@ namespace Web.Areas.home.Controllers
         private readonly AccountServiceClient _accountServiceClient;
         private readonly Random _rnd;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tracer"></param>
+        /// <param name="accountServiceClient"></param>
         public HelloController(ITracer tracer,
             AccountServiceClient accountServiceClient)
         {
@@ -24,6 +32,11 @@ namespace Web.Areas.home.Controllers
             _accountServiceClient = accountServiceClient;
             _rnd = new Random();
         }
+        
+        /// <summary>
+        /// default page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             Logger().Debug("get Index");
@@ -35,6 +48,11 @@ namespace Web.Areas.home.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public IActionResult Fail()
         {
             Log.Debug("get Fail");
@@ -54,6 +72,10 @@ namespace Web.Areas.home.Controllers
             return LocalRedirect("/");
         }
 
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Test1()
         {
             Logger().Debug("get Test1");
@@ -68,6 +90,10 @@ namespace Web.Areas.home.Controllers
             return View("simple", sb.ToString());
         }
 
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Test2()
         {
             Logger().Debug("get Test2");

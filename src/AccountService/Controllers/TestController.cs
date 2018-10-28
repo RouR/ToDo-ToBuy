@@ -7,17 +7,29 @@ using static CustomLogs.SetupCustomLogs;
 
 namespace AccountService.Controllers
 {
+    /// <summary>
+    /// Only for testing infrastructure
+    /// </summary>
     public class TestController : Controller
     {
         private readonly ITracer _tracer;
         private readonly Random _rnd;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tracer"></param>
         public TestController(ITracer tracer)
         {
             _tracer = tracer;
             _rnd = new Random();
         }
 
+        /// <summary>
+        /// No delay
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Test1(string request)
         {
@@ -30,6 +42,11 @@ namespace AccountService.Controllers
             return Ok(request+" *-*" + request);
         }
 
+        /// <summary>
+        /// Random delay
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> TestDelay(string request)
         {

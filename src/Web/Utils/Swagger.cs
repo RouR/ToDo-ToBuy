@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.PlatformAbstractions;
+#pragma warning disable 1591
 
 namespace Web.Utils
 {

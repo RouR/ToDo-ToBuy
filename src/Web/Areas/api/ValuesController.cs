@@ -5,6 +5,9 @@ using static CustomLogs.SetupCustomLogs;
 
 namespace Web.Areas.api
 {
+    /// <summary>
+    /// Only for testing infrastructure
+    /// </summary>
     [Area("api")]
     [ApiVersion("0.1")]
     [Route("api/[controller]")]
@@ -12,6 +15,10 @@ namespace Web.Areas.api
     {
         private readonly ITracer _tracer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tracer"></param>
         public ValuesController(ITracer tracer)
         {
             _tracer = tracer;
@@ -28,7 +35,11 @@ namespace Web.Areas.api
             return new[] { "value1", "value2" };
         }
 
-        // GET api/values/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public string Get(int id)
         {
@@ -44,22 +55,6 @@ namespace Web.Areas.api
             return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.TraceId;
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        
     }
 }

@@ -5,10 +5,17 @@ using OpenTracing;
 
 namespace AccountService.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UserController : Controller
     {
         private readonly ITracer _tracer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tracer"></param>
         public UserController(ITracer tracer)
         {
             _tracer = tracer;

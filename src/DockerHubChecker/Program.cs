@@ -43,8 +43,12 @@ namespace DockerHubChecker
                     var clientDocker = new DockerHubClient();
 
                     var tasks = images
-                        .Select(x=> x.Split('/', '\\', ':'))
-                        .Select(async (x) => clientDocker.GetTags(x[0], x[1]).SingleOrDefault(y=> y.Name == x[2]));
+                        .Select(x => x.Split('/', '\\', ':'))
+                        .Select(async (x) =>
+                        {
+                            var tags = await clientDocker.GetTags(x[0], x[1]);
+                            return tags.SingleOrDefault(y => y.Name == x[2]);
+                        });
 
                     var result = Task.WhenAll(tasks);
 

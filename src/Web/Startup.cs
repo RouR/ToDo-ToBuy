@@ -11,9 +11,11 @@ using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
+#pragma warning disable 1591
 
 namespace Web
 {
+    
     public class Startup
     {
         //public IConfiguration Configuration { get; }

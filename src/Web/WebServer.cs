@@ -3,6 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using Shared;
+#pragma warning disable 1591
 
 //Install-Package Microsoft.AspNet.HealthChecks
 namespace Web

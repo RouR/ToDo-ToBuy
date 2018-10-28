@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -23,15 +25,16 @@ namespace DockerHubChecker
             return JsonConvert.DeserializeObject<RepoListResponse>(content).Results;
         }
 
-        public IEnumerable<Tag> GetTags(string username, string repoName)
+        public async Task<IEnumerable<Tag>> GetTags(string username, string repoName)
         {
             Console.WriteLine($"docker start load for {username}/{repoName}");
             var client = new RestClient(HttpsRegistryHubDockerComV2);
+            var cancellationTokenSource = new CancellationTokenSource();
             
             var request = new RestRequest($"/repositories/{username}/{repoName}/tags/", Method.GET);
             //request.AddHeader("Authorization",$"JWT {token}");
 
-            var response = client.Execute(request);
+            var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
             var content = response.Content;
 
             Console.WriteLine($"docker finish load for {username}/{repoName} = {content}");
