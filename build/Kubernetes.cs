@@ -18,12 +18,12 @@ partial class Build : NukeBuild
     [Parameter()] readonly string K8sNamespace;
     
     AbsolutePath MyK8sDirectory => RootDirectory / "k8s";
-    AbsolutePath MyK8sTemplatesDirectory => MyK8sDirectory / "templates";
-    AbsolutePath MyK8sTemplatesValueFile => MyK8sDirectory / "templates" / "_values.json";
+    AbsolutePath MyK8sTemplatesDirectory => RootDirectory / "templates" / "k8s";
+    AbsolutePath MyK8sTemplatesValueFile => RootDirectory / "templates" / "k8s" / "_values.json";
    
     protected internal const string TemplateTravisFileNamePattern = ".template";
 
-    AbsolutePath TravisTemplateFile => RootDirectory / ".travis.template";
+    AbsolutePath TravisTemplateFile => RootDirectory / "templates" / ".travis.template";
     AbsolutePath TravisFile => RootDirectory / ".travis.yml";
     // ReSharper restore InconsistentNaming
     Target RunTemplate => _ => _

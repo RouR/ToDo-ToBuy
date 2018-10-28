@@ -21,11 +21,12 @@ using static Nuke.Common.IO.PathConstruction;
 
 partial class Build : NukeBuild
 {
-    AbsolutePath RestClientClassTemplateFile => RootDirectory / "rest_class.template";
-    AbsolutePath RestClientPostTemplateFile => RootDirectory / "rest_post.template";
-    AbsolutePath RestClientGetTemplateFile => RootDirectory / "rest_get.template";
+    AbsolutePath RestClientClassTemplateFile => RootDirectory / "templates" / "rest_class.template";
+    AbsolutePath RestClientPostTemplateFile => RootDirectory / "templates" / "rest_post.template";
+    AbsolutePath RestClientGetTemplateFile => RootDirectory / "templates" / "rest_get.template";
     AbsolutePath RestClientsCopyTo => RootDirectory / "src" / "Shared";
-    
+    Func<string, string> RestClientFilename = (className) => className + "Auto.cs";
+
     Target RESTClean => _ => _
         //.DependsOn(Clean) //After this target, will impossible run Clean, see https://github.com/dotnet/corefx/issues/14724
         .Executes(() =>
@@ -123,7 +124,7 @@ partial class Build : NukeBuild
             using (var streamReader = new StreamReader(RestClientClassTemplateFile , Encoding.UTF8))
             {
                 var content = stubble.Render(streamReader.ReadToEnd(), dataHash, stubbleRenderSettings);
-                var path = outputPath / (clientMeta.RestClientName+"Auto.cs");
+                var path = outputPath / RestClientFilename(clientMeta.RestClientName);
                 File.WriteAllText(path, content);
                 result.Add(path);
             }
