@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using DTO;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -18,11 +19,8 @@ namespace Shared
             Console.WriteLine($"{clientId.ToString()}Client Uri {uri}");
 
             _client = factory.CreateClient(clientId.ToString());
-//            _client = new HttpClient
-//            {
-//                BaseAddress = uri
-//            };
-//            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.BaseAddress = uri;
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public static void DefaultStrategy(IHttpClientBuilder builder)
