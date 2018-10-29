@@ -135,7 +135,8 @@ namespace Web.Areas.home.Controllers
             var request = $"req{_rnd.Next(2000, 9000)}";
             sb.AppendLine("Request:");
             sb.AppendLine(request);
-            
+
+            _tracer.ActiveSpan?.SetOperationName("HelloController/Test3 - 1+2");
             
             var responseAcc = await _accountServiceClient.TestDelay(request);
 
@@ -167,6 +168,7 @@ namespace Web.Areas.home.Controllers
             sb.AppendLine("Request:");
             sb.AppendLine(request);
             
+            _tracer.ActiveSpan?.SetOperationName("HelloController/Test4 - Fail");
             
             var responseAcc = await _accountServiceClient.TestDelay(request);
 

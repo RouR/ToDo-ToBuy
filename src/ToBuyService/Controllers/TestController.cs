@@ -69,7 +69,7 @@ namespace ToBuyService.Controllers
 
         /// <summary>
         /// Random fail
-        /// fail = counter % 5 == 0
+        /// fail = counter % 5 != 0
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -79,7 +79,7 @@ namespace ToBuyService.Controllers
             if (counter++ > 1000)
                 counter = 0;
 
-            var fail = counter % 3 == 0;
+            var fail = counter % 5 != 0;
             
             var delay = fail ? _rnd.Next(1000, 1900) :  _rnd.Next(300, 700);
             
