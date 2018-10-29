@@ -56,11 +56,11 @@ script:
       
       cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
-	  
-	  cp -r ./src/ToDoService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      
+      cp -r ./src/ToDoService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
       docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
-	  
-	  cp -r ./src/ToBuyService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      
+      cp -r ./src/ToBuyService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
       docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
@@ -91,11 +91,11 @@ script:
       
       cp -r ./src/AccountService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
-	  
-	   cp -r ./src/ToDoService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      
+      cp -r ./src/ToDoService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
       docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
-	  
-	  cp -r ./src/ToBuyService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      
+      cp -r ./src/ToBuyService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
       docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
