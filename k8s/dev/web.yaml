@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride1141        
+        ci: somedataForOverride947        
     spec:
       containers:
       - name: web
@@ -39,7 +39,7 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 10
+          initialDelaySeconds: 120
           timeoutSeconds: 1
         envFrom:
          - configMapRef:

@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: tobuy-service
-        ci: somedataForOverride283        
+        ci: somedataForOverride1081        
     spec:
       containers:
       - name: tobuy-service
@@ -39,7 +39,7 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 10
+          initialDelaySeconds: 120
           timeoutSeconds: 1
         envFrom:
         - configMapRef:

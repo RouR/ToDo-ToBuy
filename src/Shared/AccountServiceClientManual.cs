@@ -1,27 +1,15 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using DTO;
-using Newtonsoft.Json;
 
 namespace Shared
 {
-    public sealed partial class AccountServiceClient
+    public sealed partial class AccountServiceClient : BaseClient
     {
-        private readonly HttpClient _client;
 
-        public AccountServiceClient()
+        public AccountServiceClient(IHttpClientFactory factory) : base(Service.Account, factory)
         {
-            var url = ServiceClients.Url(Service.Account);
-            Console.WriteLine($"AccountServiceClient Url {url}");
-            var uri = new Uri(url);
-            Console.WriteLine($"AccountServiceClient Uri {uri}");
-            _client = new HttpClient
-            {
-                BaseAddress = uri
-            };
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+          
         }
 
         public async Task<string> TestCall(string data)
@@ -42,5 +30,7 @@ namespace Shared
             return result;
         }
 
+
+        
     }
 }

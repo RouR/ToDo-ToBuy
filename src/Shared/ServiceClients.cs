@@ -8,12 +8,16 @@ namespace Shared
     public static class ServiceClients
     {
         public const string HealthCheck = "/healthz";
-
+        
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AccountServiceClient>();
             services.AddSingleton<ToDoServiceClient>();
             services.AddSingleton<ToBuyServiceClient>();
+            
+            BaseClient.DefaultStrategy(services.AddHttpClient(Service.Account.ToString()));
+            BaseClient.DefaultStrategy(services.AddHttpClient(Service.ToDo.ToString()));
+            BaseClient.DefaultStrategy(services.AddHttpClient(Service.ToBuy.ToString()));
         }
 
 

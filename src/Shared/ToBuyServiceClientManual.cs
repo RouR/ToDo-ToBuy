@@ -1,27 +1,15 @@
-using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using DTO;
-using Newtonsoft.Json;
 
 namespace Shared
 {
-    public sealed partial class ToBuyServiceClient
+    public sealed partial class ToBuyServiceClient : BaseClient
     {
-        private readonly HttpClient _client;
-
-        public ToBuyServiceClient()
+        
+        public ToBuyServiceClient(IHttpClientFactory factory) : base(Service.ToBuy, factory)
         {
-            var url = ServiceClients.Url(Service.ToBuy);
-            Console.WriteLine($"AccountServiceClient Url {url}");
-            var uri = new Uri(url);
-            Console.WriteLine($"AccountServiceClient Uri {uri}");
-            _client = new HttpClient
-            {
-                BaseAddress = uri
-            };
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            
         }
 
         public async Task<string> TestCall(string data)

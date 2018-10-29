@@ -39,7 +39,7 @@ spec:
           httpGet:
             path: {{livenessProbePath}}
             port: {{webPort}}
-          initialDelaySeconds: 10
+          initialDelaySeconds: 120
           timeoutSeconds: 1
         envFrom:
         - configMapRef:

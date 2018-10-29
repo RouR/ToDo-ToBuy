@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: account-service
-        ci: somedataForOverride1743        
+        ci: somedataForOverride282        
     spec:
       containers:
       - name: account-service
@@ -39,7 +39,7 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 10
+          initialDelaySeconds: 120
           timeoutSeconds: 1
         envFrom:
         - configMapRef:

@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: todo-service
-        ci: somedataForOverride468        
+        ci: somedataForOverride254        
     spec:
       containers:
       - name: todo-service
@@ -39,7 +39,7 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 10
+          initialDelaySeconds: 120
           timeoutSeconds: 1
         envFrom:
         - configMapRef:
