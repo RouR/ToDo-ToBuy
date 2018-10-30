@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DockerHubChecker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "KUBERNETES_SERVICE_PORT": "8443",
+        "KUBERNETES_NAMESPACE": "dev",
+        "KUBERNETES_SERVICE_HOST": "http://192.168.99.100"
+      }
+    }
+  }
+}

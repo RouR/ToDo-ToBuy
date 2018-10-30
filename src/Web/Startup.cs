@@ -34,7 +34,7 @@ namespace Web
             CustomLogs.SetupCustomLogs.ConfigureServices(instanceInfo);
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, true);
-            ServiceClients.ConfigureServices(services);
+            ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 

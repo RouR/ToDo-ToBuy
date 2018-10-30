@@ -10,7 +10,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 using Shared;
-using ILogger = Serilog.ILogger;
+
 
 namespace CustomLogs
 {
@@ -115,7 +115,7 @@ namespace CustomLogs
         /// using static SetupCustomLogs.SetupCustomLogs;
         /// </summary>
         /// <returns></returns>
-        public static ILogger Logger()
+        public static Serilog.ILogger Logger()
         {
             //use RenderedCompactJsonFormatter to Save all context properties
             return Log.Logger.ForContext("InstanceId", InstanceInfo.Id);

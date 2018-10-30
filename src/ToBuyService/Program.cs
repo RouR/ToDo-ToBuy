@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Shared;
 
@@ -15,7 +16,12 @@ namespace ToBuyService
         {
             try
             {
-                BuildWebHost(args).Run();
+                var bindingConfig = new ConfigurationBuilder()
+                    .AddCommandLine(args)
+                    .Build();
+                var serverport = bindingConfig.GetValue<int?>("port") ?? 5555;
+                
+                BuildWebHost(args, serverport).Run();
                 Log.Information("Shutdown...");
                 return 0;
             }
@@ -32,12 +38,12 @@ namespace ToBuyService
             }
         }
 
-        private static IWebHost BuildWebHost(string[] args) =>
+        private static IWebHost BuildWebHost(string[] args, int serverport) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .UseStartup<Startup>()
                 .UseHealthChecks(ServiceClients.HealthCheck) //nginx-ingress require this path
-                .UseUrls("http://0.0.0.0:5555") // Take that 0.0.0.0 instead of localhost, Docker port forwarding!!!
+                .UseUrls("http://0.0.0.0:"+serverport) // Take that 0.0.0.0 instead of localhost, Docker port forwarding!!!
                 .Build();
     }
 }

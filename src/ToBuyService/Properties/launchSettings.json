@@ -1,0 +1,15 @@
+﻿{
+  "profiles": {
+    "localProfile": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      //      "commandLineArgs": "--port=55552",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "apiAccount": "http://localhost:55551",
+        "apiToDo": "http://localhost:55552",
+        "apiToBuy": "http://localhost:55553"
+      }
+    }
+  }
+}

@@ -30,7 +30,7 @@ namespace ToBuyService
             CustomLogs.SetupCustomLogs.ConfigureServices(instanceInfo);
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, false);
-            ServiceClients.ConfigureServices(services);
+            ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 

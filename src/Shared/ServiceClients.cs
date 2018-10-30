@@ -9,15 +9,15 @@ namespace Shared
     {
         public const string HealthCheck = "/healthz";
         
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services, Serilog.ILogger logger)
         {
             services.AddSingleton<AccountServiceClient>();
             services.AddSingleton<ToDoServiceClient>();
             services.AddSingleton<ToBuyServiceClient>();
             
-            BaseClient.DefaultStrategy(services.AddHttpClient(Service.Account.ToString()));
-            BaseClient.DefaultStrategy(services.AddHttpClient(Service.ToDo.ToString()));
-            BaseClient.DefaultStrategy(services.AddHttpClient(Service.ToBuy.ToString()));
+            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.Account.ToString()));
+            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.ToDo.ToString()));
+            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.ToBuy.ToString()));
         }
 
 
