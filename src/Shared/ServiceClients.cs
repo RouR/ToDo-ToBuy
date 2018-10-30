@@ -15,9 +15,14 @@ namespace Shared
             services.AddSingleton<ToDoServiceClient>();
             services.AddSingleton<ToBuyServiceClient>();
             
-            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.Account.ToString()));
-            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.ToDo.ToString()));
-            BaseClient.DefaultStrategy(logger, services.AddHttpClient(Service.ToBuy.ToString()));
+            Register(Service.Account);
+            Register(Service.ToDo);
+            Register(Service.ToBuy);
+
+            void Register(Service clientId)
+            {
+                BaseClient.DefaultStrategy(logger, services.AddHttpClient(clientId.ToString()));
+            }
         }
 
 
@@ -30,13 +35,16 @@ namespace Shared
             {
                 return CacheUrl[srv];
             }
-            else
-            {
-                var url = Environment.GetEnvironmentVariable($"api{srv.ToString()}") ?? $"http://web-{srv.ToString()}.dev/".ToLower();
-                var uri = new Uri(url);
-                CacheUrl.TryAdd(srv, uri);
-                return uri;
-            }
+
+            var url = Environment.GetEnvironmentVariable($"api{srv.ToString()}");
+            var uri = new Uri(url);
+            CacheUrl.TryAdd(srv, uri);
+            return uri;
+        }
+        
+        public static string GetApiKey(Service srv)
+        {
+            return Environment.GetEnvironmentVariable($"apiKey{srv.ToString()}");
         }
 
         public static string Url(Service srv)

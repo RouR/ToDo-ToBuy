@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CustomMetrics;
 using CustomTracing;
+using DTO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +35,8 @@ namespace AccountService
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
+            
+            
             services.AddMvc();
 
             services.AddHealthChecks(checks =>
@@ -58,6 +61,9 @@ namespace AccountService
             CustomLogs.SetupCustomLogs.Configure(loggerFactory, applicationLifetime);
             SetupDefaultWebMetrics.Configure(app);
 
+            app.ApiKeyMiddleware();
+            KeyHeaderChecker.SetApiKey(ServiceClients.GetApiKey(Service.Account));
+            
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {

@@ -8,7 +8,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "apiAccount": "http://localhost:55551",
         "apiToDo": "http://localhost:55552",
-        "apiToBuy": "http://localhost:55553"
+        "apiToBuy": "http://localhost:55553",
+
+        "apiKeyAccount": "jkldgvf67i34yuksdfg",
+        "apiKeyToDo": "hnasvli7w3osadf8glr",
+        "apiKeyToBuy": "9a743yhwtfgiusdfg5634t"
       }
     }
   }

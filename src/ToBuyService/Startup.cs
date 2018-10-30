@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CustomMetrics;
 using CustomTracing;
+using DTO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -58,6 +59,9 @@ namespace ToBuyService
             CustomLogs.SetupCustomLogs.Configure(loggerFactory, applicationLifetime);
             SetupDefaultWebMetrics.Configure(app);
 
+            app.ApiKeyMiddleware();
+            KeyHeaderChecker.SetApiKey(ServiceClients.GetApiKey(Service.ToBuy));
+            
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {

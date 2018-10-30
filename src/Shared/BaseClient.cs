@@ -21,6 +21,8 @@ namespace Shared
             var uri = new Uri(url);
             Console.WriteLine($"{clientId.ToString()}Client Uri {uri}");
 
+            var apiKey = ServiceClients.GetApiKey(clientId);
+
             if (!int.TryParse(Environment.GetEnvironmentVariable($"apiTimeout"), out var timeout))
                 timeout = 30000;
 
@@ -28,6 +30,7 @@ namespace Shared
             _client.BaseAddress = uri;
             _client.Timeout = TimeSpan.FromMilliseconds(timeout);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(KeyHeaderChecker.Header, apiKey);
         }
 
         public static void DefaultStrategy(Serilog.ILogger logger, IHttpClientBuilder builder)
