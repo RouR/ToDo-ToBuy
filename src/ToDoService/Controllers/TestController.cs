@@ -51,7 +51,7 @@ namespace ToDoService.Controllers
         [HttpPost]
         public async Task<IActionResult> TestDelay(string request)
         {
-            var delay = _rnd.Next(100, 2900);
+            var delay = _rnd.Next(300, 1100);
             SetupCustomLogs.Logger().Debug("call TestDelay for request {0} with delay {1}", request, delay);
             _tracer.ActiveSpan?
                 .SetOperationName("TestController/TestDelay")
@@ -79,7 +79,7 @@ namespace ToDoService.Controllers
 
             var fail = counter % 3 != 0;
             
-            var delay = fail ? _rnd.Next(1000, 1900) :  _rnd.Next(300, 700);
+            var delay = fail ? _rnd.Next(600, 1600) :  _rnd.Next(300, 700);
             
             _tracer.ActiveSpan?
                 .SetOperationName("TestController/TestFail")
