@@ -56,12 +56,12 @@ partial class Build : NukeBuild
         var projects = Solution.Projects;
         var loadedAssemblies = new List<AssemblyMeta>(100);
 
-        foreach (var project in projects)
+        foreach (var project in projects.Where(x=> x.Path.ToString().EndsWith(".csproj")))
         {
             try
             {
                 //DotNetBuild(s => DefaultDotNetBuild.SetProjectFile(project.Path));
-                DotNetTasks.DotNetBuild(s => s.SetProjectFile(project.Path));
+                //DotNetTasks.DotNetBuild(s => s.SetProjectFile(project.Path));
 
                 //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
                 //var dllFile = BuildAssemblyDirectory ;
@@ -73,11 +73,12 @@ partial class Build : NukeBuild
 
                 foreach (var file in dllFiles)
                 {
-                    Console.WriteLine("Load assembly " + file);
+                    //Console.WriteLine("check preload assembly " + file);
                     var fileName = Path.GetFileName(file);
 
                     if (loadedAssemblies.Any(x => x.Assembly.FullName == fileName))
                         continue;
+                    Console.WriteLine("Load assembly " + file);
 
                     try
                     {
@@ -152,7 +153,7 @@ partial class Build : NukeBuild
             try
             {
                 //DotNetBuild(s => DefaultDotNetBuild.SetProjectFile(project.Path));
-                DotNetBuild(s => s.SetProjectFile(project.Path));
+                //DotNetBuild(s => s.SetProjectFile(project.Path));
 
                 //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
                 //var dllFile = BuildAssemblyDirectory ;

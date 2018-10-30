@@ -26,7 +26,6 @@ partial class Build : NukeBuild
     public static int Main()
     {
         return Execute<Build>(x => x.AllCustom);
-        
     }
 
     // Auto-injection fields:
