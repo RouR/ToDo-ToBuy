@@ -8,15 +8,15 @@ data:
 #p.WaitAndRetry(retries, retryAttempt  => 
 #                        TimeSpan.FromMilliseconds(apiRetriesDelayMin + retryAttempt * apiRetriesDelayStep) 
 #                        + TimeSpan.FromMilliseconds(jitter.Next(apiRetriesJitterMin, apiRetriesJitterMax)
-  apiTimeout: 1000
-  apiRetriesCount: 3
-  apiRetriesDelayMin: 100
-  apiRetriesDelayStep: 50
-  apiRetriesJitterMin: 0
-  apiRetriesJitterMax: 100
-  apiCircuitBreakerCount: 5
-  apiCircuitBreakerDelaySeconds: 30
-  apiHandlerLifetimeSeconds: 300
+  apiTimeout: "1000"
+  apiRetriesCount: "3"
+  apiRetriesDelayMin: "100"
+  apiRetriesDelayStep: "50"
+  apiRetriesJitterMin: "0"
+  apiRetriesJitterMax: "100"
+  apiCircuitBreakerCount: "5"
+  apiCircuitBreakerDelaySeconds: "30"
+  apiHandlerLifetimeSeconds: "300"
   
   apiAccount: http://web-account.dev/
   apiToDo: http://web-todo.dev/
