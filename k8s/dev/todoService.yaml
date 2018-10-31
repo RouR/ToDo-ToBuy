@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: todo-service
-        ci: somedataForOverride878        
+        ci: somedataForOverride1185        
     spec:
       containers:
       - name: todo-service
@@ -43,7 +43,9 @@ spec:
           timeoutSeconds: 1
         envFrom:
         - configMapRef:
-             name: api-urls-config  
+             name: api-urls-config 
+        - secretRef:
+             name: api-keys-config			 
         env:		
         - name: TRACING_AGENT_HOST
           valueFrom:

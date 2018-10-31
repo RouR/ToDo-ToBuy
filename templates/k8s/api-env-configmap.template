@@ -22,7 +22,17 @@ data:
   apiToDo: http://web-todo.dev/
   apiToBuy: http://web-tobuy.dev/
   
-  apiKeyAccount: jkldgvf67i34yuksdfg
-  apiKeyToDo: hnasvli7w3osadf8glr
-  apiKeyToBuy: 9a743yhwtfgiusdfg5634t
+  
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-keys-config
+  namespace: dev
+type: Opaque
+data: 
+# http://base64.ru/
+  apiKeyAccount: amtsZGd2ZjY3aTM0eXVrc2RmZw==
+  apiKeyToDo: aG5hc3ZsaTd3M29zYWRmOGdscg==
+  apiKeyToBuy: OWE3NDN5aHd0ZmdpdXNkZmc1NjM0dA==
   

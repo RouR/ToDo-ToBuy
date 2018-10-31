@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride1510        
+        ci: somedataForOverride726        
     spec:
       containers:
       - name: web
@@ -44,6 +44,8 @@ spec:
         envFrom:
          - configMapRef:
              name: api-urls-config  
+         - secretRef:
+              name: api-keys-config
         env:
         - name: TRACING_AGENT_HOST
           valueFrom:

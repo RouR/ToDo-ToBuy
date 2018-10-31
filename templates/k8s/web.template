@@ -44,6 +44,8 @@ spec:
         envFrom:
          - configMapRef:
              name: api-urls-config  
+         - secretRef:
+              name: api-keys-config
         env:
         {{#jaeger_enable}}
         - name: JAEGER_AGENT_HOST

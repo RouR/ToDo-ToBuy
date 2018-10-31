@@ -11,7 +11,7 @@ namespace Shared
     {
         private static string _key;
         
-        internal const string Header = "X-Api_Key";
+        internal const string Header = "X-Api-Key";
 
         public static void SetApiKey(string key)
         {

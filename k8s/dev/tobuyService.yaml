@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: tobuy-service
-        ci: somedataForOverride1663        
+        ci: somedataForOverride1572        
     spec:
       containers:
       - name: tobuy-service
@@ -44,6 +44,8 @@ spec:
         envFrom:
         - configMapRef:
              name: api-urls-config  
+        - secretRef:
+             name: api-keys-config	
         env:		
         - name: TRACING_AGENT_HOST
           valueFrom:

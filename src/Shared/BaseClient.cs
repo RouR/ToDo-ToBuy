@@ -90,8 +90,6 @@ namespace Shared
             Action<Context> onReset = (context) =>
             {
                 logger.Information("CircuitBreaker - onReset for api client {0}", builder.Name);
-                var f = builder.Name;
-                var d = context;
             };
 
             Action onHalfOpen = () =>
@@ -110,8 +108,9 @@ namespace Shared
                             + TimeSpan.FromMilliseconds(jitter.Next(jitterMin, jitterMax)), 
                         onRetry)
                 )
-                .AddTransientHttpErrorPolicy(p =>
-                    p.CircuitBreakerAsync(circuitCount, TimeSpan.FromSeconds(circuitDelay), onBreak, onReset, onHalfOpen))
+                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(circuitCount, TimeSpan.FromSeconds(circuitDelay),
+                                                                        onBreak, onReset, onHalfOpen)
+                )
                 //SetHandlerLifetime can prevent the handler from reacting to DNS changes
                 .SetHandlerLifetime(TimeSpan.FromSeconds(lifetime)) 
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
