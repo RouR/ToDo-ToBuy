@@ -1,28 +1,12 @@
 using System;
 using System.IO;
-using Domain.DBEnities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
-namespace AccountService.DAL
+namespace ToDoService.DAL
 {
     public class ApplicationDbContext : DbContext 
     {
-        public DbSet<UserEntity> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
-            
-            //don`t call SaveChanges() - it will throw exception:
-            // A DbContext instance cannot be used inside OnModelCreating
-
-            builder.Entity<UserEntity>().HasIndex(c => new { c.IsDeleted });
-            builder.Entity<UserEntity>().HasIndex(c => new { c.Email }).IsUnique();
-        }
 
         /// <summary>
         /// Used for console commands - dotnet ef migrations add MigrationName
@@ -31,7 +15,7 @@ namespace AccountService.DAL
         {
             //don`t delete
         }
-
+        
         /// <summary>
         /// Used in runtime for EF Migrations
         /// </summary>
@@ -41,7 +25,7 @@ namespace AccountService.DAL
         {
             //don`t delete
         }
-
+        
         /// <summary>
         /// Used for console commands - dotnet ef migrations add MigrationName
         /// </summary>
@@ -68,7 +52,20 @@ namespace AccountService.DAL
             
             optionsBuilder.UseNpgsql(connection);           
         }
-
+        
+        /*
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
+            
+            //don`t call SaveChanges() - it will throw exception:
+            // A DbContext instance cannot be used inside OnModelCreating
+          
+        }
+        */
 
         /// <summary>
         /// Run every time at startup

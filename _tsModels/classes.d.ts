@@ -2,6 +2,7 @@
 declare namespace Domain {
 	interface DBEntity {
 		Created: Date;
+		IsDeleted: boolean;
 		PublicId: string;
 		Updated: Date;
 	}

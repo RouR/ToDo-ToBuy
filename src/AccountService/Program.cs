@@ -24,7 +24,7 @@ namespace AccountService
 
                 var host = BuildWebHost(args, serverport);
                 
-                //cd ./src/AccountService/ && dotnet ef migrations add Initial  
+                // cd ./src/AccountService/ && dotnet ef migrations add Initial && cd ../..
                 using (var scope = host.Services.CreateScope())
                 {
                     using (var context = scope.ServiceProvider.GetService<ApplicationDbContext>())

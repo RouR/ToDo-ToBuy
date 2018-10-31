@@ -1,10 +1,14 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Interfaces;
 
 namespace Domain.DBEnities
 {
-    public class UserEntity: DBEntity, IUser
-         {
-             public Guid UserId { get; set; }
-         }
+    [Table("Users")]
+    public class UserEntity : DBEntity
+    {
+        [MaxLength(80)]
+        public string Email { get; set; }
+    }
 }

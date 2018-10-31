@@ -3,7 +3,7 @@ using Domain.Interfaces;
 
 namespace Domain.DBEnities
 {
-    public class TodoEntity : DBEntity, IUser
+    public class TodoEntity : DBEntity, IForUser
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Domain.Interfaces
 {
-    public interface IUser
+    public interface IForUser
     {
         Guid UserId { get; set; }
     }

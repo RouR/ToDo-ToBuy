@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: tobuy-service
-        ci: somedataForOverride1579        
+        ci: somedataForOverride1420        
     spec:
       containers:
       - name: tobuy-service
@@ -35,18 +35,29 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 120
+          initialDelaySeconds: 200
           timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 6
         envFrom:
         - configMapRef:
              name: api-urls-config  
         - secretRef:
              name: api-keys-config	
-        env:		
+        env:	
+        - name: sqlCon
+          valueFrom:
+            secretKeyRef:
+              name: db-conn-config
+              key: dbToBuy	
+
         - name: TRACING_AGENT_HOST
           valueFrom:
             fieldRef:

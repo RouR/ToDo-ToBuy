@@ -35,23 +35,29 @@ spec:
           httpGet:
             path: {{readinessProbePath}}
             port: {{webPort}}
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: {{livenessProbePath}}
             port: {{webPort}}
-          initialDelaySeconds: 120
+          initialDelaySeconds: 200
           timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 6
         envFrom:
         - configMapRef:
              name: api-urls-config  
         - secretRef:
-             name: api-keys-config
+             name: api-keys-config         
+        env:
         - name: sqlCon
           valueFrom:
             secretKeyRef:
               name: db-conn-config
-              key: dbAccount	 
-        env:
+              key: dbAccount	
+
         {{#jaeger_enable}}
         - name: JAEGER_AGENT_HOST
           valueFrom:

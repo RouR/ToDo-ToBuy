@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride862        
+        ci: somedataForOverride307        
     spec:
       containers:
       - name: web
@@ -35,12 +35,17 @@ spec:
           httpGet:
             path: /healthz
             port: 5555
+          initialDelaySeconds: 60
+          timeoutSeconds: 1
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /healthz
             port: 5555
-          initialDelaySeconds: 120
+          initialDelaySeconds: 200
           timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 6
         envFrom:
          - configMapRef:
              name: api-urls-config  

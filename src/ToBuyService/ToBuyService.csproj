@@ -6,10 +6,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\netcoreapp2.1\ToBuyService.xml</DocumentationFile>
+      <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <DocumentationFile>bin\Release\netcoreapp2.1\ToBuyService.xml</DocumentationFile>
+      <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,9 +19,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="HealthChecks.PostgreSQL" Version="1.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.2" />
     </ItemGroup>
 
     <ItemGroup>

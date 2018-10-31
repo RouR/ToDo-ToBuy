@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Shared;
+using ToBuyService.DAL;
 
-#pragma warning disable 1591
 
 //Install-Package Microsoft.AspNet.HealthChecks
 namespace ToBuyService
@@ -21,7 +23,20 @@ namespace ToBuyService
                     .Build();
                 var serverport = bindingConfig.GetValue<int?>("port") ?? 5555;
                 
-                BuildWebHost(args, serverport).Run();
+                var host = BuildWebHost(args, serverport);
+                
+                // cd ./src/ToBuyService/ && dotnet ef migrations add Initial  && cd ../..
+                using (var scope = host.Services.CreateScope())
+                {
+                    using (var context = scope.ServiceProvider.GetService<ApplicationDbContext>())
+                    {
+                        context.Database.Migrate();
+
+                        ApplicationDbContext.CustomSeed(context);
+                    }
+                }
+                
+                host.Run();
                 Log.Information("Shutdown...");
                 return 0;
             }
