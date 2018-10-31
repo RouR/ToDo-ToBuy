@@ -1,15 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using AccountService.DAL;
 using CustomMetrics;
 using CustomTracing;
 using DTO;
+using Jaeger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
-#pragma warning disable 1591
 
 namespace AccountService
 {
@@ -35,7 +38,8 @@ namespace AccountService
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
-            
+            var connection = Environment.GetEnvironmentVariable($"sqlCon") ?? throw new Exception("Database connection string required 'sqlCon'");
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
             
             services.AddMvc();
 

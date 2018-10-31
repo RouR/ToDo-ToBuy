@@ -45,8 +45,13 @@ spec:
         - configMapRef:
              name: api-urls-config  
         - secretRef:
-             name: api-keys-config	
-        env:		
+             name: api-keys-config
+        - name: sqlCon
+          valueFrom:
+            secretKeyRef:
+              name: db-conn-config
+              key: dbAccount	 
+        env:
         {{#jaeger_enable}}
         - name: JAEGER_AGENT_HOST
           valueFrom:

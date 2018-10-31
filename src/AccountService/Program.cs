@@ -1,10 +1,12 @@
 ﻿using System;
+using AccountService.DAL;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Shared;
-#pragma warning disable 1591
 
 //Install-Package Microsoft.AspNet.HealthChecks
 namespace AccountService
@@ -19,8 +21,21 @@ namespace AccountService
                     .AddCommandLine(args)
                     .Build();
                 var serverport = bindingConfig.GetValue<int?>("port") ?? 5555;
+
+                var host = BuildWebHost(args, serverport);
                 
-                BuildWebHost(args, serverport).Run();
+                //cd ./src/AccountService/ && dotnet ef migrations add Initial  
+                using (var scope = host.Services.CreateScope())
+                {
+                    using (var context = scope.ServiceProvider.GetService<ApplicationDbContext>())
+                    {
+                        context.Database.Migrate();
+
+                        ApplicationDbContext.CustomSeed(context);
+                    }
+                }
+                
+                host.Run();
                 Log.Information("Shutdown...");
                 return 0;
             }

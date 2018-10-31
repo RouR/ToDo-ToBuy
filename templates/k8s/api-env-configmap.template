@@ -36,3 +36,15 @@ data:
   apiKeyToDo: aG5hc3ZsaTd3M29zYWRmOGdscg==
   apiKeyToBuy: OWE3NDN5aHd0ZmdpdXNkZmc1NjM0dA==
   
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-conn-config
+  namespace: dev
+type: Opaque
+data: 
+# http://base64.ru/
+  dbAccount: U2VydmVyPTE5Mi4xNjguNTYuMTtEYXRhYmFzZT1hY2Nfc3J2X2RiO1VzZXJJZD1hY2Nfc3J2X2xvZ2luO1Bhc3N3b3JkPWRldk9ubHlQd2Q=
+  
+  
