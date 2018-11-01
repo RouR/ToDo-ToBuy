@@ -1,4 +1,5 @@
-﻿using CustomCache;
+﻿using System;
+using CustomCache;
 using CustomCache.Utils;
 using CustomMetrics;
 using CustomTracing;
@@ -88,11 +89,11 @@ namespace Web
                 //However, the MVC web application has multiple dependencies on the rest of the microservices. Therefore, it calls one AddUrlCheck method for each microservice
                 //checks.AddSqlCheck("CatalogDb", Configuration["ConnectionString"]);
                 
-                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account));
-                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToDo));
-                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToBuy));
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account), TimeSpan.FromSeconds(1));
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToDo), TimeSpan.FromSeconds(1));
+                checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToBuy), TimeSpan.FromSeconds(1));
                 
-                checks.AddRedisCheck(redisCacheOptions);
+                checks.AddRedisCheck(redisCacheOptions, TimeSpan.FromSeconds(1));
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
                 //checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));

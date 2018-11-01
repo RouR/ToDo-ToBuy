@@ -2,22 +2,24 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.HealthChecks;
+using Microsoft.Extensions.Logging;
 
 namespace CustomCache.Utils
 {
     public static class HealthCheckBuilderRedisExtensions  
     {  
   
-        public static HealthCheckBuilder AddRedisCheck(this HealthCheckBuilder builder, RedisCacheOptions options)
+        public static HealthCheckBuilder AddRedisCheck(this HealthCheckBuilder builder, 
+            RedisCacheOptions options,
+            TimeSpan duration)
         {
             if (options == null)
             {
-                Console.WriteLine("REDIS cache is disabled (RedisCacheOptions options is null)");
+                CustomLogs.SetupCustomLogs.Logger().Warning("REDIS cache is disabled (RedisCacheOptions options is null)");
                 return builder;
             }
             
             var key = $"redisHealthCheck_{Guid.NewGuid()}";
-            var duration = TimeSpan.FromSeconds(1);
             builder.AddCheck($"RedisCheck({options.InstanceName})", async () =>  
             {  
                 try  
@@ -35,8 +37,10 @@ namespace CustomCache.Utils
   
                         if (response != null && response.FromByteArray<string>() == data)  
                         {  
+                            CustomLogs.SetupCustomLogs.Logger().Debug($"RedisCheck({options.InstanceName}): Healthy");
                             return HealthCheckResult.Healthy($"RedisCheck({options.InstanceName}): Healthy");  
                         }  
+                        CustomLogs.SetupCustomLogs.Logger().Debug($"RedisCheck({options.InstanceName}): Unhealthy");
                         return HealthCheckResult.Unhealthy($"RedisCheck({options.InstanceName}): Unhealthy");  
   
                     }  
