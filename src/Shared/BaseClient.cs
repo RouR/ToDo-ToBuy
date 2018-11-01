@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DTO;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
-using Polly.CircuitBreaker;
 
 namespace Shared
 {

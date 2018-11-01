@@ -35,8 +35,8 @@ namespace CustomLogs
                 Console.WriteLine("Logs (fluentd) is disabled in code");
                 Log.Information("Logs (fluentd) is disabled in code");
 #else
-                Console.WriteLine("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
-                Log.Information("Logs (fluentd) is disabled (enviroments FluentD_Host, FluentdPort)");
+                Console.WriteLine("Logs (fluentd) is disabled (environments FluentD_Host, FluentdPort)");
+                Log.Information("Logs (fluentd) is disabled (environments FluentD_Host, FluentdPort)");
 #endif
                 
             }

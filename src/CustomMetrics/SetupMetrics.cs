@@ -15,7 +15,7 @@ namespace CustomMetrics
 
             if (string.IsNullOrEmpty(influxDb))
             {
-                Console.WriteLine("WebMetrics is disabled (enviroment InfluxDB)");
+                Console.WriteLine("WebMetrics is disabled (environment InfluxDB)");
                 return;
             }
 

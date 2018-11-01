@@ -61,6 +61,24 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: dev
+  name: redis-node
+spec:
+  selector:
+    app: redis
+  externalIPs:
+  - 192.168.99.100  
+  type: NodePort
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+    protocol: TCP     
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: dev
   name: jagger-node
 spec:
   selector:

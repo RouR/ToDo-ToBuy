@@ -8,9 +8,7 @@ using System.Text.RegularExpressions;
 using dnlib.DotNet;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build : NukeBuild
 {

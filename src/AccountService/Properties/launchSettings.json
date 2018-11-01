@@ -11,6 +11,7 @@
         "apiToBuy": "http://localhost:55553",
 
         "sqlCon": "Server=localhost;Database=acc_srv_db;UserId=acc_srv_login;Password=devOnlyPwd",
+//        "REDIS_HOST": "192.168.99.100",
 
         "apiKeyAccount": "jkldgvf67i34yuksdfg",
         "apiKeyToDo": "hnasvli7w3osadf8glr",

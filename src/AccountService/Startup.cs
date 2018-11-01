@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AccountService.DAL;
+using CustomCache;
+using CustomCache.Utils;
 using CustomMetrics;
 using CustomTracing;
 using DTO;
 using HealthChecks.PostgreSQL;
-using Jaeger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
 
@@ -36,6 +35,7 @@ namespace AccountService
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, false);
             ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
+            SetupCustomCache.ConfigureServices(services, out var redisCacheOptions);
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
@@ -50,6 +50,8 @@ namespace AccountService
                 checks.AddPostgreSqlCheck("any_text", connection, TimeSpan.FromSeconds(10)); // https://github.com/sindrunas/aspnetcore.healthcheck.postgresqlextension
                 //checks.AddSqlCheck("CatalogDb", Configuration["ConnectionString"]);
                 //checks.AddUrlCheck(Configuration["CatalogUrl"]);
+
+                checks.AddRedisCheck(redisCacheOptions);
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
 //                checks.AddValueTaskCheck("HTTP Endpoint",

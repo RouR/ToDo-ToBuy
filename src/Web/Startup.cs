@@ -1,4 +1,6 @@
-﻿using CustomMetrics;
+﻿using CustomCache;
+using CustomCache.Utils;
+using CustomMetrics;
 using CustomTracing;
 using DTO;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +36,8 @@ namespace Web
             SetupDefaultWebMetrics.ConfigureServices(instanceInfo, services);
             SetupTracing.ConfigureServices(instanceInfo, services, true);
             ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
-
+            SetupCustomCache.ConfigureServices(services, out var redisCacheOptions);
+            
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
             services.AddMvc();
@@ -88,6 +91,8 @@ namespace Web
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account));
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToDo));
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToBuy));
+                
+                checks.AddRedisCheck(redisCacheOptions);
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
                 //checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));

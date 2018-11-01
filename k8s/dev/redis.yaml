@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: dev
+  name: redis-config
+  labels:
+    app: redis
+data: 
+  redis.conf: |+    
+    appendonly no
+    protected-mode no
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: redis-srv
+  labels:
+    app: redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: client
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0
+        ports:
+        - containerPort: 6379
+          name: client
+        command: ["redis-server", "/conf/redis.conf"]
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "redis-cli -h $(hostname) ping"
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "redis-cli -h $(hostname) ping"
+          initialDelaySeconds: 20
+          periodSeconds: 3
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+          readOnly: true
+      volumes:
+      - name: conf
+        configMap:
+          name: redis-config
+          defaultMode: 0755

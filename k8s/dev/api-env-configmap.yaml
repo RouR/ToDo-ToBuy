@@ -22,6 +22,7 @@ data:
   apiToDo: http://web-todo.dev/
   apiToBuy: http://web-tobuy.dev/
   
+  REDIS_HOST: redis-srv.dev
   
 ---
 apiVersion: v1

@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CustomCache\CustomCache.csproj" />
       <ProjectReference Include="..\CustomMetrics\CustomMetrics.csproj" />
       <ProjectReference Include="..\CustomTracing\CustomTracing.csproj" />
       <ProjectReference Include="..\Domain\Domain.csproj" />

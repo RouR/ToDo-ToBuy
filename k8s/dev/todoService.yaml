@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: todo-service
-        ci: somedataForOverride57        
+        ci: somedataForOverride188        
     spec:
       containers:
       - name: todo-service

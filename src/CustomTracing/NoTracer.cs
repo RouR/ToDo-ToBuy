@@ -1,5 +1,4 @@
-﻿using System;
-using OpenTracing;
+﻿using OpenTracing;
 using OpenTracing.Propagation;
 
 namespace CustomTracing

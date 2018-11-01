@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: account-service
-        ci: somedataForOverride1509        
+        ci: somedataForOverride1422        
     spec:
       containers:
       - name: account-service
