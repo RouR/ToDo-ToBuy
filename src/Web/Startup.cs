@@ -61,11 +61,13 @@ namespace Web
                     new RateLimitRule()
                     {
                         Endpoint = "*",
-                        PeriodTimespan = TimeSpan.FromSeconds(10),
+                        Period = "10s",
+                        //runtime exception PeriodTimespan = TimeSpan.FromSeconds(10),
                         Limit = 2
                     }
                 };
-                
+                options.DisableRateLimitHeaders = true;
+                options.RateLimitCounterPrefix = "web_throttle_";
             });
             services.Configure<IpRateLimitPolicies>(options =>
             {
