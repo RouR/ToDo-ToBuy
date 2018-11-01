@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CustomCache;
 using CustomCache.Utils;
 using CustomMetrics;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
+using AspNetCoreRateLimit;
 
 namespace Web
 {
@@ -40,6 +42,56 @@ namespace Web
             SetupCustomCache.ConfigureServices(services, out var redisCacheOptions);
             
             CustomLogs.SetupCustomLogs.PrintAllEnv();
+            
+            //https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
+            services.Configure<IpRateLimitOptions>(options =>
+            {
+                options.EnableEndpointRateLimiting = false;
+                options.StackBlockedRequests  = false;
+                //The RealIpHeader is used to extract the client IP when your Kestrel server is behind a reverse proxy, if your proxy uses a different header then X-Real-IP use this option to set it up.
+                options.RealIpHeader = "X-Real-IP";
+                //The ClientIdHeader is used to extract the client id for white listing, if a client id is present in this header and matches a value specified in ClientWhitelist then no rate limits are applied.
+                options.ClientIdHeader = "X-ClientId";
+                options.HttpStatusCode = 429;
+                options.IpWhitelist = new List<string>() { /*"127.0.0.1", "::1/10", "192.168.0.0/24" */};
+                options.EndpointWhitelist = new List<string>() { /*"get:/api/license", "*:/api/status" */};
+                options.ClientWhitelist = new List<string>(){ /*"dev-id-1", "dev-id-2" */ };
+                options.GeneralRules = new List<RateLimitRule>()
+                {
+                    new RateLimitRule()
+                    {
+                        Endpoint = "*",
+                        PeriodTimespan = TimeSpan.FromSeconds(10),
+                        Limit = 2
+                    }
+                };
+                
+            });
+            services.Configure<IpRateLimitPolicies>(options =>
+            {
+                options.IpRules = new List<IpRateLimitPolicy>()
+                {
+                    /*
+                    new IpRateLimitPolicy()
+                    {
+                        //like "192.168.0.0/24", "fe80::/10" or "192.168.0.0-192.168.0.255".
+                        Ip =  "192.168.3.22/25",
+                        Rules = new List<RateLimitRule>()
+                        {
+                            new RateLimitRule()
+                            {
+                                Endpoint = "*",
+                                PeriodTimespan = TimeSpan.FromSeconds(2),
+                                Limit = 2
+                            }
+                        }
+                    }
+                    */
+                };
+            });
+            services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+
 
             services.AddMvc();
 
@@ -112,6 +164,9 @@ namespace Web
             SetupDefaultWebMetrics.Configure(app);
 
             app.UseStaticFiles();
+            
+            app.UseIpRateLimiting();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

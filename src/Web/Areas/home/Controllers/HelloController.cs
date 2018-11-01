@@ -188,5 +188,21 @@ namespace Web.Areas.home.Controllers
 
             return View("simple", sb.ToString());
         }
+        
+        /// <summary>
+        /// Only for testing infrastructure
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Headers()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var header in this.HttpContext.Request.Headers)
+            {
+                sb.AppendLine($"\t{header.Key} = {header.Value}");
+            }
+            
+            return View("simple", sb.ToString());
+        }
     }
 }

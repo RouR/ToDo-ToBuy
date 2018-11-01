@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.HealthChecks;
-using Microsoft.Extensions.Logging;
 
 namespace CustomCache.Utils
 {
@@ -37,10 +36,8 @@ namespace CustomCache.Utils
   
                         if (response != null && response.FromByteArray<string>() == data)  
                         {  
-                            CustomLogs.SetupCustomLogs.Logger().Debug($"RedisCheck({options.InstanceName}): Healthy");
                             return HealthCheckResult.Healthy($"RedisCheck({options.InstanceName}): Healthy");  
                         }  
-                        CustomLogs.SetupCustomLogs.Logger().Debug($"RedisCheck({options.InstanceName}): Unhealthy");
                         return HealthCheckResult.Unhealthy($"RedisCheck({options.InstanceName}): Unhealthy");  
   
                     }  
