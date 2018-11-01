@@ -6,6 +6,8 @@
 #https://github.com/kubernetes/contrib/issues/1535
 #minikube addons disable ingress
 
+# https://github.com/kubernetes/ingress-nginx/blob/master/deploy/mandatory.yaml
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -143,70 +145,19 @@ subjects:
 ---    
 
 
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: default-http-backend
-  labels:
-    app: default-http-backend
-  namespace: ingress-nginx
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: default-http-backend
-    spec:
-      #hostNetwork: true
-      terminationGracePeriodSeconds: 60
-      containers:
-      - name: default-http-backend
-        # Any image is permissable as long as:
-        # 1. It serves a 404 page at /
-        # 2. It serves 200 on a /healthz endpoint
-        image: gcr.io/google_containers/defaultbackend:1.4
-        #image: roured/tdtb-web:dev
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        ports:
-        - containerPort: 8080
-        resources:
-          limits:
-            cpu: 10m
-            memory: 20Mi
-          requests:
-            cpu: 10m
-            memory: 20Mi
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: default-http-backend
-  namespace: ingress-nginx
-  labels:
-    app: default-http-backend
-spec:
-  ports:
-  - port: 80
-    targetPort: 8080
-  selector:
-    app: default-http-backend
----
 
 kind: ConfigMap
 apiVersion: v1
 data:
+# https://github.com/jcmoraisjr/ingress#source-ip-address
   enable-vts-status: "true"
   # disable hsts for staging only
   # chrome://net-internals/#hsts 
   hsts: "false"
   ssl-redirect: "false"
+#  forwarded-for-header: "X-Real-IP"
+#  compute-full-forwarded-for: "true"
+#  use-proxy-protocol: "true"
 #  X-Different-Name: "true"
 #  X-Request-Start: t=${msec}
 #  X-Using-Nginx-Controller: "true"
@@ -217,19 +168,6 @@ metadata:
     app: ingress-nginx    
 ---    
 
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: tcp-services
-  namespace: ingress-nginx
-  
----  
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: udp-services
-  namespace: ingress-nginx
----
 
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -253,13 +191,11 @@ spec:
       containers:        
         - name: nginx-ingress-controller
           # https://github.com/kubernetes/ingress-nginx/releases
-          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.12.0
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.20.0
           args:
-            - /nginx-ingress-controller
-            - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
-            - --configmap=$(POD_NAMESPACE)/nginx-configuration
-            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
-            - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
+            - /nginx-ingress-controller            
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration --v=3
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx
             - --annotations-prefix=nginx.ingress.kubernetes.io
           env:
             - name: POD_NAME

@@ -167,7 +167,8 @@ namespace Web
 
             app.UseStaticFiles();
             
-            app.UseIpRateLimiting();
+            //todo: check headers not in minikube, with real ingress
+            //app.UseIpRateLimiting();
             
             app.UseMvc(routes =>
             {
