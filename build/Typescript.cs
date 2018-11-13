@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Nuke.Common;
+using Nuke.Common.Tooling;
 using TypeLite;
 
 partial class Build : NukeBuild
@@ -58,5 +59,16 @@ partial class Build : NukeBuild
                 File.WriteAllText(Path.Combine(outputPath, "classes.d.ts"), tsClassDefinitions);
             }
            
+        });
+
+
+    Target Ng => _ => _
+        .DependsOn(TsGen)
+        .Executes(() =>
+        {
+            Console.WriteLine("Create Angular bundle");
+            var task = ProcessTasks.StartProcess("ng", " build --verbose --aot", AngularSrcDir);
+            task.WaitForExit();
+            Console.Write(task.Output);
         });
 }

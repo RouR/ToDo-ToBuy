@@ -555,7 +555,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! e:\My\Coding\ToDo-ToBuy\src\ngApp\src\styles.less */"./src/styles.less");
+module.exports = __webpack_require__(/*! E:\My\Coding\ToDo-ToBuy\src\ngApp\src\styles.less */"./src/styles.less");
 
 
 /***/ })

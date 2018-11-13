@@ -45,6 +45,7 @@ partial class Build : NukeBuild
     const string MySolutionFile = "ExampleTDTB.sln";
     AbsolutePath MySolutionDirectory => RootDirectory;
     AbsolutePath MySourceDirectory => RootDirectory / "src";
+    AbsolutePath AngularSrcDir => RootDirectory / "src" / "ngApp" ;
     AbsolutePath MyOutputDirectory => RootDirectory / "output";
     AbsolutePath[] MyTsModelsDirectories => new []
     {
@@ -126,6 +127,7 @@ partial class Build : NukeBuild
         .DependsOn(TsGen)
         .DependsOn(Microdocum)
         .DependsOn(RunTemplate)
+        .DependsOn(Ng)
         //.DependsOn(Test)
         .Executes(() =>
         {
