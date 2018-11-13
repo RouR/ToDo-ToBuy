@@ -12,10 +12,14 @@ partial class Build : NukeBuild
         //.DependsOn(Clean) //After this target, will impossible run Clean, see https://github.com/dotnet/corefx/issues/14724
         .Executes(() =>
         {
-            var outputPath = MyTsModelsDirectory;
+            foreach (var myTsModelsDirectory in MyTsModelsDirectories)
+            {
+                var outputPath = myTsModelsDirectory;
 
-            if (Directory.Exists(outputPath))
-                Directory.Delete(outputPath, true);
+                if (Directory.Exists(outputPath))
+                    Directory.Delete(outputPath, true);
+            }
+          
         });
 
     Target TsGen => _ => _
@@ -25,9 +29,6 @@ partial class Build : NukeBuild
         {
             Console.WriteLine("Run custom target - TsGen!");
 
-            var outputPath = MyTsModelsDirectory;
-
-            Directory.CreateDirectory(outputPath);
             var generator = new TypeScriptFluent().WithConvertor<Guid>(c => "string");
 
             var loadedAssemblies = LoadDtoAssemblies();
@@ -44,10 +45,18 @@ partial class Build : NukeBuild
 
             //Generate enums
             var tsEnumDefinitions = generator.Generate(TsGeneratorOutput.Enums);
-            File.WriteAllText(Path.Combine(outputPath, "enums.ts"), tsEnumDefinitions);
             //Generate interface definitions for all classes
-            var tsClassDefinitions =
-                generator.Generate(TsGeneratorOutput.Properties | TsGeneratorOutput.Fields);
-            File.WriteAllText(Path.Combine(outputPath, "classes.d.ts"), tsClassDefinitions);
+            var tsClassDefinitions = generator.Generate(TsGeneratorOutput.Properties | TsGeneratorOutput.Fields);
+
+            foreach (var myTsModelsDirectory in MyTsModelsDirectories)
+            {
+                var outputPath = myTsModelsDirectory;
+
+                Directory.CreateDirectory(outputPath);
+
+                File.WriteAllText(Path.Combine(outputPath, "enums.ts"), tsEnumDefinitions);
+                File.WriteAllText(Path.Combine(outputPath, "classes.d.ts"), tsClassDefinitions);
+            }
+           
         });
 }

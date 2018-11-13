@@ -10,7 +10,15 @@
 @Html.ActionLink("home", "Index", "Hello")
 @Html.ActionLink("api data area", "Get", "Values", new { area = "api" })*@
 
-<a href="/swagger">API docs (Swagger)</a>
+<div class="">
+    <a href="/swagger">API docs (Swagger)</a>
+</div>
+<div class="">
+    <a href="@Url.Action("Index","Angular")">Angular app</a>
+</div>
+
+
+
 
 <footer>
     <p>Instance Id: @InstInfo.Id.ToString()</p>

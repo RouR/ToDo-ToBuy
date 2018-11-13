@@ -46,7 +46,11 @@ partial class Build : NukeBuild
     AbsolutePath MySolutionDirectory => RootDirectory;
     AbsolutePath MySourceDirectory => RootDirectory / "src";
     AbsolutePath MyOutputDirectory => RootDirectory / "output";
-    AbsolutePath MyTsModelsDirectory => RootDirectory / "_tsModels";
+    AbsolutePath[] MyTsModelsDirectories => new []
+    {
+        RootDirectory / "_tsModels",
+        RootDirectory / "src"/ "ngApp" / "src"/ "_tsModels",
+    };
     AbsolutePath MyRestClientsDirectory => RootDirectory / "_csREST";
 
     Target Clean => _ => _
