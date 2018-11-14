@@ -22,9 +22,6 @@ install:
   - ps: Install-Product node $env:nodejs_version
   - npm install -g npm
   - ps: $env:path = $env:appdata + "\npm;" + $env:path
-  - cd /src/ngApp
-  - npm install 
-  - node --version && npm --version
 for:
 
 # configuration for "master" branch
@@ -36,6 +33,9 @@ for:
 
   configuration: Release
   build_script: 
+  - cd /src/ngApp
+  - npm install 
+  - node --version && npm --version
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-master" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"
 #  - dotnet clean
 #  - dotnet restore
@@ -69,7 +69,10 @@ for:
       - dev
 
   configuration: Debug
-  build_script:     
+  build_script:    
+  - cd /src/ngApp
+  - npm install 
+  - node --version && npm --version  
   - MSBuild.SonarQube.Runner.exe begin /k:"exampletdtb-dev" /d:sonar.organization="rour-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="cbdf162317a340f70ceee07b9c6a21ec79dab3e1"  
 #  - dotnet clean
 #  - dotnet restore
