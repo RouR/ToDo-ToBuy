@@ -19,7 +19,12 @@ install:
   - docker version
   - choco install "msbuild-sonarqube-runner" -y
   - choco install "graphviz" -y
-  
+  - ps: Install-Product node $env:nodejs_version
+  - npm install -g npm
+  - ps: $env:path = $env:appdata + "\npm;" + $env:path
+  - cd /src/ngApp
+  - npm install 
+  - node --version && npm --version
 for:
 
 # configuration for "master" branch
