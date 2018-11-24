@@ -23,4 +23,7 @@
 <footer>
     <p>Instance Id: @InstInfo.Id.ToString()</p>
     <p>Code version: @InstInfo.CodeVer</p>
+    <environment include="Development">
+        <p>HostingEnvironment.EnvironmentName is Development</p>
+    </environment>
 </footer>

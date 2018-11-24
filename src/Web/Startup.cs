@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
 using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Http;
 
 namespace Web
 {
@@ -156,7 +157,8 @@ namespace Web
 
 
         public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime,
-            ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider
+            ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider,
+            IHostingEnvironment env
             )
         {
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
@@ -165,7 +167,21 @@ namespace Web
             CustomLogs.SetupCustomLogs.Configure(loggerFactory, applicationLifetime);
             SetupDefaultWebMetrics.Configure(app);
 
-            app.UseStaticFiles();
+            var cachePeriod = env.IsDevelopment() ? 0 : 10 /*d*/ * 24 /*h*/ * 60 /*m*/ * 60 /*s*/;
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    // Requires the following import:
+                    // using Microsoft.AspNetCore.Http;
+                    if(cachePeriod > 0) 
+                        ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
+                    else
+                    {
+                        ctx.Context.Response.Headers.Append("Cache-Control", $" no-cache, no-store, must-revalidate ");
+                    }
+                }
+            });
             
             //todo: check headers not in minikube, with real ingress
             //app.UseIpRateLimiting();
