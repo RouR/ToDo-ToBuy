@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using CustomCache;
 using CustomCache.Utils;
 using CustomMetrics;
@@ -16,11 +17,12 @@ using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
 using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Web
 {
-    
     public class Startup
     {
         //public IConfiguration Configuration { get; }
@@ -41,22 +43,31 @@ namespace Web
             SetupTracing.ConfigureServices(instanceInfo, services, true);
             ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
             SetupCustomCache.ConfigureServices(services, out var redisCacheOptions);
-            
+
             CustomLogs.SetupCustomLogs.PrintAllEnv();
-            
+
             //https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
             services.Configure<IpRateLimitOptions>(options =>
             {
                 options.EnableEndpointRateLimiting = false;
-                options.StackBlockedRequests  = false;
+                options.StackBlockedRequests = false;
                 //The RealIpHeader is used to extract the client IP when your Kestrel server is behind a reverse proxy, if your proxy uses a different header then X-Real-IP use this option to set it up.
                 options.RealIpHeader = "X-Real-IP";
                 //The ClientIdHeader is used to extract the client id for white listing, if a client id is present in this header and matches a value specified in ClientWhitelist then no rate limits are applied.
                 options.ClientIdHeader = "X-ClientId";
                 options.HttpStatusCode = 429;
-                options.IpWhitelist = new List<string>() { /*"127.0.0.1", "::1/10", "192.168.0.0/24" */};
-                options.EndpointWhitelist = new List<string>() { /*"get:/api/license", "*:/api/status" */};
-                options.ClientWhitelist = new List<string>(){ /*"dev-id-1", "dev-id-2" */ };
+                options.IpWhitelist = new List<string>()
+                {
+                    /*"127.0.0.1", "::1/10", "192.168.0.0/24" */
+                };
+                options.EndpointWhitelist = new List<string>()
+                {
+                    /*"get:/api/license", "*:/api/status" */
+                };
+                options.ClientWhitelist = new List<string>()
+                {
+                    /*"dev-id-1", "dev-id-2" */
+                };
                 options.GeneralRules = new List<RateLimitRule>()
                 {
                     new RateLimitRule()
@@ -95,6 +106,25 @@ namespace Web
             services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = !string.IsNullOrWhiteSpace(Settings.JwtIssuer),
+                        ValidateAudience = !string.IsNullOrWhiteSpace(Settings.JwtAudience),
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = Settings.JwtIssuer,
+                        ValidAudience = Settings.JwtAudience,
+                        IssuerSigningKey = Settings.JwtSigningKey
+                    };
+                });
+            
+            // By default, ASP.NET Core application will reject any request coming from the cross-origin clients. 
+            services.AddCors();
 
             services.AddMvc();
 
@@ -114,10 +144,10 @@ namespace Web
                     //https://github.com/Microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
                     options.AssumeDefaultVersionWhenUnspecified = true;
                     options.DefaultApiVersion = new ApiVersion(0, 1);
-                    options.ReportApiVersions = true; 
+                    options.ReportApiVersions = true;
                 }
             );
-            
+
             services.AddSwaggerGen(
                 options =>
                 {
@@ -136,18 +166,19 @@ namespace Web
                     options.OperationFilter<SwaggerDefaultValues>();
 
                     // integrate xml comments
-                    options.IncludeXmlComments(SwaggerUtils.XmlCommentsFilePath); //check project properties - add xml docs to bin\Debug\netcoreapp2.0\Web.xml
+                    options.IncludeXmlComments(SwaggerUtils
+                        .XmlCommentsFilePath); //check project properties - add xml docs to bin\Debug\netcoreapp2.0\Web.xml
                 });
 
             services.AddHealthChecks(checks =>
             {
                 //However, the MVC web application has multiple dependencies on the rest of the microservices. Therefore, it calls one AddUrlCheck method for each microservice
                 //checks.AddSqlCheck("CatalogDb", Configuration["ConnectionString"]);
-                
+
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.Account), TimeSpan.FromSeconds(1));
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToDo), TimeSpan.FromSeconds(1));
                 checks.AddUrlCheck(ServiceClients.HealthUrl(Service.ToBuy), TimeSpan.FromSeconds(1));
-                
+
                 checks.AddRedisCheck(redisCacheOptions, TimeSpan.FromSeconds(1));
 
                 //If the microservice does not have a dependency on a service or on SQL Server, you should just add a Healthy("Ok") check.
@@ -159,7 +190,7 @@ namespace Web
         public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime,
             ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider,
             IHostingEnvironment env
-            )
+        )
         {
             //var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             //configuration.DisableTelemetry = true;
@@ -174,7 +205,7 @@ namespace Web
                 {
                     // Requires the following import:
                     // using Microsoft.AspNetCore.Http;
-                    if(cachePeriod > 0) 
+                    if (cachePeriod > 0)
                         ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
                     else
                     {
@@ -182,9 +213,17 @@ namespace Web
                     }
                 }
             });
-            
+
             //todo: check headers not in minikube, with real ingress
             //app.UseIpRateLimiting();
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+            );
+            app.UseAuthentication();
             
             app.UseMvc(routes =>
             {
@@ -204,12 +243,10 @@ namespace Web
                     // build a swagger endpoint for each discovered API version
                     foreach (var description in provider.ApiVersionDescriptions)
                     {
-                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                            description.GroupName.ToUpperInvariant());
                     }
                 });
         }
-
-
-       
     }
 }

@@ -30,7 +30,9 @@ mat-sidenav-content .label,
 mat-sidenav-content .icon {
   color: white;
   display: inline-block;
-  
+
   text-align: center;
-    vertical-align: middle;
+  vertical-align: middle;
 }
+
+

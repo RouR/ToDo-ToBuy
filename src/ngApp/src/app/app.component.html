@@ -10,27 +10,27 @@
         </li>
 
         <li>
-          <a mat-list-item routerLink="/todo">
+          <a mat-list-item routerLink="/todo" *ngIf="auth.isLoggedIn">
             <mat-icon class="icon">dashboard</mat-icon>
             <span class="label">To-Do</span>
           </a>
         </li>
         <li>
-          <a mat-list-item routerLink="/tobuy">
+          <a mat-list-item routerLink="/tobuy" *ngIf="auth.isLoggedIn">
             <mat-icon class="icon">dashboard</mat-icon>
             <span class="label">To-Buy</span>
           </a>
         </li>
 
         <li>
-          <a mat-list-item (click)="auth.login()">
+          <a mat-list-item routerLink="/login" *ngIf="!auth.isLoggedIn">
             <mat-icon class="icon">input</mat-icon>
             <span class="label">Login</span>
           </a>
         </li>
 
         <li>
-          <a mat-list-item (click)="auth.logout()" type="button">
+          <a mat-list-item (click)="auth.logout()" *ngIf="auth.isLoggedIn" type="button">
             <mat-icon class="icon">input</mat-icon>
             <span class="label">LogOut</span>
           </a>
@@ -53,6 +53,7 @@
       </div>
 
       <span (click)="sidenav.toggle()">ToDo-ToBuy (example app)</span>
+      <span [hidden]="!auth.isLoggedIn"><i>Hello {{auth.username}}</i></span>
 
 
       <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
@@ -66,27 +67,27 @@
           </li>
 
           <li>
-            <a routerLink="/todo">
+            <a routerLink="/todo" *ngIf="auth.isLoggedIn">
               <mat-icon class="icon">dashboard</mat-icon>
               <span class="label">To-Do</span>
             </a>
           </li>
           <li>
-            <a routerLink="/tobuy">
+            <a routerLink="/tobuy" *ngIf="auth.isLoggedIn">
               <mat-icon class="icon">dashboard</mat-icon>
               <span class="label">To-Buy</span>
             </a>
           </li>
 
           <li>
-            <a (click)="auth.login()">
+            <a routerLink="/login" *ngIf="!auth.isLoggedIn">
               <mat-icon class="icon">input</mat-icon>
               <span class="label">Login</span>
             </a>
           </li>
 
           <li>
-            <a (click)="auth.logout()" type="button">
+            <a (click)="auth.logout()" *ngIf="auth.isLoggedIn" type="button">
               <mat-icon class="icon">input</mat-icon>
               <span class="label">LogOut</span>
             </a>

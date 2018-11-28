@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenTracing;
 using static CustomLogs.SetupCustomLogs;
@@ -30,7 +31,7 @@ namespace Web.Areas.api
         /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<string> Index()
         {
             return new[] { "value1", "value2" };
         }
@@ -40,7 +41,7 @@ namespace Web.Areas.api
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         public string Get(int id)
         {
             Logger().Information("api/values {$id}", id);
@@ -49,6 +50,27 @@ namespace Web.Areas.api
                 .SetOperationName("api-values")
                 .Log(new Dictionary<string, object> {
                     { "test234234", id }
+                });
+
+
+            return "value " + id + "  *:" + _tracer.ActiveSpan?.Context.TraceId;
+        }
+        
+        /// <summary>
+        /// test auth
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("private/{id}")]
+        public string GetPrivate(int id)
+        {
+            Logger().Information("api/GetPrivate {$id}", id);
+
+            _tracer.ActiveSpan?
+                .SetOperationName("api-GetPrivate")
+                .Log(new Dictionary<string, object> {
+                    { "aaaa id", id }
                 });
 
 

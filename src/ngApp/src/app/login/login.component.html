@@ -1,0 +1,31 @@
+<mat-card>
+  <form class="form-signin" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-content>
+      <mat-form-field class="">
+        <mat-label>Email address</mat-label>
+        <input matInput placeholder="Email address" type="email" name="username" ngModel #username="ngModel" required
+          autofocus>
+        <mat-error *ngIf="username.invalid && (username.dirty || username.touched) && username.errors.required">
+          Please enter a email address
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Password" type="password" name="password" ngModel required minlength="6" #password="ngModel">
+        <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">
+          Please enter a password
+        </mat-error>
+        <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.minlength">
+          Name must be at least 6 characters long.
+        </mat-error>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <div fxFlex></div>
+      <button mat-button type="submit">Login</button>
+    </mat-card-actions>
+    <mat-card-footer>
+    </mat-card-footer>
+  </form>
+</mat-card>

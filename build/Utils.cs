@@ -141,7 +141,8 @@ partial class Build : NukeBuild
         if (Cached != null)
             return Cached;
 
-        var projects = ProjectModelTasks.ParseSolution(MySolutionFile).Projects;
+        //var projects = ProjectModelTasks.ParseSolution(MySolutionFile).Projects;
+        var projects = Solution.Projects;
         var appDomain = AppDomain.CurrentDomain;
 
         var loadedAssemblies = new List<LoadedAssembly>(100);

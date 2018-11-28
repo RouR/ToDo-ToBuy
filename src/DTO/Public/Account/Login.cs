@@ -1,4 +1,3 @@
-using System;
 using Domain.Interfaces;
 using DTO.Internal.Account;
 using MicroDocum.Themes.DefaultTheme.Attributes;
@@ -7,18 +6,20 @@ using MicroDocum.Themes.DefaultTheme.Interfaces;
 namespace DTO.Public.Account
 {
     [ServiceName("Web")]
-    public class RegisterRequest : IProduce<CreateUserRequest>
+    public class LoginRequest : IProduce<FindUserRequest>
     {
-        
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
     [ServiceName("Web")]
-    public class RegisterResponse: IErrorable<Guid>
+    public class LoginResponse: IErrorable<string>
     {
         public bool HasError { get; set; }
         public string Message { get; set; }
         /// <summary>
-        /// UserId
+        /// Jwt token
         /// </summary>
-        public Guid Data { get; set; }
+        public string Data { get; set; }
     }
+  
 }

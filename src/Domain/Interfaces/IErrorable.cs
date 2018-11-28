@@ -1,6 +1,6 @@
-﻿namespace DTO
+﻿namespace Domain.Interfaces
 {
-    interface IErrorable<T>
+    public interface IErrorable<T>
     {
         bool HasError { get; set; }
         string Message { get; set; }
