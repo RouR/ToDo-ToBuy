@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -76,7 +77,7 @@ namespace Shared
                 {
                     var uri = d.Result?.RequestMessage?.RequestUri;
                     var message = d.Result?.ToString();
-                    logger.Warning("Retry - Exception for api client {0} - Url {1} Message {2}", 
+                    logger.Warning("Retry - Exception for api client {0} - Url {1} Message {2}",
                         builder.Name, uri, message);
                 }
             };
@@ -102,16 +103,18 @@ namespace Shared
             //HttpRequestException, 5XX and 408
             var jitter = new Random();
             builder
-                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(retries, retryAttempt =>
-                            TimeSpan.FromMilliseconds(delayMin + retryAttempt * delayStep)
-                            + TimeSpan.FromMilliseconds(jitter.Next(jitterMin, jitterMax)), 
-                        onRetry)
+                .AddTransientHttpErrorPolicy(p =>
+                    p.WaitAndRetryAsync(retries, retryAttempt =>
+                            //DecorrelatedExponent(jitter) 
+                            LinearAndJitter(retryAttempt, jitter, jitterMin, jitterMax, delayMin, delayStep)
+                        , onRetry)
                 )
-                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(circuitCount, TimeSpan.FromSeconds(circuitDelay),
-                                                                        onBreak, onReset, onHalfOpen)
+                .AddTransientHttpErrorPolicy(p => /* or p.AdvancedCircuitBreakerAsync() */
+                    p.CircuitBreakerAsync(circuitCount, TimeSpan.FromSeconds(circuitDelay),
+                        onBreak, onReset, onHalfOpen)
                 )
                 //SetHandlerLifetime can prevent the handler from reacting to DNS changes
-                .SetHandlerLifetime(TimeSpan.FromSeconds(lifetime)) 
+                .SetHandlerLifetime(TimeSpan.FromSeconds(lifetime))
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
                 {
                     AllowAutoRedirect = true,
@@ -119,6 +122,18 @@ namespace Shared
                     UseDefaultCredentials = false,
                     AutomaticDecompression = DecompressionMethods.GZip,
                 });
+        }
+
+        private static TimeSpan LinearAndJitter(int retryAttempt, Random random, int jitterMin, int jitterMax,
+            int delayMin, int delayStep)
+        {
+            return TimeSpan.FromMilliseconds(delayMin + retryAttempt * delayStep)
+                   + TimeSpan.FromMilliseconds(random.Next(jitterMin, jitterMax));
+        }
+
+        private static TimeSpan DecorrelatedExponent(Random random)
+        {
+            return TimeSpan.FromSeconds(Math.Pow(2, random.NextDouble() * 2) * random.NextDouble());
         }
     }
 }
