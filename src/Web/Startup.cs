@@ -126,7 +126,10 @@ namespace Web
             // By default, ASP.NET Core application will reject any request coming from the cross-origin clients. 
             services.AddCors();
 
-            services.AddMvc();
+            services.AddMvc(options => {
+                options.Filters.Add(typeof(GlobalValidatorAttribute));
+                options.MaxModelValidationErrors = 10;
+            });
 
             // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
             // note: the specified format code will format the version as "'v'major[.minor][-status]"

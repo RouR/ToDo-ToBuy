@@ -34,8 +34,8 @@ export class Client {
      * @param api_version (optional) The requested API version
      * @return Success
      */
-    apiAccount(request?: LoginRequest | null | undefined, api_version?: string | null | undefined): Observable<LoginResponse> {
-        let url_ = this.baseUrl + "/api/Account?";
+    apiAccountLogin(request?: LoginRequest | null | undefined, api_version?: string | null | undefined): Observable<LoginResponse> {
+        let url_ = this.baseUrl + "/api/Account/Login?";
         if (api_version !== undefined)
             url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
@@ -53,11 +53,11 @@ export class Client {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processApiAccount(response_);
+            return this.processApiAccountLogin(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processApiAccount(<any>response_);
+                    return this.processApiAccountLogin(<any>response_);
                 } catch (e) {
                     return <Observable<LoginResponse>><any>_observableThrow(e);
                 }
@@ -66,7 +66,7 @@ export class Client {
         }));
     }
 
-    protected processApiAccount(response: HttpResponseBase): Observable<LoginResponse> {
+    protected processApiAccountLogin(response: HttpResponseBase): Observable<LoginResponse> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -86,6 +86,66 @@ export class Client {
             }));
         }
         return _observableOf<LoginResponse>(<any>null);
+    }
+
+    /**
+     * register new user
+     * @param request (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiAccountRegister(request?: RegisterRequest | null | undefined, api_version?: string | null | undefined): Observable<RegisterResponse> {
+        let url_ = this.baseUrl + "/api/Account/Register?";
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiAccountRegister(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiAccountRegister(<any>response_);
+                } catch (e) {
+                    return <Observable<RegisterResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<RegisterResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiAccountRegister(response: HttpResponseBase): Observable<RegisterResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? RegisterResponse.fromJS(resultData200) : new RegisterResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RegisterResponse>(<any>null);
     }
 
     /**
@@ -345,6 +405,142 @@ export interface ILoginResponse {
     hasError?: boolean | null;
     message?: string | null;
     data?: string | null;
+}
+
+export class RegisterRequest implements IRegisterRequest {
+    userName!: string;
+    password!: string;
+
+    constructor(data?: IRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userName = data["userName"] !== undefined ? data["userName"] : <any>null;
+            this.password = data["password"] !== undefined ? data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): RegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data; 
+    }
+}
+
+export interface IRegisterRequest {
+    userName: string;
+    password: string;
+}
+
+export class RegisterResponse implements IRegisterResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: string | null;
+    validationErrors?: KeyValuePairOfStringAndString[] | null;
+
+    constructor(data?: IRegisterResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hasError = data["hasError"] !== undefined ? data["hasError"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+            this.data = data["data"] !== undefined ? data["data"] : <any>null;
+            if (data["validationErrors"] && data["validationErrors"].constructor === Array) {
+                this.validationErrors = [];
+                for (let item of data["validationErrors"])
+                    this.validationErrors.push(KeyValuePairOfStringAndString.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RegisterResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hasError"] = this.hasError !== undefined ? this.hasError : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["data"] = this.data !== undefined ? this.data : <any>null;
+        if (this.validationErrors && this.validationErrors.constructor === Array) {
+            data["validationErrors"] = [];
+            for (let item of this.validationErrors)
+                data["validationErrors"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRegisterResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: string | null;
+    validationErrors?: KeyValuePairOfStringAndString[] | null;
+}
+
+export class KeyValuePairOfStringAndString implements IKeyValuePairOfStringAndString {
+    key?: string | null;
+    value?: string | null;
+
+    constructor(data?: IKeyValuePairOfStringAndString) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.key = data["key"] !== undefined ? data["key"] : <any>null;
+            this.value = data["value"] !== undefined ? data["value"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): KeyValuePairOfStringAndString {
+        data = typeof data === 'object' ? data : {};
+        let result = new KeyValuePairOfStringAndString();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : <any>null;
+        data["value"] = this.value !== undefined ? this.value : <any>null;
+        return data; 
+    }
+}
+
+export interface IKeyValuePairOfStringAndString {
+    key?: string | null;
+    value?: string | null;
 }
 
 export class SwaggerException extends Error {

@@ -3,7 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { Observable } from 'rxjs';
 
 import { map } from 'rxjs/operators';
-import { Client, LoginRequest } from '../../_tsModels/api-client';
+import { Client, LoginRequest, RegisterRequest } from '../../_tsModels/api-client';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class AuthenticationService implements CanActivate {
     ) { }
 
     login(data: LoginRequest) {
-        return this.api.apiAccount(data)
+        return this.api.apiAccountLogin(data)
             .subscribe(response => {
                 if (response.hasError === false && response.data) {
                     localStorage.setItem('jwt', response.data);
@@ -32,6 +32,20 @@ export class AuthenticationService implements CanActivate {
 
     logout() {
         localStorage.removeItem('jwt');
+    }
+
+    register(data: RegisterRequest) {
+        const result = this.api.apiAccountRegister(data);
+        result
+            .subscribe(response => {
+                // console.log('apiAccountRegister response', response);
+                if (response.hasError === false && response.data) {
+                    this.router.navigate(['/login']);
+                }
+            }, err => {
+                console.error('apiAccountRegister err', err);
+            });
+        return result;
     }
 
     get isLoggedIn(): boolean {

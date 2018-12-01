@@ -1,6 +1,6 @@
 <mat-card>
-  <form class="form-signin" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
-    <mat-card-title>Login</mat-card-title>
+  <form class="form-signin" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
+    <mat-card-title>Register</mat-card-title>
     <mat-card-content>
       <mat-form-field class="">
         <mat-label>Email address</mat-label>
@@ -19,13 +19,17 @@
         <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.minlength">
           Name must be at least 6 characters long.
         </mat-error>
-
       </mat-form-field>
+
+      <div *ngIf="validationErrors" class="validation-error">
+        <div>Errors: </div>
+        <div *ngFor="let item of validationErrors"> {{item}} </div>
+      </div>
+
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button routerLink="/register">Register</button>
       <div fxFlex></div>
-      <button mat-button type="submit">Login</button>
+      <button mat-button type="submit">Register</button>
     </mat-card-actions>
     <mat-card-footer>
     </mat-card-footer>

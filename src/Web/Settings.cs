@@ -22,6 +22,7 @@ namespace Web
         // we can force client logout by change this
         public const string JwtIssuer = "tbtd-app";
         public const string JwtAudience = "app-api";
+        public const string JwtUserIdClaimName = "uid";
 
         #endregion
     }

@@ -7,11 +7,14 @@ import { TobuyListComponent } from './tobuy-list/tobuy-list.component';
 import { TodoEditComponent } from './todo-edit/todo-edit.component';
 import { TobuyEditComponent } from './tobuy-edit/tobuy-edit.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+
 
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent },
 
   { path: 'todo', component: TodoListComponent, canActivate: [AuthenticationService] },

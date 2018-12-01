@@ -15,13 +15,13 @@
   },
   "basePath": "/",
   "paths": {
-    "/api/Account": {
+    "/api/Account/Login": {
       "post": {
         "tags": [
           "Account"
         ],
         "summary": "try login, get Jwt token",
-        "operationId": "ApiAccountPost",
+        "operationId": "ApiAccountLoginPost",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -57,6 +57,53 @@
             "description": "Success",
             "schema": {
               "$ref": "#/definitions/LoginResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/Account/Register": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "register new user",
+        "operationId": "ApiAccountRegisterPost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/RegisterRequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RegisterResponse"
             }
           }
         }
@@ -205,6 +252,60 @@
         },
         "data": {
           "type": "string"
+        }
+      }
+    },
+    "RegisterRequest": {
+      "required": [
+        "userName",
+        "password"
+      ],
+      "type": "object",
+      "properties": {
+        "userName": {
+          "maxLength": 100,
+          "minLength": 4,
+          "type": "string"
+        },
+        "password": {
+          "maxLength": 100,
+          "minLength": 8,
+          "type": "string"
+        }
+      }
+    },
+    "RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "validationErrors": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyValuePair[String,String]"
+          }
+        }
+      }
+    },
+    "KeyValuePair[String,String]": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
         }
       }
     }

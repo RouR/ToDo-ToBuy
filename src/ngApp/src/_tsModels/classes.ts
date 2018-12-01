@@ -489,6 +489,8 @@ export interface ILoginResponse {
 }
 
 export class RegisterRequest implements IRegisterRequest {
+    userName!: string;
+    password!: string;
 
     constructor(data?: IRegisterRequest) {
         if (data) {
@@ -501,6 +503,8 @@ export class RegisterRequest implements IRegisterRequest {
 
     init(data?: any) {
         if (data) {
+            this.userName = data["UserName"];
+            this.password = data["Password"];
         }
     }
 
@@ -513,17 +517,22 @@ export class RegisterRequest implements IRegisterRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["UserName"] = this.userName;
+        data["Password"] = this.password;
         return data; 
     }
 }
 
 export interface IRegisterRequest {
+    userName: string;
+    password: string;
 }
 
 export class RegisterResponse implements IRegisterResponse {
     hasError!: boolean;
     message?: string | undefined;
     data!: string;
+    validationErrors?: KeyValuePairOfStringAndString[] | undefined;
 
     constructor(data?: IRegisterResponse) {
         if (data) {
@@ -539,6 +548,11 @@ export class RegisterResponse implements IRegisterResponse {
             this.hasError = data["HasError"];
             this.message = data["Message"];
             this.data = data["Data"];
+            if (data["ValidationErrors"] && data["ValidationErrors"].constructor === Array) {
+                this.validationErrors = [];
+                for (let item of data["ValidationErrors"])
+                    this.validationErrors.push(KeyValuePairOfStringAndString.fromJS(item));
+            }
         }
     }
 
@@ -554,6 +568,11 @@ export class RegisterResponse implements IRegisterResponse {
         data["HasError"] = this.hasError;
         data["Message"] = this.message;
         data["Data"] = this.data;
+        if (this.validationErrors && this.validationErrors.constructor === Array) {
+            data["ValidationErrors"] = [];
+            for (let item of this.validationErrors)
+                data["ValidationErrors"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -562,4 +581,45 @@ export interface IRegisterResponse {
     hasError: boolean;
     message?: string | undefined;
     data: string;
+    validationErrors?: KeyValuePairOfStringAndString[] | undefined;
+}
+
+export class KeyValuePairOfStringAndString implements IKeyValuePairOfStringAndString {
+    key?: string | undefined;
+    value?: string | undefined;
+
+    constructor(data?: IKeyValuePairOfStringAndString) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.key = data["Key"];
+            this.value = data["Value"];
+        }
+    }
+
+    static fromJS(data: any): KeyValuePairOfStringAndString {
+        data = typeof data === 'object' ? data : {};
+        let result = new KeyValuePairOfStringAndString();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Key"] = this.key;
+        data["Value"] = this.value;
+        return data; 
+    }
+}
+
+export interface IKeyValuePairOfStringAndString {
+    key?: string | undefined;
+    value?: string | undefined;
 }

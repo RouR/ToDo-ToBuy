@@ -8,12 +8,14 @@ using DTO.Public.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Utils;
+using Web.Utils;
 
 namespace Web.Areas.api
 {
+    [GlobalValidator]
     [Area("api")]
     [ApiVersion("0.1")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class AccountController : Controller
     {
         /// <summary>
@@ -40,8 +42,12 @@ namespace Web.Areas.api
                     audience: Settings.JwtAudience,
                     claims: new List<Claim>()
                     {
-                        new Claim("name", "name-test"),
-                        new Claim("claim-test", "someData"),
+                        // ClaimTypes.Name serialized as "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+                        // and it is too long
+                        // new Claim(ClaimTypes.Name, "name-test"),
+                        new Claim(Settings.JwtUserIdClaimName, "name-test"),
+                        
+                        //new Claim("claim-test", "someData"),
                     },
                     expires: DateTime.Now.Add(Settings.JwtExpires),
                     signingCredentials: signinCredentials
@@ -60,6 +66,30 @@ namespace Web.Areas.api
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return response;
             }
+        }
+        
+        /// <summary>
+        /// register new user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public RegisterResponse Register([FromBody]RegisterRequest request)
+        {
+            RegisterResponse response;
+
+            
+            
+            if (request == null)
+            {
+                response = new RegisterResponse();
+                response.SetError("Invalid register request");
+                return response;
+            }
+            
+            response = new RegisterResponse();
+            response.SetError("Register internal error");
+            return response;
         }
     }
 }
