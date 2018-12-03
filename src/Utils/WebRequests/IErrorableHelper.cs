@@ -1,5 +1,6 @@
 using Domain.Interfaces;
-namespace Utils
+
+namespace Utils.WebRequests
 {
     public static class IErrorableHelper
     {
@@ -13,6 +14,4 @@ namespace Utils
             return obj;
         }
     }
-
-    
 }

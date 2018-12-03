@@ -47,7 +47,7 @@ partial class Build : NukeBuild
 
             if (Host == HostType.Console)
             {
-                var packagesDirectory = NuGetPackageResolver.GetPackagesDirectory();
+                var packagesDirectory = NuGetPackageResolver.GetPackagesDirectory(null);
                 var dir = Path.Combine(packagesDirectory, "graphviz");
                 dir = Path.Combine(dir, Directory.EnumerateDirectories(dir).First());
                 graphizBin = Path.Combine(dir, "dot.exe");

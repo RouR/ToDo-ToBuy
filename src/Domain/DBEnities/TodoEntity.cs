@@ -7,6 +7,6 @@ namespace Domain.DBEnities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public Guid UserId { get; set; }
+        public virtual Guid UserId { get; set; }
     }
 }

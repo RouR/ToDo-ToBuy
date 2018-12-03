@@ -82,7 +82,7 @@ partial class Build : NukeBuild
             var oldVersion = GetVersion();
             var newVersion = oldVersion.Copy();
             newVersion.IncreaseBuild();
-            newVersion.SetSha(GitVersion.Sha);
+            newVersion.SetSha(GitVersion?.Sha);
             SetVersion(oldVersion, newVersion);
 
             DotNetTasks.DotNetBuild(s => s
@@ -92,7 +92,7 @@ partial class Build : NukeBuild
                 //.SetConfiguration(Configuration)
                 .SetAssemblyVersion(newVersion.ToAssemblyVersion())
                 .SetFileVersion(newVersion.ToFileVersion())
-                .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetInformationalVersion(GitVersion?.InformationalVersion)
                 );
         });
 

@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using Domain.DBEnities;
+using System.Linq;
+using Domain.Interfaces;
 using MicroDocum.Themes.DefaultTheme.Attributes;
-using Utils.Pagination;
+using Utils.WebRequests;
 
 namespace DTO.Public.TODO
 {
     [ServiceName("Web")]
-    public class ListTODOResponse : Pagination<TodoEntity>
+    public class ListTODOResponse : Pagination<TodoPublicEntity>
     {
-        public ListTODOResponse(IEnumerable<TodoEntity> items, int totalItems, IPaginationSetting settings) : base(items, totalItems, settings)
+        public ListTODOResponse(IEnumerable<TodoPublicEntity> items, int totalItems, IPaginationSetting settings) : base(items, totalItems, settings)
         {
         }
     }

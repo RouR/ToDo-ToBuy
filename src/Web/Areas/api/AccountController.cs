@@ -8,6 +8,7 @@ using DTO.Public.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Utils;
+using Utils.WebRequests;
 using Web.Utils;
 
 namespace Web.Areas.api

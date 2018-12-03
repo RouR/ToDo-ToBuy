@@ -1,4 +1,4 @@
-﻿namespace Utils.Pagination
+﻿namespace Domain.Interfaces
 {
     public interface IPaginationSetting
     {

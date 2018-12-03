@@ -109,6 +109,252 @@
         }
       }
     },
+    "/api/ToDo/List": {
+      "get": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "list to-do items with pagination",
+        "operationId": "ApiToDoListGet",
+        "consumes": [],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "OrderBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Asc",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "Filter.Text",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ListTODOResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToDo/Get": {
+      "get": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "load to-do-item",
+        "operationId": "ApiToDoGetGet",
+        "consumes": [],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "PublicId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/EditTODOResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToDo/Update": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "update to-do-item",
+        "operationId": "ApiToDoUpdatePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SaveTODORequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SaveTODOResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToDo/Create": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "create new to-do-item",
+        "operationId": "ApiToDoCreatePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SaveTODORequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SaveTODOResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToDo/Delete": {
+      "post": {
+        "tags": [
+          "ToDo"
+        ],
+        "summary": "delete to-do-item",
+        "operationId": "ApiToDoDeletePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/DeleteTODORequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DeleteTODOResponse"
+            }
+          }
+        }
+      }
+    },
     "/api/Values": {
       "get": {
         "tags": [
@@ -306,6 +552,161 @@
         "value": {
           "type": "string",
           "readOnly": true
+        }
+      }
+    },
+    "ListTODOResponse": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "pageSize": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "totalItems": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "items": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TodoPublicEntity"
+          },
+          "readOnly": true
+        },
+        "totalPages": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "firstItem": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "lastItem": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "hasPreviousPage": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "hasNextPage": {
+          "type": "boolean",
+          "readOnly": true
+        }
+      }
+    },
+    "TodoPublicEntity": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "isDeleted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EditTODOResponse": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "isDeleted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SaveTODORequest": {
+      "type": "object",
+      "properties": {
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "SaveTODOResponse": {
+      "type": "object",
+      "properties": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/TodoPublicEntity"
+        }
+      }
+    },
+    "DeleteTODORequest": {
+      "type": "object",
+      "properties": {
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        }
+      }
+    },
+    "DeleteTODOResponse": {
+      "type": "object",
+      "properties": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "boolean"
         }
       }
     }

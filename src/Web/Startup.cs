@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
 using AspNetCoreRateLimit;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
@@ -126,6 +127,14 @@ namespace Web
             // By default, ASP.NET Core application will reject any request coming from the cross-origin clients. 
             services.AddCors();
 
+            //services.AddAutoMapper();
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingDTOProfile());
+            });
+            var mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            
             services.AddMvc(options => {
                 options.Filters.Add(typeof(GlobalValidatorAttribute));
                 options.MaxModelValidationErrors = 10;

@@ -24,6 +24,9 @@ import {
   MatInputModule,
   MatSelectModule,
   MatSnackBarModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSortModule,
 
   MAT_LABEL_GLOBAL_OPTIONS,
 } from '@angular/material';
@@ -74,6 +77,12 @@ export function tokenGetter() {
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    HttpClientModule,
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
 
     JwtModule.forRoot({
       config: {
