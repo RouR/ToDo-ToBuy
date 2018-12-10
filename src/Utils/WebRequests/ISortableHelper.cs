@@ -11,6 +11,9 @@ namespace Utils.WebRequests
             if (!string.IsNullOrEmpty(obj.OrderBy))
             {
                 var propertyInfo = typeof(K).GetProperty(obj.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (propertyInfo == null) //field is not exist
+                    return data;
                 
                 if(obj.Asc)
                     data = data.OrderBy(x => propertyInfo.GetValue(x, null));

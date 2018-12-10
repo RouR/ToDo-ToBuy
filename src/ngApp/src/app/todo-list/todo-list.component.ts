@@ -15,6 +15,8 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   dataSource: TodoDataSource;
   displayedColumns = ['title', 'description', 'updated'];
 
+  pageSize = 5;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('input') input: ElementRef;
@@ -104,6 +106,5 @@ class TodoDataSource implements DataSource<TodoPublicEntity> {
       )
       .subscribe(lessons => this.lessonsSubject.next(lessons));
   }
-
 
 }

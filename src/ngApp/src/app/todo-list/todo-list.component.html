@@ -1,40 +1,42 @@
-<div class="course">
+<div class="todolist-container">
 
-  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-    <mat-spinner></mat-spinner>
-  </div>
-
-  <mat-form-field>
-    <input matInput placeholder="Search lessons" #input>
-  </mat-form-field>
-
-  <mat-table class="todoItems-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="seqNo"
+  <form class="filter-form">
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Search" #input>
+    </mat-form-field>
+  </form>
+  
+  
+  <mat-table class="todoItems-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="updated"
     matSortDirection="asc" matSortDisableClear>
 
     <ng-container matColumnDef="publicId">
-      <div *matHeaderCellDef>#</div>
-      <div *matCellDef="let todoItem">{{todoItem.publicId}}</div>
+      <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+      <mat-cell *matCellDef="let todoItem">{{todoItem.publicId}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="title">
-      <div *matHeaderCellDef mat-sort-header>Title</div>
-      <div class="title-cell" *matCellDef="let todoItem">{{todoItem.title}}</div>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+      <mat-cell class="title-cell" *matCellDef="let todoItem">{{todoItem.title}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="description">
-      <div *matHeaderCellDef mat-sort-header>Description</div>
-      <div class="description-cell" *matCellDef="let todoItem">{{todoItem.description}}</div>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+      <mat-cell class="description-cell" *matCellDef="let todoItem">{{todoItem.description}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="updated">
-      <div *matHeaderCellDef mat-sort-header>Updated</div>
-      <div class="updated-cell" *matCellDef="let todoItem">{{todoItem.updated}}</div>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Updated</mat-header-cell>
+      <mat-cell class="updated-cell" *matCellDef="let todoItem">{{todoItem.updated}}</mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
 
   </mat-table>
+  
+  <mat-progress-bar mode="indeterminate"  *ngIf="dataSource.loading$ | async" ></mat-progress-bar>
+  <mat-progress-bar mode="determinate" value="0"  *ngIf="(dataSource.loading$ | async) === false" ></mat-progress-bar>
 
-  <mat-paginator [length]="dataSource.totalRecords$ | async" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+  <mat-paginator [length]="dataSource.totalRecords$ | async" [pageSize]="pageSize" [pageSizeOptions]="[3, 5, 10, 50, 100]"></mat-paginator>
 </div>

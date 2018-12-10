@@ -27,6 +27,7 @@ import {
   MatPaginatorModule,
   MatProgressSpinnerModule,
   MatSortModule,
+  MatProgressBarModule,
 
   MAT_LABEL_GLOBAL_OPTIONS,
 } from '@angular/material';
@@ -83,6 +84,7 @@ export function tokenGetter() {
     MatPaginatorModule,
     MatSortModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
 
     JwtModule.forRoot({
       config: {
