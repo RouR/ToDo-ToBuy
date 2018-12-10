@@ -30,6 +30,7 @@ import {
   MatProgressBarModule,
 
   MAT_LABEL_GLOBAL_OPTIONS,
+  MatDialogRef,
 } from '@angular/material';
 
 import { AuthenticationService } from './_services/authentication.service';
@@ -42,6 +43,8 @@ import { TobuyListComponent } from './tobuy-list/tobuy-list.component';
 import { TobuyEditComponent } from './tobuy-edit/tobuy-edit.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { ConfirmComponent } from './confirm/confirm.component';
+import { ConfirmationService } from './_services/confirmation.service';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -57,7 +60,8 @@ export function tokenGetter() {
     TobuyListComponent,
     TobuyEditComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +104,9 @@ export function tokenGetter() {
     { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: 'auto' },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorDtoInterceptorService, multi: true },
-
+  ],
+  entryComponents: [
+    ConfirmComponent
   ],
   bootstrap: [AppComponent]
 })

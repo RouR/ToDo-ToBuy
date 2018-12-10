@@ -113,7 +113,7 @@ namespace Web.Areas.api
         {
             return new DeleteTODOResponse()
             {
-                Data = true
+                Data = true,
             };
         }
     }

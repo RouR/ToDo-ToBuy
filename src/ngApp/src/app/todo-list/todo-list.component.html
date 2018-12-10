@@ -30,11 +30,19 @@
       <mat-cell class="updated-cell" *matCellDef="let todoItem">{{todoItem.updated}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="buttons">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell class="buttons-cell" *matCellDef="let todoItem">
+          <button  mat-icon-button [routerLink]="['/todo', todoItem.publicId]"><mat-icon>create</mat-icon></button>
+          <button  mat-icon-button color="warn" (click)="delete(todoItem, $event)"><mat-icon>delete</mat-icon></button>
+        </mat-cell>
+      </ng-container>
+
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
 
   </mat-table>
-  
+
   <mat-progress-bar mode="indeterminate"  *ngIf="dataSource.loading$ | async" ></mat-progress-bar>
   <mat-progress-bar mode="determinate" value="0"  *ngIf="(dataSource.loading$ | async) === false" ></mat-progress-bar>
 

@@ -10,3 +10,7 @@
 .mat-column-title{
     max-width: 200px;
 }
+
+.mat-column-buttons{
+    max-width: 60px;
+}

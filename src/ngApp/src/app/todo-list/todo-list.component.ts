@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { Observable, BehaviorSubject, of, merge, fromEvent } from 'rxjs';
-import { TodoPublicEntity, Client } from 'src/_tsModels/api-client';
+import { TodoPublicEntity, Client, DeleteTODORequest } from 'src/_tsModels/api-client';
 import { map, catchError, finalize, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
+import { ConfirmationService } from '../_services/confirmation.service';
 
 @Component({
   selector: 'app-todo-list',
@@ -13,7 +15,7 @@ import { MatPaginator, MatSort } from '@angular/material';
 export class TodoListComponent implements OnInit, AfterViewInit {
 
   dataSource: TodoDataSource;
-  displayedColumns = ['title', 'description', 'updated'];
+  displayedColumns = ['title', 'description', 'updated', 'buttons'];
 
   pageSize = 5;
 
@@ -22,7 +24,10 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   @ViewChild('input') input: ElementRef;
 
   constructor(
-    private api: Client
+    private api: Client,
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private confirmService: ConfirmationService
   ) { }
 
   ngOnInit() {
@@ -61,10 +66,58 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.paginator.pageIndex, this.paginator.pageSize);
   }
 
-  onRowClicked(row) {
-    console.log('Row clicked: ', row);
+  onRowClicked(row: TodoPublicEntity) {
+    // console.log('Row clicked: ', row);
+    // this.router.navigate(['/todo', row.publicId]);
   }
 
+  delete(todoItem: TodoPublicEntity, event: MouseEvent) {
+    event.stopPropagation();
+    this.confirmService.confirm(todoItem.title || todoItem.description, 'Are you sure you want to permanently delete it?')
+      .subscribe(
+        result => {
+          if (!result) {
+            // console.log('delete is cancelled', todoItem);
+            this.snackBar.open('Delete is cancelled', 'Delete did not happen.', {
+              duration: 2500,
+              horizontalPosition: 'right',
+              verticalPosition: 'bottom',
+            });
+          } else {
+            // console.log('ready to delete', todoItem);
+            const request = new DeleteTODORequest({
+              publicId: todoItem.publicId
+            });
+            this.api.apiTodoDelete(request).subscribe(
+              resultApi => {
+                // console.log('deleted', resultApi);
+                if (!resultApi.hasError) {
+                  this.load();
+                  if (resultApi.data) {
+                    // this.load();
+                  } else {
+                    this.snackBar.open('Unknown reason at server', 'Delete did not happen.', {
+                      duration: 2500,
+                      horizontalPosition: 'right',
+                      verticalPosition: 'bottom',
+                    });
+                  }
+                }
+              },
+              err => {
+                console.log(err.error);
+                console.log(err.message);
+                this.snackBar.open(err.message, 'Delete did not happen.', {
+                  duration: 2500,
+                  horizontalPosition: 'right',
+                  verticalPosition: 'bottom',
+                });
+              }
+            );
+          }
+        }
+      );
+  }
 }
 
 class TodoDataSource implements DataSource<TodoPublicEntity> {
@@ -106,5 +159,4 @@ class TodoDataSource implements DataSource<TodoPublicEntity> {
       )
       .subscribe(lessons => this.lessonsSubject.next(lessons));
   }
-
 }
