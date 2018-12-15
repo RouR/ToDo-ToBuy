@@ -9,8 +9,8 @@ namespace Domain
         [Key]
         public Guid PublicId { get; set; }
 
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
-        public bool IsDeleted { get; set; }
+        public virtual DateTime Created { get; set; }
+        public virtual DateTime Updated { get; set; }
+        public virtual bool IsDeleted { get; set; }
     }
 }

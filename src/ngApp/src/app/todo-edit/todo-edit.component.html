@@ -1,3 +1,31 @@
-<p>
-  todo-edit works! {{id}}
-</p>
+<div class="todoedit-container spinner-wrapper">
+  <form #editForm="ngForm" (ngSubmit)="save(editForm)">
+    <div class="spinner-container" *ngIf="isLoading">
+      <mat-progress-spinner mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+
+    <mat-form-field>
+      <input matInput placeholder="Title" [(ngModel)]="model.title" name="title">
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="Description" [(ngModel)]="model.description" name="description"></textarea>
+    </mat-form-field>
+
+    <div *ngIf="!isNewRecord">
+      <p>Id: <span>{{model.publicId}}</span></p>
+      <p>Created: <span>{{model.created | amFromUtc | amLocal | amCalendar}}</span></p>
+      <p>Updated: <span>{{model.updated | amFromUtc | amLocal | amTimeAgo:true}}</span></p>
+    </div>
+
+    <div>
+      <button mat-raised-button routerLink="/todo">Back to List</button>
+      <div fxFlex></div>
+      <button mat-raised-button color="primary" (click)="save()">{{isNewRecord ? 'Create': 'Save'}}</button>
+    </div>
+  </form>
+
+  <div>
+    {{diagnostic}}
+  </div>
+</div>

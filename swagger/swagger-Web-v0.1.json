@@ -626,9 +626,6 @@
         "updated": {
           "format": "date-time",
           "type": "string"
-        },
-        "isDeleted": {
-          "type": "boolean"
         }
       }
     },
@@ -652,9 +649,6 @@
         "updated": {
           "format": "date-time",
           "type": "string"
-        },
-        "isDeleted": {
-          "type": "boolean"
         }
       }
     },

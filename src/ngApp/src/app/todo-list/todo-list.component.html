@@ -1,9 +1,10 @@
 <div class="todolist-container">
 
-  <form class="filter-form">
-    <mat-form-field class="full-width">
+  <form class="filter-form" fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-form-field class="full-width"  fxFlex="66%" fxFlexOffset="15%">
       <input matInput placeholder="Search" #input>
     </mat-form-field>
+    <button mat-raised-button color="primary"  [routerLink]="['/todo', '']">Create</button>
   </form>
   
   

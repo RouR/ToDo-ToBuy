@@ -933,7 +933,6 @@ export class TodoPublicEntity implements ITodoPublicEntity {
     publicId?: string | null;
     created?: moment.Moment | null;
     updated?: moment.Moment | null;
-    isDeleted?: boolean | null;
 
     constructor(data?: ITodoPublicEntity) {
         if (data) {
@@ -951,7 +950,6 @@ export class TodoPublicEntity implements ITodoPublicEntity {
             this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
             this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
             this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
-            this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : <any>null;
         }
     }
 
@@ -969,7 +967,6 @@ export class TodoPublicEntity implements ITodoPublicEntity {
         data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
         data["created"] = this.created ? this.created.toISOString() : <any>null;
         data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
-        data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : <any>null;
         return data; 
     }
 }
@@ -980,7 +977,6 @@ export interface ITodoPublicEntity {
     publicId?: string | null;
     created?: moment.Moment | null;
     updated?: moment.Moment | null;
-    isDeleted?: boolean | null;
 }
 
 export class EditTODOResponse implements IEditTODOResponse {
@@ -989,7 +985,6 @@ export class EditTODOResponse implements IEditTODOResponse {
     publicId?: string | null;
     created?: moment.Moment | null;
     updated?: moment.Moment | null;
-    isDeleted?: boolean | null;
 
     constructor(data?: IEditTODOResponse) {
         if (data) {
@@ -1007,7 +1002,6 @@ export class EditTODOResponse implements IEditTODOResponse {
             this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
             this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
             this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
-            this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : <any>null;
         }
     }
 
@@ -1025,7 +1019,6 @@ export class EditTODOResponse implements IEditTODOResponse {
         data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
         data["created"] = this.created ? this.created.toISOString() : <any>null;
         data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
-        data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : <any>null;
         return data; 
     }
 }
@@ -1036,7 +1029,6 @@ export interface IEditTODOResponse {
     publicId?: string | null;
     created?: moment.Moment | null;
     updated?: moment.Moment | null;
-    isDeleted?: boolean | null;
 }
 
 export class SaveTODORequest implements ISaveTODORequest {

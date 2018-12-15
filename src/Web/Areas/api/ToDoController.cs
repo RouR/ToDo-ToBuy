@@ -44,7 +44,9 @@ namespace Web.Areas.api
                 {
                     UserId = Guid.NewGuid(),
                     PublicId = Guid.NewGuid(),
-                    Description = "assa " + i
+                    Description = "assa " + i,
+                    Created = DateTime.Now.AddDays(-1),
+                    Updated = DateTime.Now.AddHours(-2)
                 });                
             }
 
@@ -68,7 +70,9 @@ namespace Web.Areas.api
             {
                 PublicId = request.PublicId.Value,
                 Description = "asd",
-                Title = "asds"
+                Title = "asds",
+                Created = DateTime.Now.AddDays(-1),
+                Updated = DateTime.Now.AddMinutes(-2)
             };
         }
         
@@ -84,9 +88,11 @@ namespace Web.Areas.api
             {
                 Data = new TodoPublicEntity()
                 {
-                    PublicId = request.PublicId.Value,
+                    PublicId = request.PublicId ?? Guid.NewGuid(),
                     Description = "asd",
-                    Title = "asds"
+                    Title = "asds",
+                    Created = DateTime.Now.AddDays(-1),
+                    Updated = DateTime.Now.AddMinutes(-2)
                 }
             };
         }

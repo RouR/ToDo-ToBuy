@@ -8,5 +8,8 @@ namespace DTO.Public.TODO
     {
         [JsonIgnore]
         public override Guid UserId { get; set; }
+        
+        [JsonIgnore]
+        public override bool IsDeleted { get; set; }
     }
 }

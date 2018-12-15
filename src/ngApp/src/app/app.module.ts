@@ -12,6 +12,8 @@ import { environment } from './../environments/environment';
 import { JwtModule, JwtInterceptor } from '@auth0/angular-jwt';
 import { API_BASE_URL } from '../_tsModels/api-client';
 
+import { MomentModule } from 'ngx-moment';
+
 import {
   MatSidenavModule,
   MatToolbarModule,
@@ -70,6 +72,7 @@ export function tokenGetter() {
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    MomentModule,
 
     MatSidenavModule,
     MatToolbarModule,
