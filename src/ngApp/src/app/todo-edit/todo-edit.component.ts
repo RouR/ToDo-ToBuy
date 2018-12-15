@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TodoPublicEntity, Client, SaveTODORequest } from 'src/_tsModels/api-client';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-todo-edit',
@@ -32,7 +31,7 @@ export class TodoEditComponent implements OnInit {
         result => {
           this.model = result;
         },
-        error => {},
+        error => { },
         () => {
           this.isLoading = false;
         }
@@ -61,10 +60,12 @@ export class TodoEditComponent implements OnInit {
     this.isLoading = true;
     this.api.apiTodoCreate(data).subscribe(
       result => {
-        this.model = result.data;
-        this.isNewRecord = false;
+        if (!result.hasError) {
+          this.model = result.data;
+          this.isNewRecord = false;
+        }
       },
-      error => {},
+      error => { },
       () => {
         this.isLoading = false;
       }
@@ -75,14 +76,18 @@ export class TodoEditComponent implements OnInit {
     this.isLoading = true;
     this.api.apiTodoUpdate(data).subscribe(
       result => {
-        this.model = result.data;
+        if (!result.hasError) {
+          this.model = result.data;
+        }
       },
-      error => {},
+      error => { },
       () => {
         this.isLoading = false;
       }
     );
   }
 
-  get diagnostic() { return JSON.stringify(this.model); }
+  get diagnostic() {
+    return JSON.stringify(this.model);
+  }
 }
