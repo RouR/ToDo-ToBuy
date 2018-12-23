@@ -109,6 +109,246 @@
         }
       }
     },
+    "/api/ToBuy/List": {
+      "get": {
+        "tags": [
+          "ToBuy"
+        ],
+        "summary": "list to-buy items with pagination",
+        "operationId": "ApiToBuyListGet",
+        "consumes": [],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "OrderBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Asc",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ListTOBUYResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToBuy/Get": {
+      "get": {
+        "tags": [
+          "ToBuy"
+        ],
+        "summary": "load to-buy-item",
+        "operationId": "ApiToBuyGetGet",
+        "consumes": [],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "PublicId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/EditTOBUYResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToBuy/Update": {
+      "post": {
+        "tags": [
+          "ToBuy"
+        ],
+        "summary": "update to-buy-item",
+        "operationId": "ApiToBuyUpdatePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SaveTOBUYRequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SaveTOBUYResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToBuy/Create": {
+      "post": {
+        "tags": [
+          "ToBuy"
+        ],
+        "summary": "create new to-buy-item",
+        "operationId": "ApiToBuyCreatePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SaveTOBUYRequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SaveTOBUYResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/ToBuy/Delete": {
+      "post": {
+        "tags": [
+          "ToBuy"
+        ],
+        "summary": "delete to-buy-item",
+        "operationId": "ApiToBuyDeletePost",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/DeleteTOBUYRequest"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "required": false,
+            "type": "string",
+            "default": "0.1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DeleteTOBUYResponse"
+            }
+          }
+        }
+      }
+    },
     "/api/ToDo/List": {
       "get": {
         "tags": [
@@ -552,6 +792,190 @@
         "value": {
           "type": "string",
           "readOnly": true
+        }
+      }
+    },
+    "ListTOBUYResponse": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "pageSize": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "totalItems": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "items": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TOBUYPublicEntity"
+          },
+          "readOnly": true
+        },
+        "totalPages": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "firstItem": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "lastItem": {
+          "format": "int32",
+          "type": "integer",
+          "readOnly": true
+        },
+        "hasPreviousPage": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "hasNextPage": {
+          "type": "boolean",
+          "readOnly": true
+        }
+      }
+    },
+    "TOBUYPublicEntity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "qty": {
+          "format": "float",
+          "type": "number"
+        },
+        "price": {
+          "$ref": "#/definitions/Price"
+        },
+        "dueToUtc": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "Price": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "format": "double",
+          "type": "number"
+        },
+        "currency": {
+          "format": "int32",
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "type": "integer"
+        }
+      }
+    },
+    "EditTOBUYResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "qty": {
+          "format": "float",
+          "type": "number"
+        },
+        "price": {
+          "$ref": "#/definitions/Price"
+        },
+        "dueToUtc": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "SaveTOBUYRequest": {
+      "type": "object",
+      "properties": {
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "SaveTOBUYResponse": {
+      "type": "object",
+      "properties": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/TOBUYPublicEntity"
+        }
+      }
+    },
+    "DeleteTOBUYRequest": {
+      "type": "object",
+      "properties": {
+        "publicId": {
+          "format": "uuid",
+          "type": "string"
+        }
+      }
+    },
+    "DeleteTOBUYResponse": {
+      "type": "object",
+      "properties": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "boolean"
         }
       }
     },

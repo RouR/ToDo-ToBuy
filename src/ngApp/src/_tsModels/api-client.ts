@@ -149,6 +149,311 @@ export class Client {
     }
 
     /**
+     * list to-buy items with pagination
+     * @param page (optional) 
+     * @param pageSize (optional) 
+     * @param orderBy (optional) 
+     * @param asc (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiTobuyList(page?: number | null | undefined, pageSize?: number | null | undefined, orderBy?: string | null | undefined, asc?: boolean | null | undefined, api_version?: string | null | undefined): Observable<ListTOBUYResponse> {
+        let url_ = this.baseUrl + "/api/ToBuy/List?";
+        if (page !== undefined)
+            url_ += "Page=" + encodeURIComponent("" + page) + "&"; 
+        if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&"; 
+        if (orderBy !== undefined)
+            url_ += "OrderBy=" + encodeURIComponent("" + orderBy) + "&"; 
+        if (asc !== undefined)
+            url_ += "Asc=" + encodeURIComponent("" + asc) + "&"; 
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiTobuyList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiTobuyList(<any>response_);
+                } catch (e) {
+                    return <Observable<ListTOBUYResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ListTOBUYResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiTobuyList(response: HttpResponseBase): Observable<ListTOBUYResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ListTOBUYResponse.fromJS(resultData200) : new ListTOBUYResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ListTOBUYResponse>(<any>null);
+    }
+
+    /**
+     * load to-buy-item
+     * @param publicId (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiTobuyGet(publicId?: string | null | undefined, api_version?: string | null | undefined): Observable<EditTOBUYResponse> {
+        let url_ = this.baseUrl + "/api/ToBuy/Get?";
+        if (publicId !== undefined)
+            url_ += "PublicId=" + encodeURIComponent("" + publicId) + "&"; 
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiTobuyGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiTobuyGet(<any>response_);
+                } catch (e) {
+                    return <Observable<EditTOBUYResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EditTOBUYResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiTobuyGet(response: HttpResponseBase): Observable<EditTOBUYResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? EditTOBUYResponse.fromJS(resultData200) : new EditTOBUYResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EditTOBUYResponse>(<any>null);
+    }
+
+    /**
+     * update to-buy-item
+     * @param request (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiTobuyUpdate(request?: SaveTOBUYRequest | null | undefined, api_version?: string | null | undefined): Observable<SaveTOBUYResponse> {
+        let url_ = this.baseUrl + "/api/ToBuy/Update?";
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiTobuyUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiTobuyUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<SaveTOBUYResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SaveTOBUYResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiTobuyUpdate(response: HttpResponseBase): Observable<SaveTOBUYResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? SaveTOBUYResponse.fromJS(resultData200) : new SaveTOBUYResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SaveTOBUYResponse>(<any>null);
+    }
+
+    /**
+     * create new to-buy-item
+     * @param request (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiTobuyCreate(request?: SaveTOBUYRequest | null | undefined, api_version?: string | null | undefined): Observable<SaveTOBUYResponse> {
+        let url_ = this.baseUrl + "/api/ToBuy/Create?";
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiTobuyCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiTobuyCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<SaveTOBUYResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SaveTOBUYResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiTobuyCreate(response: HttpResponseBase): Observable<SaveTOBUYResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? SaveTOBUYResponse.fromJS(resultData200) : new SaveTOBUYResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SaveTOBUYResponse>(<any>null);
+    }
+
+    /**
+     * delete to-buy-item
+     * @param request (optional) 
+     * @param api_version (optional) The requested API version
+     * @return Success
+     */
+    apiTobuyDelete(request?: DeleteTOBUYRequest | null | undefined, api_version?: string | null | undefined): Observable<DeleteTOBUYResponse> {
+        let url_ = this.baseUrl + "/api/ToBuy/Delete?";
+        if (api_version !== undefined)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiTobuyDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiTobuyDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<DeleteTOBUYResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<DeleteTOBUYResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiTobuyDelete(response: HttpResponseBase): Observable<DeleteTOBUYResponse> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? DeleteTOBUYResponse.fromJS(resultData200) : new DeleteTOBUYResponse();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<DeleteTOBUYResponse>(<any>null);
+    }
+
+    /**
      * list to-do items with pagination
      * @param page (optional) 
      * @param pageSize (optional) 
@@ -851,6 +1156,410 @@ export interface IKeyValuePairOfStringAndString {
     value?: string | null;
 }
 
+export class ListTOBUYResponse implements IListTOBUYResponse {
+    page?: number | null;
+    pageSize?: number | null;
+    totalItems?: number | null;
+    items?: TOBUYPublicEntity[] | null;
+    totalPages?: number | null;
+    firstItem?: number | null;
+    lastItem?: number | null;
+    hasPreviousPage?: boolean | null;
+    hasNextPage?: boolean | null;
+
+    constructor(data?: IListTOBUYResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.page = data["page"] !== undefined ? data["page"] : <any>null;
+            this.pageSize = data["pageSize"] !== undefined ? data["pageSize"] : <any>null;
+            this.totalItems = data["totalItems"] !== undefined ? data["totalItems"] : <any>null;
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [];
+                for (let item of data["items"])
+                    this.items.push(TOBUYPublicEntity.fromJS(item));
+            }
+            this.totalPages = data["totalPages"] !== undefined ? data["totalPages"] : <any>null;
+            this.firstItem = data["firstItem"] !== undefined ? data["firstItem"] : <any>null;
+            this.lastItem = data["lastItem"] !== undefined ? data["lastItem"] : <any>null;
+            this.hasPreviousPage = data["hasPreviousPage"] !== undefined ? data["hasPreviousPage"] : <any>null;
+            this.hasNextPage = data["hasNextPage"] !== undefined ? data["hasNextPage"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ListTOBUYResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListTOBUYResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["page"] = this.page !== undefined ? this.page : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["totalItems"] = this.totalItems !== undefined ? this.totalItems : <any>null;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["firstItem"] = this.firstItem !== undefined ? this.firstItem : <any>null;
+        data["lastItem"] = this.lastItem !== undefined ? this.lastItem : <any>null;
+        data["hasPreviousPage"] = this.hasPreviousPage !== undefined ? this.hasPreviousPage : <any>null;
+        data["hasNextPage"] = this.hasNextPage !== undefined ? this.hasNextPage : <any>null;
+        return data; 
+    }
+}
+
+export interface IListTOBUYResponse {
+    page?: number | null;
+    pageSize?: number | null;
+    totalItems?: number | null;
+    items?: TOBUYPublicEntity[] | null;
+    totalPages?: number | null;
+    firstItem?: number | null;
+    lastItem?: number | null;
+    hasPreviousPage?: boolean | null;
+    hasNextPage?: boolean | null;
+}
+
+export class TOBUYPublicEntity implements ITOBUYPublicEntity {
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
+    publicId?: string | null;
+    created?: moment.Moment | null;
+    updated?: moment.Moment | null;
+
+    constructor(data?: ITOBUYPublicEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.qty = data["qty"] !== undefined ? data["qty"] : <any>null;
+            this.price = data["price"] ? Price.fromJS(data["price"]) : <any>null;
+            this.dueToUtc = data["dueToUtc"] ? moment(data["dueToUtc"].toString()) : <any>null;
+            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
+            this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
+            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): TOBUYPublicEntity {
+        data = typeof data === 'object' ? data : {};
+        let result = new TOBUYPublicEntity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["qty"] = this.qty !== undefined ? this.qty : <any>null;
+        data["price"] = this.price ? this.price.toJSON() : <any>null;
+        data["dueToUtc"] = this.dueToUtc ? this.dueToUtc.toISOString() : <any>null;
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        data["created"] = this.created ? this.created.toISOString() : <any>null;
+        data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
+        return data; 
+    }
+}
+
+export interface ITOBUYPublicEntity {
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
+    publicId?: string | null;
+    created?: moment.Moment | null;
+    updated?: moment.Moment | null;
+}
+
+export class Price implements IPrice {
+    amount?: number | null;
+    currency?: PriceCurrency | null;
+
+    constructor(data?: IPrice) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.amount = data["amount"] !== undefined ? data["amount"] : <any>null;
+            this.currency = data["currency"] !== undefined ? data["currency"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): Price {
+        data = typeof data === 'object' ? data : {};
+        let result = new Price();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["currency"] = this.currency !== undefined ? this.currency : <any>null;
+        return data; 
+    }
+}
+
+export interface IPrice {
+    amount?: number | null;
+    currency?: PriceCurrency | null;
+}
+
+export class EditTOBUYResponse implements IEditTOBUYResponse {
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
+    publicId?: string | null;
+    created?: moment.Moment | null;
+    updated?: moment.Moment | null;
+
+    constructor(data?: IEditTOBUYResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.qty = data["qty"] !== undefined ? data["qty"] : <any>null;
+            this.price = data["price"] ? Price.fromJS(data["price"]) : <any>null;
+            this.dueToUtc = data["dueToUtc"] ? moment(data["dueToUtc"].toString()) : <any>null;
+            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
+            this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
+            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): EditTOBUYResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditTOBUYResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["qty"] = this.qty !== undefined ? this.qty : <any>null;
+        data["price"] = this.price ? this.price.toJSON() : <any>null;
+        data["dueToUtc"] = this.dueToUtc ? this.dueToUtc.toISOString() : <any>null;
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        data["created"] = this.created ? this.created.toISOString() : <any>null;
+        data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
+        return data; 
+    }
+}
+
+export interface IEditTOBUYResponse {
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
+    publicId?: string | null;
+    created?: moment.Moment | null;
+    updated?: moment.Moment | null;
+}
+
+export class SaveTOBUYRequest implements ISaveTOBUYRequest {
+    publicId?: string | null;
+    title?: string | null;
+    description?: string | null;
+
+    constructor(data?: ISaveTOBUYRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
+            this.title = data["title"] !== undefined ? data["title"] : <any>null;
+            this.description = data["description"] !== undefined ? data["description"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SaveTOBUYRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new SaveTOBUYRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        return data; 
+    }
+}
+
+export interface ISaveTOBUYRequest {
+    publicId?: string | null;
+    title?: string | null;
+    description?: string | null;
+}
+
+export class SaveTOBUYResponse implements ISaveTOBUYResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TOBUYPublicEntity | null;
+
+    constructor(data?: ISaveTOBUYResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hasError = data["hasError"] !== undefined ? data["hasError"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+            this.data = data["data"] ? TOBUYPublicEntity.fromJS(data["data"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SaveTOBUYResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SaveTOBUYResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hasError"] = this.hasError !== undefined ? this.hasError : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        return data; 
+    }
+}
+
+export interface ISaveTOBUYResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TOBUYPublicEntity | null;
+}
+
+export class DeleteTOBUYRequest implements IDeleteTOBUYRequest {
+    publicId?: string | null;
+
+    constructor(data?: IDeleteTOBUYRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeleteTOBUYRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteTOBUYRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
+        return data; 
+    }
+}
+
+export interface IDeleteTOBUYRequest {
+    publicId?: string | null;
+}
+
+export class DeleteTOBUYResponse implements IDeleteTOBUYResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: boolean | null;
+
+    constructor(data?: IDeleteTOBUYResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hasError = data["hasError"] !== undefined ? data["hasError"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+            this.data = data["data"] !== undefined ? data["data"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeleteTOBUYResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteTOBUYResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hasError"] = this.hasError !== undefined ? this.hasError : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["data"] = this.data !== undefined ? this.data : <any>null;
+        return data; 
+    }
+}
+
+export interface IDeleteTOBUYResponse {
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: boolean | null;
+}
+
 export class ListTODOResponse implements IListTODOResponse {
     page?: number | null;
     pageSize?: number | null;
@@ -1197,6 +1906,13 @@ export interface IDeleteTODOResponse {
     hasError?: boolean | null;
     message?: string | null;
     data?: boolean | null;
+}
+
+export enum PriceCurrency {
+    _0 = 0, 
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
 }
 
 export class SwaggerException extends Error {
