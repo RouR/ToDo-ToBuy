@@ -176,10 +176,12 @@ namespace Web
 
                     // add a custom operation filter which sets default values
                     options.OperationFilter<SwaggerDefaultValues>();
+                    
+                    options.DocumentFilter<SwaggerAddEnumDescriptions>();
+                    //options.DescribeAllEnumsAsStrings();
 
                     // integrate xml comments
-                    options.IncludeXmlComments(SwaggerUtils
-                        .XmlCommentsFilePath); //check project properties - add xml docs to bin\Debug\netcoreapp2.0\Web.xml
+                    options.IncludeXmlComments(SwaggerUtils.XmlCommentsFilePath); //check project properties - add xml docs to bin\Debug\netcoreapp2.0\Web.xml
                 });
 
             services.AddHealthChecks(checks =>

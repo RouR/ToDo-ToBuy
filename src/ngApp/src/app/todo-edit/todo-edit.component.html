@@ -1,5 +1,5 @@
 <div class="todoedit-container spinner-wrapper">
-  <form #editForm="ngForm" (ngSubmit)="save(editForm)">
+  <form #editForm="ngForm" (ngSubmit)="save()">
     <div class="spinner-container" *ngIf="isLoading">
       <mat-progress-spinner mode="indeterminate">
       </mat-progress-spinner>

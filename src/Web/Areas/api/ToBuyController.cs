@@ -47,7 +47,8 @@ namespace Web.Areas.api
                     UserId = Guid.NewGuid(),
                     PublicId = Guid.NewGuid(),
                     Name = "nnn " + i,
-                    Price = new Price(){Amount = 2*i, Currency = Currency.Euro},
+                    Qty = 4 % (1+i),
+                    Price = i%2 ==0 ? new Price(){Amount = 2*i, Currency = Currency.Euro} : null,
                     DueToUtc = i%2 == 0 ? (DateTime?)null : DateTime.UtcNow,
                     Created = DateTime.Now.AddDays(-1),
                     Updated = DateTime.Now.AddHours(-2)
@@ -73,6 +74,7 @@ namespace Web.Areas.api
             {
                 PublicId = request.PublicId.Value,
                 Name = "nnn ",
+                Qty = 22,
                 Price = new Price(){Amount = 42, Currency = Currency.Euro},
                 DueToUtc = DateTime.UtcNow,
                 Created = DateTime.Now.AddDays(-1),
@@ -94,6 +96,7 @@ namespace Web.Areas.api
                 {
                     PublicId = request.PublicId ?? Guid.NewGuid(),
                     Name = "nnn ",
+                    Qty = 22,
                     Price = new Price(){Amount = 42, Currency = Currency.Euro},
                     DueToUtc = DateTime.UtcNow,
                     Created = DateTime.Now.AddDays(-1),

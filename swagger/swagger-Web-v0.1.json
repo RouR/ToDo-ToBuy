@@ -886,13 +886,20 @@
         },
         "currency": {
           "format": "int32",
+          "description": "\r\n0 = Unknown\r\n1 = Rub\r\n2 = Usd\r\n3 = Euro",
           "enum": [
             0,
             1,
             2,
             3
           ],
-          "type": "integer"
+          "type": "integer",
+          "x-enumNames": [
+            "Unknown",
+            "Rub",
+            "Usd",
+            "Euro"
+          ]
         }
       }
     },
@@ -934,10 +941,18 @@
           "format": "uuid",
           "type": "string"
         },
-        "title": {
+        "name": {
           "type": "string"
         },
-        "description": {
+        "qty": {
+          "format": "float",
+          "type": "number"
+        },
+        "price": {
+          "$ref": "#/definitions/Price"
+        },
+        "dueToUtc": {
+          "format": "date-time",
           "type": "string"
         }
       }

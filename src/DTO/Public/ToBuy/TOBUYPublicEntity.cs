@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.DBEnities;
+using Domain.Models;
 using Newtonsoft.Json;
 
 namespace DTO.Public.TOBUY

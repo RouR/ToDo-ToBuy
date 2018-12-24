@@ -3,7 +3,7 @@ import { NgModule, InjectionToken } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,7 +33,10 @@ import {
 
   MAT_LABEL_GLOBAL_OPTIONS,
   MatDialogRef,
+  MatDatepickerModule,
 } from '@angular/material';
+
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
 
 import { AuthenticationService } from './_services/authentication.service';
 import { ErrorDtoInterceptorService } from './_services/error-dto-interceptor.service';
@@ -72,6 +75,7 @@ export function tokenGetter() {
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     MomentModule,
 
     MatSidenavModule,
@@ -92,6 +96,8 @@ export function tokenGetter() {
     MatSortModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
 
     JwtModule.forRoot({
       config: {

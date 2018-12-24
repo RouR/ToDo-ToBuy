@@ -1294,6 +1294,11 @@ export interface ITOBUYPublicEntity {
 
 export class Price implements IPrice {
     amount?: number | null;
+    /** 
+0 = Unknown
+1 = Rub
+2 = Usd
+3 = Euro */
     currency?: PriceCurrency | null;
 
     constructor(data?: IPrice) {
@@ -1329,6 +1334,11 @@ export class Price implements IPrice {
 
 export interface IPrice {
     amount?: number | null;
+    /** 
+0 = Unknown
+1 = Rub
+2 = Usd
+3 = Euro */
     currency?: PriceCurrency | null;
 }
 
@@ -1394,8 +1404,10 @@ export interface IEditTOBUYResponse {
 
 export class SaveTOBUYRequest implements ISaveTOBUYRequest {
     publicId?: string | null;
-    title?: string | null;
-    description?: string | null;
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
 
     constructor(data?: ISaveTOBUYRequest) {
         if (data) {
@@ -1409,8 +1421,10 @@ export class SaveTOBUYRequest implements ISaveTOBUYRequest {
     init(data?: any) {
         if (data) {
             this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
+            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.qty = data["qty"] !== undefined ? data["qty"] : <any>null;
+            this.price = data["price"] ? Price.fromJS(data["price"]) : <any>null;
+            this.dueToUtc = data["dueToUtc"] ? moment(data["dueToUtc"].toString()) : <any>null;
         }
     }
 
@@ -1424,16 +1438,20 @@ export class SaveTOBUYRequest implements ISaveTOBUYRequest {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["qty"] = this.qty !== undefined ? this.qty : <any>null;
+        data["price"] = this.price ? this.price.toJSON() : <any>null;
+        data["dueToUtc"] = this.dueToUtc ? this.dueToUtc.toISOString() : <any>null;
         return data; 
     }
 }
 
 export interface ISaveTOBUYRequest {
     publicId?: string | null;
-    title?: string | null;
-    description?: string | null;
+    name?: string | null;
+    qty?: number | null;
+    price?: Price | null;
+    dueToUtc?: moment.Moment | null;
 }
 
 export class SaveTOBUYResponse implements ISaveTOBUYResponse {
@@ -1909,10 +1927,10 @@ export interface IDeleteTODOResponse {
 }
 
 export enum PriceCurrency {
-    _0 = 0, 
-    _1 = 1, 
-    _2 = 2, 
-    _3 = 3, 
+    Unknown = 0, 
+    Rub = 1, 
+    Usd = 2, 
+    Euro = 3, 
 }
 
 export class SwaggerException extends Error {
