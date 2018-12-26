@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json;
+using Jil;
 using Nuke.Common;
 using Stubble.Core.Builders;
 using Stubble.Core.Settings;
@@ -47,7 +47,7 @@ partial class Build : NukeBuild
     {
         var selectedNamespace = K8sNamespace ?? Branch;
 
-        var values = JsonConvert.DeserializeObject<ValuesTemplating>(File.ReadAllText(MyK8sTemplatesValueFile));
+        var values = JSON.Deserialize<ValuesTemplating>(File.ReadAllText(MyK8sTemplatesValueFile));
         //values.Values["a1"]["dev"]
 
         var dataHash = BuildTemplateValue(values, version);

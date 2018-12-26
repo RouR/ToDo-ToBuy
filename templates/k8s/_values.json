@@ -6,41 +6,41 @@
 			"stage": "23232"
 		},
 		"webPort": {
-			"dev": 5555,			
+			"dev": "5555"			
 		},
 		"readinessProbePath": {
-			"dev": "/healthz",			
+			"dev": "/healthz"			
 		},
 		"livenessProbePath": {
-			"dev": "/healthz",			
+			"dev": "/healthz"			
 		},
 		
 		"docker-pull-policy": {
-			"dev": "Always",			
+			"dev": "Always"			
 		},
 		
 		"web-replicas": {
-			"dev": 1,
-			"stage": 2
+			"dev": "1",
+			"stage": ""
 		},
 		"accountService-replicas": {
-			"dev": 1,
-			"stage": 2
+			"dev": "1",
+			"stage": "2"
 		},
 		"todoService-replicas": {
-			"dev": 1,
-			"stage": 2
+			"dev": "1",
+			"stage": "2"
 		},
 		"tobuyService-replicas": {
-			"dev": 1,
-			"stage": 2
+			"dev": "1",
+			"stage": "2"
 		},
 		"jaeger_enable": {
-			"dev": false,
-			"stage": true
+			"dev": "false",
+			"stage": "true"
 		},
 		"jaeger_url": {			
 			"stage": "http://207.244.95.62:8086"
-		},
+		}
 	}
 }

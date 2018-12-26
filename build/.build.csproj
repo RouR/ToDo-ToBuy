@@ -26,6 +26,8 @@
   <ItemGroup>
     <PackageReference Include="dnlib-new" Version="2.1.0" />
     <PackageReference Include="Graphviz" Version="2.38.0.2" PrivateAssets="none" ExcludeAssets="none" IncludeAssets="all" />
+    <PackageReference Include="Jil" Version="2.16.0" />
+    <PackageReference Include="Json.Net" Version="1.0.13" />
     <PackageReference Include="MicroDocum.Themes" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="12.0.3" />
