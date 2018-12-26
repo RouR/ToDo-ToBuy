@@ -1,0 +1,8 @@
+{
+    "help":"https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli",
+    "tool":"https://martinroob.github.io/tiny-translator/en/#/translate",
+    "xliffmergeOptions": {
+      "srcDir": "src/i18n",
+      "genDir": "src/i18n"
+    }
+  }

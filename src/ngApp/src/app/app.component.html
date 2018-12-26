@@ -5,34 +5,34 @@
         <li>
           <a mat-list-item routerLink="/dashboard">
             <mat-icon class="icon">dashboard</mat-icon>
-            <span class="label">Dashboard</span>
+            <span class="label" i18n>Dashboard</span>
           </a>
         </li>
 
         <li>
           <a mat-list-item routerLink="/todo" *ngIf="auth.isLoggedIn">
             <mat-icon class="icon">dashboard</mat-icon>
-            <span class="label">To-Do</span>
+            <span class="label" i18n>To-Do</span>
           </a>
         </li>
         <li>
           <a mat-list-item routerLink="/tobuy" *ngIf="auth.isLoggedIn">
             <mat-icon class="icon">dashboard</mat-icon>
-            <span class="label">To-Buy</span>
+            <span class="label" i18n>To-Buy</span>
           </a>
         </li>
 
         <li>
           <a mat-list-item routerLink="/login" *ngIf="!auth.isLoggedIn">
             <mat-icon class="icon">input</mat-icon>
-            <span class="label">Login</span>
+            <span class="label" i18n>Login</span>
           </a>
         </li>
 
         <li>
           <a mat-list-item (click)="auth.logout()" *ngIf="auth.isLoggedIn" type="button">
             <mat-icon class="icon">input</mat-icon>
-            <span class="label">LogOut</span>
+            <span class="label" i18n>LogOut</span>
           </a>
         </li>
       </ul>
@@ -52,44 +52,42 @@
         </button>
       </div>
 
-      <span (click)="sidenav.toggle()">ToDo-ToBuy (example app)</span>
-      <span [hidden]="!auth.isLoggedIn"><i>Hello {{auth.username}}</i></span>
-
-
+      <span (click)="sidenav.toggle()" i18n>ToDo-ToBuy (example app)</span>
+      
       <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
         <ul fxLayout fxLayoutGap="20px">
 
           <li>
             <a routerLink="/dashboard">
               <mat-icon class="icon">dashboard</mat-icon>
-              <span class="label">Dashboard</span>
+              <span class="label" i18n>Dashboard</span>
             </a>
           </li>
 
           <li>
             <a routerLink="/todo" *ngIf="auth.isLoggedIn">
               <mat-icon class="icon">dashboard</mat-icon>
-              <span class="label">To-Do</span>
+              <span class="label" i18n>To-Do</span>
             </a>
           </li>
           <li>
             <a routerLink="/tobuy" *ngIf="auth.isLoggedIn">
               <mat-icon class="icon">dashboard</mat-icon>
-              <span class="label">To-Buy</span>
+              <span class="label" i18n>To-Buy</span>
             </a>
           </li>
 
           <li>
             <a routerLink="/login" *ngIf="!auth.isLoggedIn">
               <mat-icon class="icon">input</mat-icon>
-              <span class="label">Login</span>
+              <span class="label" i18n>Login</span>
             </a>
           </li>
 
           <li>
             <a (click)="auth.logout()" *ngIf="auth.isLoggedIn" type="button">
               <mat-icon class="icon">input</mat-icon>
-              <span class="label">LogOut</span>
+              <span class="label" i18n>LogOut</span>
             </a>
           </li>
         </ul>
