@@ -50,6 +50,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { ConfirmationService } from './_services/confirmation.service';
+import { MyJwtHttpInterceptor } from './_services/myJwtHttpInterceptor';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -103,7 +104,8 @@ export function tokenGetter() {
       config: {
         // headerName: 'token',
         tokenGetter: tokenGetter,
-        whitelistedDomains: [location.host],
+        // whitelistedDomains:  new Array(new RegExp('^.*$'), new RegExp('^null$')),
+        // whitelistedDomains: [location.host],
         // blacklistedRoutes: ['localhost:3001/auth/']
       }
     }),
@@ -111,7 +113,7 @@ export function tokenGetter() {
   providers: [
     { provide: API_BASE_URL, useValue: environment.apiUrl },
     { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: 'auto' },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MyJwtHttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorDtoInterceptorService, multi: true },
   ],
   entryComponents: [
