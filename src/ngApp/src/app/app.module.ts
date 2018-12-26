@@ -51,6 +51,7 @@ import { RegisterComponent } from './register/register.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { ConfirmationService } from './_services/confirmation.service';
 import { MyJwtHttpInterceptor } from './_services/myJwtHttpInterceptor';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -115,6 +116,7 @@ export function tokenGetter() {
     { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: 'auto' },
     { provide: HTTP_INTERCEPTORS, useClass: MyJwtHttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorDtoInterceptorService, multi: true },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   entryComponents: [
     ConfirmComponent
