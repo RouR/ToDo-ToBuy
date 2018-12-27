@@ -5,7 +5,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.PlatformAbstractions;
 

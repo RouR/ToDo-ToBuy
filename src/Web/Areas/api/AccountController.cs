@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 using DTO.Public.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Utils;
 using Utils.WebRequests;
 using Web.Utils;
 

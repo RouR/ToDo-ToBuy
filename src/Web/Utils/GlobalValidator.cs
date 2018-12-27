@@ -5,7 +5,6 @@ using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Utils;
 using Utils.WebRequests;
 
 namespace Web.Utils

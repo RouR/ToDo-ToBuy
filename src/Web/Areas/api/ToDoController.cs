@@ -6,7 +6,6 @@ using Domain.DBEnities;
 using DTO.Public.TODO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Utils.WebRequests;
 using Web.Utils;
 

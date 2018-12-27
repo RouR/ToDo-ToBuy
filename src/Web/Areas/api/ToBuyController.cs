@@ -8,7 +8,6 @@ using Domain.Models;
 using DTO.Public.TOBUY;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Utils.WebRequests;
 using Web.Utils;
 

@@ -7,7 +7,6 @@ using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using dnlib.DotNet;
 using Nuke.Common;
-using Nuke.Common.ProjectModel;
 using static Nuke.Common.IO.PathConstruction;
 
 partial class Build : NukeBuild

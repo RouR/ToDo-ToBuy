@@ -8,11 +8,9 @@ using NJsonSchema.Generation;
 using NSwag;
 using NSwag.CodeGeneration.OperationNameGenerators;
 using NSwag.CodeGeneration.TypeScript;
-using NSwag.CodeGeneration.TypeScript.Models;
 using Nuke.Common;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using TypeLite;
 
 partial class Build : NukeBuild
 {
