@@ -30,6 +30,9 @@ partial class Build : NukeBuild
             var attributes = theme.GetAvailableThemeAttributes();
             var c = a.Analize(assemblies, attributes);
 
+            if(c.Nodes.Count == 0 && c.Edges.Count == 0)
+                WriteError("Microdocum - DTO not found");
+            
             var gen = new GraphvizDotGenerator<DefaultLinkStyle>(new DefaultTheme());
             var graphwizFileData = gen.Generate(c);
 

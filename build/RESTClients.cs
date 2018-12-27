@@ -132,10 +132,11 @@ partial class Build : NukeBuild
 
         var projects = Solution.Projects;
 
+        var loadAssemblies = LoadAssemblies();
         foreach (var client in clients)
             foreach (var project in projects.Where(x => x.Name.Equals(client.Key, StringComparison.InvariantCultureIgnoreCase)))
             {
-                var assembly = LoadAssemblies().Single(x => x.Assembly.FullName.StartsWith(project.Name));
+                var assembly = loadAssemblies.Single(x => x.Assembly.FullName.StartsWith(project.Name));
                 var info = GetRestClientMeta(client, project, assembly.Assembly);
                 var clientMeta = new RestClientMeta()
                 {

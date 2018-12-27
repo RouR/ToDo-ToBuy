@@ -63,7 +63,7 @@ partial class Build : NukeBuild
                 //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
                 //var dllFile = BuildAssemblyDirectory ;
 
-                var dllFiles = GlobFiles(MySourceDirectory, "*.dll")
+                var dllFiles = GlobFiles(MySourceDirectory, "**/*.dll")
                     .Where(x => !x.Contains("obj") && x.StartsWith(project.Directory))
                     .Distinct()
                     .ToArray();
@@ -156,7 +156,8 @@ partial class Build : NukeBuild
                 //var dllFile = Path.Combine(project.Directory, "bin", DefaultDotNetBuild.Configuration, DefaultDotNetBuild.Framework ?? "", project.Name, ".dll");
                 //var dllFile = BuildAssemblyDirectory ;
 
-                var dllFiles = GlobFiles(MySourceDirectory, "*.dll")
+                var globFiles = GlobFiles(MySourceDirectory, "**/*.dll");
+                var dllFiles = globFiles
                     .Where(x => !x.Contains("obj") && x.StartsWith(project.Directory))
                     .Distinct()
                     .ToArray();
@@ -171,19 +172,19 @@ partial class Build : NukeBuild
 
                     try
                     {
-                        var newFilePath = Path.Combine(appDomain.BaseDirectory, fileName);
-                        File.Copy(file, newFilePath, true);
+                        //var newFilePath = Path.Combine(appDomain.BaseDirectory, fileName);
+                        //File.Copy(file, newFilePath, true);
                         var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
                         loadedAssemblies.Add(new LoadedAssembly()
                         {
                             Assembly = asm,
-                            Path = newFilePath,
+                            Path = file,
                             FileName = fileName
                         });
                     }
                     catch (Exception e)
                     {
-                        WriteError(e.Message);
+                        WriteError($"LoadDtoAssemblies project {project.Name} {e.Message}");
                     }
                 }
 
@@ -213,7 +214,7 @@ partial class Build : NukeBuild
             }
             catch (Exception ex)
             {
-                WriteError(ex.Message);
+                WriteError($"LoadDtoAssemblies - {ex.Message}");
                 //throw;
             }
         }
