@@ -1021,7 +1021,8 @@ export interface ILoginResponse {
 }
 
 export class RegisterRequest implements IRegisterRequest {
-    userName!: string;
+    name!: string;
+    email!: string;
     password!: string;
 
     constructor(data?: IRegisterRequest) {
@@ -1035,7 +1036,8 @@ export class RegisterRequest implements IRegisterRequest {
 
     init(data?: any) {
         if (data) {
-            this.userName = data["userName"] !== undefined ? data["userName"] : <any>null;
+            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.email = data["email"] !== undefined ? data["email"] : <any>null;
             this.password = data["password"] !== undefined ? data["password"] : <any>null;
         }
     }
@@ -1049,14 +1051,16 @@ export class RegisterRequest implements IRegisterRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
         data["password"] = this.password !== undefined ? this.password : <any>null;
         return data; 
     }
 }
 
 export interface IRegisterRequest {
-    userName: string;
+    name: string;
+    email: string;
     password: string;
 }
 

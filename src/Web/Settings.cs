@@ -22,6 +22,7 @@ namespace Web
         public const string JwtIssuer = "tbtd-app";
         public const string JwtAudience = "app-api";
         public const string JwtUserIdClaimName = "uid";
+        public const string JwtUserNameClaimName = "name";
 
         #endregion
     }

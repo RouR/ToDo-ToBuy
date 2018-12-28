@@ -1,24 +1,29 @@
-using System.Threading.Tasks;
+using AccountService.Interfaces;
 using DTO.Internal.Account;
 using Microsoft.AspNetCore.Mvc;
 using OpenTracing;
+using Utils;
 
 namespace AccountService.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
+    [GlobalValidator]
     public class UserController : Controller
     {
         private readonly ITracer _tracer;
+        private readonly IUserService _userService;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="tracer"></param>
-        public UserController(ITracer tracer)
+        public UserController(ITracer tracer,
+            IUserService userService)
         {
             _tracer = tracer;
+            _userService = userService;
         }
 
 
@@ -27,16 +32,22 @@ namespace AccountService.Controllers
         /// UserId must be pregenerated
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Erroable Guid UserId</returns>
+        /// <returns>Errorable Guid UserId</returns>
         [HttpPost]
-        public async Task<CreateUserResponse> Register([FromBody] CreateUserRequest model)
+        public CreateUserResponse Register([FromBody] CreateUserRequest model)
         {
-            await Task.Delay(0);
-            return new CreateUserResponse
-            {
-                HasError = true,
-                Message = "Not Implemented"
-            };
+            return _userService.Register(model);
+        }
+
+        /// <summary>
+        /// Try Login, with ban check
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public TryLoginResponse TryLogin([FromBody] TryLoginRequest model)
+        {
+            return _userService.Login(model);
         }
     }
 }

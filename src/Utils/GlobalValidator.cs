@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Utils.WebRequests;
 
-namespace Web.Utils
+namespace Utils
 {
     public class GlobalValidatorAttribute : ActionFilterAttribute
     {
@@ -18,6 +19,9 @@ namespace Web.Utils
 
             var retType = ((ControllerActionDescriptor) context.ActionDescriptor).MethodInfo.ReturnType;
 
+            if (retType.BaseType == typeof(Task))
+                retType = retType.GenericTypeArguments[0];
+            
             var canValidate = retType
                 .GetInterfaces()
                 .Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IErrorable<>));

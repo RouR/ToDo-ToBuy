@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Domain.DBEnities;
+using Domain.DBEntities;
 using DTO.Public.TODO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Utils;
 using Utils.WebRequests;
-using Web.Utils;
 
 namespace Web.Areas.api
 {

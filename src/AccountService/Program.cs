@@ -1,5 +1,6 @@
 ﻿using System;
 using AccountService.DAL;
+using AccountService.Interfaces;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,8 @@ namespace AccountService
                     {
                         context.Database.Migrate();
 
-                        ApplicationDbContext.CustomSeed(context);
+                        var userService = scope.ServiceProvider.GetService<IUserService>();
+                        ApplicationDbContext.CustomSeed(context, userService);
                     }
                 }
                 

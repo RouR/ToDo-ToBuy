@@ -1,5 +1,5 @@
 ﻿using System;
-using Domain.DBEnities;
+using Domain.DBEntities;
 using Newtonsoft.Json;
 
 namespace DTO.Public.TOBUY

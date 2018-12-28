@@ -6,7 +6,7 @@ using MicroDocum.Themes.DefaultTheme.Interfaces;
 
 namespace DTO.Internal.TOBUY
 {
-    [ServiceName("TOBUYSrv")]
+    [ServiceName(nameof(Service.ToBuy))]
     public class ListTOBUY : ListTOBUYRequest, IForUser, IProduce<ListTOBUYResponse>
     {
         public Guid UserId { get; set; }

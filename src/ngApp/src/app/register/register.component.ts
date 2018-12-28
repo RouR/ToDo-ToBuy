@@ -21,16 +21,17 @@ export class RegisterComponent implements OnInit {
   }
 
   async register(form: NgForm) {
+    // console.log('NgForm', form);
     const credentials = new RegisterRequest({
-      userName: form.value.username,
+      name: form.value.name,
+      email: form.value.email,
       password: form.value.password
     });
-    await this.auth.register(credentials).subscribe(
-      result => {
-        // console.log('RegisterComponent', result);
-        this.validationErrors = result.validationErrors.map(x => x.value);
-      }
-    );
+    const result = await this.auth.register(credentials);
+    console.log('RegisterComponent', result);
+    if (result.validationErrors) {
+      this.validationErrors = result.validationErrors.map(x => x.value);
+    }
   }
 
 }

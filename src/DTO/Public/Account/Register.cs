@@ -1,27 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Domain.Interfaces;
 using DTO.Internal.Account;
 using MicroDocum.Themes.DefaultTheme.Attributes;
 using MicroDocum.Themes.DefaultTheme.Interfaces;
+using Newtonsoft.Json;
 
 namespace DTO.Public.Account
 {
-    [ServiceName("Web")]
-    public class RegisterRequest : IProduce<CreateUserRequest>
+    [ServiceName(nameof(Service.Web))]
+    public class RegisterRequest : CreateUserRequest, IProduce<CreateUserRequest>
     {
-        [Required]
-        [MinLength(4)]
-        [MaxLength(100)]
-        public string UserName { get; set; }
-        
-        [Required(ErrorMessage = "Empty passwords is not allowed")]
-        [MinLength(8)]
-        [MaxLength(100)]
-        public string Password { get; set; }
+        [JsonIgnore]
+        public override Guid PublicId { get; set; }
+
+        [JsonIgnore]
+        public override string IP { get; set; }
     }
-    [ServiceName("Web")]
+
+    [ServiceName(nameof(Service.Web))]
     public class RegisterResponse: IErrorable<Guid>, IServerValidation
     {
         public bool HasError { get; set; }

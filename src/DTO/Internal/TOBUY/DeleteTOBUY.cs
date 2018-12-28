@@ -6,7 +6,7 @@ using MicroDocum.Themes.DefaultTheme.Interfaces;
 
 namespace DTO.Internal.TOBUY
 {
-    [ServiceName("TOBUYSrv")]
+    [ServiceName(nameof(Service.ToBuy))]
     public class DeleteTOBUY : IPublicIdEntity, IProduce<DeleteTOBUYResponse>
     {
         public Guid PublicId { get; set; }

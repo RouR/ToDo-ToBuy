@@ -6,7 +6,7 @@ using MicroDocum.Themes.DefaultTheme.Interfaces;
 
 namespace DTO.Internal.TODO
 {
-    [ServiceName("ToDoSrv")]
+    [ServiceName(nameof(Service.ToDo))]
     public class ListTODO : ListTODORequest, IForUser, IProduce<ListTODOResponse>
     {
         public Guid UserId { get; set; }

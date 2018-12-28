@@ -25,7 +25,7 @@ export class ErrorDtoInterceptorService implements HttpInterceptor {
       .pipe(
         tap(
           val => {
-            // sconsole.log(`check http response`, val);
+            // console.log(`check http response`, val);
             if (val instanceof HttpResponse) {
               // console.log(`HttpResponse ${val}`, val);
 
@@ -50,6 +50,11 @@ export class ErrorDtoInterceptorService implements HttpInterceptor {
           },
           error => {
             console.error(`reguest failed`, error);
+            this.snackBar.open(error.statusText, 'Server Error', {
+              duration: 2500,
+              horizontalPosition: 'right',
+              verticalPosition: 'bottom',
+            });
           }
         ),
         // Log when response observable either completes or errors

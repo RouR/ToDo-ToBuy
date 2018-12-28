@@ -29,5 +29,19 @@ namespace Shared
 		}
 		
 
+		/// <summary>
+		/// Try Login, with ban check
+		/// </summary>
+		
+		public async Task<DTO.Internal.Account.TryLoginResponse> User_TryLogin(DTO.Internal.Account.TryLoginRequest data)
+		{
+			var response = await _client.PostAsJsonAsync("/User/TryLogin", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Internal.Account.TryLoginResponse>();
+			return result;
+		}
+		
+
 	}
 }

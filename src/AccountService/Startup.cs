@@ -1,5 +1,6 @@
 ﻿using System;
 using AccountService.DAL;
+using AccountService.Services;
 using CustomCache;
 using CustomCache.Utils;
 using CustomMetrics;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shared;
+using Utils;
 
 namespace AccountService
 {
@@ -41,8 +43,13 @@ namespace AccountService
 
             var connection = Environment.GetEnvironmentVariable($"sqlCon") ?? throw new Exception("Database connection string required 'sqlCon'");
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
-            
-            services.AddMvc();
+
+            _ServiceRegisterInjections.Configure(services);
+
+            services.AddMvc(options => {
+                options.Filters.Add(typeof(GlobalValidatorAttribute));
+                options.MaxModelValidationErrors = 10;
+            });
 
             services.AddHealthChecks(checks =>
             {

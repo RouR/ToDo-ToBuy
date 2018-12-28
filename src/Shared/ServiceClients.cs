@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using AutoMapper;
 using DTO;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,14 @@ namespace Shared
             Register(Service.Account);
             Register(Service.ToDo);
             Register(Service.ToBuy);
+            
+            //services.AddAutoMapper();
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingDTOProfile());
+            });
+            var mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             void Register(Service clientId)
             {

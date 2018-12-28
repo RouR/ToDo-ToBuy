@@ -2,22 +2,30 @@
   <form class="form-signin" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
     <mat-card-title>Register</mat-card-title>
     <mat-card-content>
+        <mat-form-field class="">
+            <mat-label>Display Name</mat-label>
+            <input matInput placeholder="Your name" type="text" name="name" ngModel #name="ngModel" required
+              autofocus>
+            <mat-error *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required">
+              Please enter a name
+            </mat-error>
+          </mat-form-field>
       <mat-form-field class="">
         <mat-label>Email address</mat-label>
-        <input matInput placeholder="Email address" type="email" name="username" ngModel #username="ngModel" required
+        <input matInput placeholder="Email address" type="email" name="email" ngModel #email="ngModel" required
           autofocus>
-        <mat-error *ngIf="username.invalid && (username.dirty || username.touched) && username.errors.required">
+        <mat-error *ngIf="email.invalid && (email.dirty || email.touched) && email.errors.required">
           Please enter a email address
         </mat-error>
       </mat-form-field>
       <mat-form-field class="">
         <mat-label>Password</mat-label>
-        <input matInput placeholder="Password" type="password" name="password" ngModel required minlength="6" #password="ngModel">
+        <input matInput placeholder="Password" type="password" name="password" ngModel required minlength="8" #password="ngModel">
         <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">
           Please enter a password
         </mat-error>
         <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.minlength">
-          Name must be at least 6 characters long.
+          Password must be at least 6 characters long.
         </mat-error>
       </mat-form-field>
 

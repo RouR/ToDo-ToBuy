@@ -743,18 +743,24 @@
     },
     "RegisterRequest": {
       "required": [
-        "userName",
+        "name",
+        "email",
         "password"
       ],
       "type": "object",
       "properties": {
-        "userName": {
-          "maxLength": 100,
-          "minLength": 4,
+        "name": {
+          "maxLength": 10,
+          "minLength": 2,
+          "type": "string"
+        },
+        "email": {
+          "maxLength": 80,
+          "minLength": 2,
           "type": "string"
         },
         "password": {
-          "maxLength": 100,
+          "maxLength": 80,
           "minLength": 8,
           "type": "string"
         }

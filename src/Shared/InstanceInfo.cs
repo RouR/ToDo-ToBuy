@@ -19,7 +19,7 @@ namespace Shared
         #region Autochanged, don`t touch
 
         // ReSharper disable once StringLiteralTypo
-        public string CodeVer { get; } = "ver-1.2.135.3c546ecc0827d271a80794aa9f4c701a2c50f627";
+        public string CodeVer { get; } = "ver-1.2.141.0ecd2f73434112098b25caafc252ec00f96b3fe8";
 
         #endregion
     }

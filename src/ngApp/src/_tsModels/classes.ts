@@ -1153,11 +1153,14 @@ export interface ILoginResponse {
     data?: string | undefined;
 }
 
-export class RegisterRequest implements IRegisterRequest {
-    userName!: string;
+export class CreateUserRequest implements ICreateUserRequest {
+    publicId!: string;
+    name!: string;
+    email!: string;
     password!: string;
+    iP?: string | undefined;
 
-    constructor(data?: IRegisterRequest) {
+    constructor(data?: ICreateUserRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1168,8 +1171,49 @@ export class RegisterRequest implements IRegisterRequest {
 
     init(data?: any) {
         if (data) {
-            this.userName = data["UserName"];
+            this.publicId = data["PublicId"];
+            this.name = data["Name"];
+            this.email = data["Email"];
             this.password = data["Password"];
+            this.iP = data["IP"];
+        }
+    }
+
+    static fromJS(data: any): CreateUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["PublicId"] = this.publicId;
+        data["Name"] = this.name;
+        data["Email"] = this.email;
+        data["Password"] = this.password;
+        data["IP"] = this.iP;
+        return data; 
+    }
+}
+
+export interface ICreateUserRequest {
+    publicId: string;
+    name: string;
+    email: string;
+    password: string;
+    iP?: string | undefined;
+}
+
+export class RegisterRequest extends CreateUserRequest implements IRegisterRequest {
+
+    constructor(data?: IRegisterRequest) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
         }
     }
 
@@ -1182,15 +1226,12 @@ export class RegisterRequest implements IRegisterRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["UserName"] = this.userName;
-        data["Password"] = this.password;
+        super.toJSON(data);
         return data; 
     }
 }
 
-export interface IRegisterRequest {
-    userName: string;
-    password: string;
+export interface IRegisterRequest extends ICreateUserRequest {
 }
 
 export class RegisterResponse implements IRegisterResponse {

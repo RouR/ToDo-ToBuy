@@ -1,5 +1,8 @@
 using AutoMapper;
-using Domain.DBEnities;
+using Domain.DBEntities;
+using DTO.Internal.Account;
+using DTO.Public.Account;
+using DTO.Public.TOBUY;
 using DTO.Public.TODO;
 
 namespace DTO
@@ -9,6 +12,9 @@ namespace DTO
         public MappingDTOProfile()
         {
             CreateMap<TodoEntity, TodoPublicEntity>();
+            CreateMap<RegisterRequest, CreateUserRequest>();
+            CreateMap<TodoPublicEntity, TodoEntity>();
+            CreateMap<TOBUYPublicEntity, TobuyEntity>();
         }
     }
 }

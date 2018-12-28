@@ -36,7 +36,7 @@ import {
   MatDatepickerModule,
 } from '@angular/material';
 
-import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 import { AuthenticationService } from './_services/authentication.service';
 import { ErrorDtoInterceptorService } from './_services/error-dto-interceptor.service';

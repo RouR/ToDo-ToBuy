@@ -53,6 +53,7 @@
       </div>
 
       <span (click)="sidenav.toggle()" i18n>ToDo-ToBuy (example app)</span>
+      <span [title]="auth.userId" *ngIf="auth.isLoggedIn">Hi, {{auth.username}}</span>
       
       <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
         <ul fxLayout fxLayoutGap="20px">

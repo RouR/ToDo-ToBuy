@@ -2,7 +2,7 @@
 using Domain.Interfaces;
 using Domain.Models;
 
-namespace Domain.DBEnities
+namespace Domain.DBEntities
 {
     public class TobuyEntity : DBEntity, IForUser
     {

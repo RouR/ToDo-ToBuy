@@ -8,5 +8,6 @@
         Account = 1,
         ToDo,
         ToBuy,
+        Web
     }
 }

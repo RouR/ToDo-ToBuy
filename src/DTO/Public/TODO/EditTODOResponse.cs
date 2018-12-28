@@ -1,11 +1,9 @@
-﻿using DTO.Internal.TODO;
-using MicroDocum.Themes.DefaultTheme.Attributes;
-using MicroDocum.Themes.DefaultTheme.Interfaces;
+﻿using MicroDocum.Themes.DefaultTheme.Attributes;
 
 namespace DTO.Public.TODO
 {
     [ServiceName("Web")]
-    public class EditTODOResponse : TodoPublicEntity, IProduceSometimes<UpdateTODO>
+    public class EditTODOResponse : TodoPublicEntity
     {
     }
 }

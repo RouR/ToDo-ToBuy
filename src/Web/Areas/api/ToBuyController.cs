@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Domain.DBEnities;
+using Domain.DBEntities;
 using Domain.Enums;
 using Domain.Models;
 using DTO.Public.TOBUY;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Utils;
 using Utils.WebRequests;
-using Web.Utils;
 
 namespace Web.Areas.api
 {

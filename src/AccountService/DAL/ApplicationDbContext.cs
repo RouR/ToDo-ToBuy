@@ -1,7 +1,10 @@
 using System;
 using System.IO;
-using Domain.DBEnities;
+using AccountService.Interfaces;
+using Domain.DBEntities;
+using DTO.Internal.Account;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json.Linq;
 
 namespace AccountService.DAL
@@ -9,6 +12,7 @@ namespace AccountService.DAL
     public class ApplicationDbContext : DbContext 
     {
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<UserLoginAttemptEntity> LoginAttempts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +26,8 @@ namespace AccountService.DAL
 
             builder.Entity<UserEntity>().HasIndex(c => new { c.IsDeleted });
             builder.Entity<UserEntity>().HasIndex(c => new { c.Email }).IsUnique();
+
+            builder.Entity<UserLoginAttemptEntity>().HasIndex(c => new { c.Email, c.AtUtc });
         }
 
         /// <summary>
@@ -74,23 +80,24 @@ namespace AccountService.DAL
         /// Run every time at startup
         /// </summary>
         /// <param name="context"></param>
-        public static void CustomSeed(ApplicationDbContext context)
+        /// <param name="userService"></param>
+        public static void CustomSeed(ApplicationDbContext context, IUserService userService)
         {
             context.Database.EnsureCreated();
-            
-            /*
-            if (!context.Accounts.Any())
-            {
-                // Seeding the Database
-                // ...
 
-                context.Accounts.Add(new AccountEntity()
+
+            if (!context.Users.Any())
+            {
+                userService.Register(new CreateUserRequest()
                 {
-                    Name = "auto"
+                    PublicId = Guid.NewGuid(),
+                    Email = "demo",
+                    Name = "all",
+                    Password = "demo123",
+                    IP = null,
                 });
-                context.SaveChanges();
             }
-            */
+
         }
     }
 }

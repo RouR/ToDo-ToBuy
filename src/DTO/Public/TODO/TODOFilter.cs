@@ -1,5 +1,5 @@
 using System.Linq;
-using Domain.DBEnities;
+using Domain.DBEntities;
 using Domain.Interfaces;
 
 namespace DTO.Public.TODO

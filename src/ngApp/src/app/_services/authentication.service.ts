@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { map } from 'rxjs/operators';
+import { map, share } from 'rxjs/operators';
 import { Client, LoginRequest, RegisterRequest } from '../../_tsModels/api-client';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { RegisterResponse } from 'src/_tsModels/classes';
 
 @Injectable({
     providedIn: 'root'
@@ -32,20 +33,16 @@ export class AuthenticationService implements CanActivate {
 
     logout() {
         localStorage.removeItem('jwt');
+        this.router.navigate(['/login']);
     }
 
-    register(data: RegisterRequest) {
-        const result = this.api.apiAccountRegister(data);
-        result
-            .subscribe(response => {
-                // console.log('apiAccountRegister response', response);
-                if (response.hasError === false && response.data) {
-                    this.router.navigate(['/login']);
-                }
-            }, err => {
-                console.error('apiAccountRegister err', err);
-            });
-        return result;
+    async register(data: RegisterRequest) {
+        // console.log('RegisterRequest', data);
+        const response = await this.api.apiAccountRegister(data).toPromise();
+        if (response.hasError === false && response.data) {
+            this.router.navigate(['/login']);
+        }
+        return response;
     }
 
     get isLoggedIn(): boolean {
@@ -54,6 +51,10 @@ export class AuthenticationService implements CanActivate {
 
     get username(): string {
         return this.isLoggedIn && this.jwtHelper.decodeToken()['name'];
+    }
+
+    get userId(): string {
+        return this.isLoggedIn && this.jwtHelper.decodeToken()['uid'];
     }
 
     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {

@@ -16,10 +16,10 @@ using Microsoft.Extensions.Logging;
 using Shared;
 using Web.Utils;
 using AspNetCoreRateLimit;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Utils;
 
 namespace Web
 {
@@ -46,13 +46,16 @@ namespace Web
 
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
+            var ipHeader = "X-Real-IP";
+            services.AddScoped<IIpAddressParser>(o => new ReversProxyIpParser(ipHeader));
+
             //https://github.com/stefanprodan/AspNetCoreRateLimit/wiki/IpRateLimitMiddleware#setup
             services.Configure<IpRateLimitOptions>(options =>
             {
                 options.EnableEndpointRateLimiting = false;
                 options.StackBlockedRequests = false;
                 //The RealIpHeader is used to extract the client IP when your Kestrel server is behind a reverse proxy, if your proxy uses a different header then X-Real-IP use this option to set it up.
-                options.RealIpHeader = "X-Real-IP";
+                options.RealIpHeader = ipHeader;
                 //The ClientIdHeader is used to extract the client id for white listing, if a client id is present in this header and matches a value specified in ClientWhitelist then no rate limits are applied.
                 options.ClientIdHeader = "X-ClientId";
                 options.HttpStatusCode = 429;
@@ -125,14 +128,6 @@ namespace Web
             
             // By default, ASP.NET Core application will reject any request coming from the cross-origin clients. 
             services.AddCors();
-
-            //services.AddAutoMapper();
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingDTOProfile());
-            });
-            var mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
             
             services.AddMvc(options => {
                 options.Filters.Add(typeof(GlobalValidatorAttribute));

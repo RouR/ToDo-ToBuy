@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shared;
 using ToDoService.DAL;
+using Utils;
 
 namespace ToDoService
 {
@@ -42,7 +43,10 @@ namespace ToDoService
             var connection = Environment.GetEnvironmentVariable($"sqlCon") ?? throw new Exception("Database connection string required 'sqlCon'");
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
 
-            services.AddMvc();
+            services.AddMvc(options => {
+                options.Filters.Add(typeof(GlobalValidatorAttribute));
+                options.MaxModelValidationErrors = 10;
+            });
 
             services.AddHealthChecks(checks =>
             {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Domain.Interfaces;
 
-namespace Domain.DBEnities
+namespace Domain.DBEntities
 {
     public class TodoEntity : DBEntity, IForUser
     {

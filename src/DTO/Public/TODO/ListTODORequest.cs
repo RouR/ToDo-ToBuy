@@ -1,4 +1,4 @@
-﻿using Domain.DBEnities;
+﻿using Domain.DBEntities;
 using Domain.Interfaces;
 using DTO.Internal.TODO;
 using MicroDocum.Themes.DefaultTheme.Attributes;
