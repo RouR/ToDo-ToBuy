@@ -2,8 +2,8 @@ language: csharp
 solution: ExampleTDTB.sln
 sudo: required  
 os: linux
-dist: trusty  
-mono: none
+dist: xenial  
+mono: latest
 dotnet: 2.1
 services:
     - docker
@@ -36,9 +36,9 @@ script:
 #    - dotnet remove build package GitVersion.CommandLine
     
     - dotnet restore --runtime $DOTNETRUNTIME
-    - dotnet build    
+#    - dotnet build    
 #    - ./build.sh Debug
-#    - ./build.sh AllCustom
+    - ./build.sh AllCustom
 #    - ./build.sh compile
     
     - echo TRAVIS_BUILD_ID $TRAVIS_BUILD_ID    

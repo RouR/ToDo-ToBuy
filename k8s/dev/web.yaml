@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: web
-        ci: somedataForOverride1522        
+        ci: somedataForOverride1575        
     spec:
       containers:
       - name: web
