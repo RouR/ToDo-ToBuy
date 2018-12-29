@@ -8,6 +8,7 @@ using Domain.Models;
 using DTO.Public.TOBUY;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 using Utils;
 using Utils.WebRequests;
 

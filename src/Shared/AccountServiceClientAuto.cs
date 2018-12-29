@@ -1,5 +1,9 @@
+using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using DTO;
+using Newtonsoft.Json;
 
 namespace Shared
 {
@@ -13,7 +17,7 @@ namespace Shared
 		/// Register new User
 		/// UserId must be pregenerated
 		/// </summary>
-		/// <returns>Erroable Guid UserId</returns>
+		/// <returns>Errorable Guid UserId</returns>
 		
 		public async Task<DTO.Internal.Account.CreateUserResponse> User_Register(DTO.Internal.Account.CreateUserRequest data)
 		{

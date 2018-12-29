@@ -49,18 +49,18 @@ script:
     - echo DOTNETRUNTIME $DOTNETRUNTIME
     
     - if [ "$TRAVIS_BRANCH" == "master" ] ; then 
-      dotnet publish -c Release -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
+      dotnet publish -c Release -f netcoreapp2.2 --runtime $DOTNETRUNTIME ;
       
-      cp -r ./src/Web/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
+      cp -r ./src/Web/bin/Release/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-web ;
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
       
-      cp -r ./src/AccountService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
+      cp -r ./src/AccountService/bin/Release/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
       
-      cp -r ./src/ToDoService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      cp -r ./src/ToDoService/bin/Release/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-todo ;
       docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
       
-      cp -r ./src/ToBuyService/bin/Release/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      cp -r ./src/ToBuyService/bin/Release/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-tobuy ;
       docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;
@@ -84,18 +84,18 @@ script:
       fi
       
     - if [ "$TRAVIS_BRANCH" == "dev" ] ; then 
-      dotnet publish -c Debug -f netcoreapp2.1 --runtime $DOTNETRUNTIME ;
+      dotnet publish -c Debug -f netcoreapp2.2 --runtime $DOTNETRUNTIME ;
      
-      cp -r ./src/Web/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-web ;
+      cp -r ./src/Web/bin/Debug/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-web ;
       docker build -t tdtb-web -f docker/Dockerfile-Web . ;
       
-      cp -r ./src/AccountService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-acc ;
+      cp -r ./src/AccountService/bin/Debug/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-acc ;
       docker build -t tdtb-acc -f docker/Dockerfile-AccountService . ;
       
-      cp -r ./src/ToDoService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-todo ;
+      cp -r ./src/ToDoService/bin/Debug/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-todo ;
       docker build -t tdtb-todo -f docker/Dockerfile-ToDoService . ;
       
-      cp -r ./src/ToBuyService/bin/Debug/netcoreapp2.1/$DOTNETRUNTIME/publish ./pub-tobuy ;
+      cp -r ./src/ToBuyService/bin/Debug/netcoreapp2.2/$DOTNETRUNTIME/publish ./pub-tobuy ;
       docker build -t tdtb-tobuy -f docker/Dockerfile-ToBuyService . ;
       
       docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" ;

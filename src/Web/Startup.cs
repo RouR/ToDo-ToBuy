@@ -134,11 +134,14 @@ namespace Web
                 options.MaxModelValidationErrors = 10;
             });
 
-            // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-            // note: the specified format code will format the version as "'v'major[.minor][-status]"
-            services.AddMvcCore().AddVersionedApiExplorer(
+           
+            services.AddMvcCore();
+
+            services.AddVersionedApiExplorer(
                 options =>
                 {
+                    // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
+                    // note: the specified format code will format the version as "'v'major[.minor][-status]"
                     options.GroupNameFormat = "'v'VVV";
 
                     // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
@@ -151,6 +154,7 @@ namespace Web
                     options.AssumeDefaultVersionWhenUnspecified = true;
                     options.DefaultApiVersion = new ApiVersion(0, 1);
                     options.ReportApiVersions = true;
+                    options.UseApiBehavior = false;
                 }
             );
 

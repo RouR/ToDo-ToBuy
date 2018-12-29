@@ -16,9 +16,9 @@ using Utils.WebRequests;
 
 namespace Web.Areas.api
 {
+    [ApiVersion("0.1")]
     [GlobalValidator]
     [Area("api")]
-    [ApiVersion("0.1")]
     [Route("api/[controller]/[action]")]
     public class AccountController : Controller
     {

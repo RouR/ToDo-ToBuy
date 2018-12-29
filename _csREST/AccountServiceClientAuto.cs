@@ -17,7 +17,7 @@ namespace Shared
 		/// Register new User
 		/// UserId must be pregenerated
 		/// </summary>
-		/// <returns>Erroable Guid UserId</returns>
+		/// <returns>Errorable Guid UserId</returns>
 		
 		public async Task<DTO.Internal.Account.CreateUserResponse> User_Register(DTO.Internal.Account.CreateUserRequest data)
 		{

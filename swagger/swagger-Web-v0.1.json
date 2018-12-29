@@ -21,7 +21,7 @@
           "Account"
         ],
         "summary": "try login, get Jwt token",
-        "operationId": "ApiAccountLoginPost",
+        "operationId": "Login",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -48,8 +48,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -68,7 +67,7 @@
           "Account"
         ],
         "summary": "register new user",
-        "operationId": "ApiAccountRegisterPost",
+        "operationId": "Register",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -95,8 +94,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -115,7 +113,7 @@
           "ToBuy"
         ],
         "summary": "list to-buy items with pagination",
-        "operationId": "ApiToBuyListGet",
+        "operationId": "List",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -154,8 +152,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -174,7 +171,7 @@
           "ToBuy"
         ],
         "summary": "load to-buy-item",
-        "operationId": "ApiToBuyGetGet",
+        "operationId": "Get",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -194,8 +191,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -214,7 +210,7 @@
           "ToBuy"
         ],
         "summary": "update to-buy-item",
-        "operationId": "ApiToBuyUpdatePost",
+        "operationId": "Update",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -241,8 +237,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -261,7 +256,7 @@
           "ToBuy"
         ],
         "summary": "create new to-buy-item",
-        "operationId": "ApiToBuyCreatePost",
+        "operationId": "Create",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -288,8 +283,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -308,7 +302,7 @@
           "ToBuy"
         ],
         "summary": "delete to-buy-item",
-        "operationId": "ApiToBuyDeletePost",
+        "operationId": "Delete",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -335,8 +329,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -355,7 +348,7 @@
           "ToDo"
         ],
         "summary": "list to-do items with pagination",
-        "operationId": "ApiToDoListGet",
+        "operationId": "List",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -400,8 +393,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -420,7 +412,7 @@
           "ToDo"
         ],
         "summary": "load to-do-item",
-        "operationId": "ApiToDoGetGet",
+        "operationId": "Get",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -440,8 +432,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -460,7 +451,7 @@
           "ToDo"
         ],
         "summary": "update to-do-item",
-        "operationId": "ApiToDoUpdatePost",
+        "operationId": "Update",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -487,8 +478,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -507,7 +497,7 @@
           "ToDo"
         ],
         "summary": "create new to-do-item",
-        "operationId": "ApiToDoCreatePost",
+        "operationId": "Create",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -534,8 +524,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -554,7 +543,7 @@
           "ToDo"
         ],
         "summary": "delete to-do-item",
-        "operationId": "ApiToDoDeletePost",
+        "operationId": "Delete",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -581,8 +570,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -601,7 +589,7 @@
           "Values"
         ],
         "summary": "Some text from comments",
-        "operationId": "ApiValuesGet",
+        "operationId": "Index",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -614,8 +602,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -638,7 +625,7 @@
           "Values"
         ],
         "summary": "",
-        "operationId": "ApiValuesGetByIdGet",
+        "operationId": "Get",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -659,8 +646,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {
@@ -679,7 +665,7 @@
           "Values"
         ],
         "summary": "test auth",
-        "operationId": "ApiValuesPrivateByIdGet",
+        "operationId": "GetPrivate",
         "consumes": [],
         "produces": [
           "text/plain",
@@ -700,8 +686,7 @@
             "in": "query",
             "description": "The requested API version",
             "required": false,
-            "type": "string",
-            "default": "0.1"
+            "type": "string"
           }
         ],
         "responses": {

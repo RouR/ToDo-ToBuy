@@ -2,6 +2,7 @@ using AccountService.Interfaces;
 using DTO.Internal.Account;
 using Microsoft.AspNetCore.Mvc;
 using OpenTracing;
+using Shared;
 using Utils;
 
 namespace AccountService.Controllers

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Utils.WebRequests;
 
-namespace Utils
+namespace Shared
 {
     public class GlobalValidatorAttribute : ActionFilterAttribute
     {
