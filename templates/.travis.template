@@ -4,7 +4,7 @@ sudo: required
 os: linux
 dist: xenial  
 mono: latest
-dotnet: 2.1
+dotnet: 2.2
 services:
     - docker
 
