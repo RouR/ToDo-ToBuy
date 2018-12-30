@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DTO;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using Utils;
 
 namespace Shared
 {
@@ -14,6 +15,63 @@ namespace Shared
 	{
 	
 	
+
+		public async Task<DTO.Public.TODO.ListTODOResponse> Todo_List(DTO.Internal.TODO.ListTODO data)
+		{
+			var dictionary = UrlHelpers.ToFlatDictionary(data);
+						
+			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Todo/List", dictionary));
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TODO.ListTODOResponse>();
+			return result;
+		}
+		
+
+		public async Task<DTO.Internal.TODO.FindToDoResponse> Todo_Get(DTO.Internal.TODO.FindToDoRequest data)
+		{
+			var dictionary = UrlHelpers.ToFlatDictionary(data);
+						
+			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Todo/Get", dictionary));
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Internal.TODO.FindToDoResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TODO.SaveTODOResponse> Todo_Create(DTO.Internal.TODO.CreateTODO data)
+		{
+			var response = await _client.PostAsJsonAsync("/Todo/Create", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TODO.SaveTODOResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TODO.SaveTODOResponse> Todo_Update(DTO.Internal.TODO.UpdateTODO data)
+		{
+			var response = await _client.PostAsJsonAsync("/Todo/Update", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TODO.SaveTODOResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TODO.DeleteTODOResponse> Todo_Delete(DTO.Internal.TODO.DeleteTODO data)
+		{
+			var response = await _client.PostAsJsonAsync("/Todo/Delete", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TODO.DeleteTODOResponse>();
+			return result;
+		}
+		
 
 	}
 }

@@ -124,6 +124,50 @@ export interface IEditTODORequest {
     publicId?: string | undefined;
 }
 
+export class EditTODOResponse implements IEditTODOResponse {
+    hasError!: boolean;
+    message?: string | undefined;
+    data?: TodoPublicEntity | undefined;
+
+    constructor(data?: IEditTODOResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hasError = data["HasError"];
+            this.message = data["Message"];
+            this.data = data["Data"] ? TodoPublicEntity.fromJS(data["Data"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): EditTODOResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditTODOResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["HasError"] = this.hasError;
+        data["Message"] = this.message;
+        data["Data"] = this.data ? this.data.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IEditTODOResponse {
+    hasError: boolean;
+    message?: string | undefined;
+    data?: TodoPublicEntity | undefined;
+}
+
 export abstract class DBEntity implements IDBEntity {
     publicId!: string;
     created!: Date;
@@ -238,35 +282,6 @@ export class TodoPublicEntity extends TodoEntity implements ITodoPublicEntity {
 }
 
 export interface ITodoPublicEntity extends ITodoEntity {
-}
-
-export class EditTODOResponse extends TodoPublicEntity implements IEditTODOResponse {
-
-    constructor(data?: IEditTODOResponse) {
-        super(data);
-    }
-
-    init(data?: any) {
-        super.init(data);
-        if (data) {
-        }
-    }
-
-    static fromJS(data: any): EditTODOResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new EditTODOResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IEditTODOResponse extends ITodoPublicEntity {
 }
 
 export class ListTODORequest implements IListTODORequest {

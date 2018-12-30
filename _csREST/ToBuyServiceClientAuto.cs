@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DTO;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using Utils;
 
 namespace Shared
 {
@@ -17,11 +18,7 @@ namespace Shared
 
 		public async Task<DTO.Public.TOBUY.ListTOBUYResponse> Tobuy_List(DTO.Internal.TOBUY.ListTOBUY data)
 		{
-			var properties = data.GetType().GetProperties();
-			var dictionary = properties
-				.ToDictionary(info => info.Name, info => info.GetValue(data, null)?.ToString())
-				.Where(x=> x.Key != null && x.Value != null)
-				.ToDictionary(x=>x.Key, x=> x.Value);
+			var dictionary = UrlHelpers.ToFlatDictionary(data);
 						
 			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Tobuy/List", dictionary));
 			response.EnsureSuccessStatusCode();
@@ -33,11 +30,7 @@ namespace Shared
 
 		public async Task<DTO.Internal.TOBUY.FindToBuyResponse> Tobuy_Get(DTO.Internal.TOBUY.FindToBuyRequest data)
 		{
-			var properties = data.GetType().GetProperties();
-			var dictionary = properties
-				.ToDictionary(info => info.Name, info => info.GetValue(data, null)?.ToString())
-				.Where(x=> x.Key != null && x.Value != null)
-				.ToDictionary(x=>x.Key, x=> x.Value);
+			var dictionary = UrlHelpers.ToFlatDictionary(data);
 						
 			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Tobuy/Get", dictionary));
 			response.EnsureSuccessStatusCode();

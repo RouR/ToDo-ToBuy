@@ -1695,11 +1695,9 @@ export interface ITodoPublicEntity {
 }
 
 export class EditTODOResponse implements IEditTODOResponse {
-    title!: string;
-    description?: string | null;
-    publicId?: string | null;
-    created?: moment.Moment | null;
-    updated?: moment.Moment | null;
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TodoPublicEntity | null;
 
     constructor(data?: IEditTODOResponse) {
         if (data) {
@@ -1712,11 +1710,9 @@ export class EditTODOResponse implements IEditTODOResponse {
 
     init(data?: any) {
         if (data) {
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
-            this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
-            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
+            this.hasError = data["hasError"] !== undefined ? data["hasError"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+            this.data = data["data"] ? TodoPublicEntity.fromJS(data["data"]) : <any>null;
         }
     }
 
@@ -1729,21 +1725,17 @@ export class EditTODOResponse implements IEditTODOResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
-        data["created"] = this.created ? this.created.toISOString() : <any>null;
-        data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
+        data["hasError"] = this.hasError !== undefined ? this.hasError : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
         return data; 
     }
 }
 
 export interface IEditTODOResponse {
-    title: string;
-    description?: string | null;
-    publicId?: string | null;
-    created?: moment.Moment | null;
-    updated?: moment.Moment | null;
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TodoPublicEntity | null;
 }
 
 export class SaveTODORequest implements ISaveTODORequest {

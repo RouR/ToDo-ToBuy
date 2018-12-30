@@ -1044,30 +1044,16 @@
       }
     },
     "EditTODOResponse": {
-      "required": [
-        "title"
-      ],
       "type": "object",
       "properties": {
-        "title": {
-          "maxLength": 200,
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
           "type": "string"
         },
-        "description": {
-          "maxLength": 1000,
-          "type": "string"
-        },
-        "publicId": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "created": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "updated": {
-          "format": "date-time",
-          "type": "string"
+        "data": {
+          "$ref": "#/definitions/TodoPublicEntity"
         }
       }
     },

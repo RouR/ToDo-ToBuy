@@ -2,6 +2,7 @@ using AutoMapper;
 using Domain.DBEntities;
 using DTO.Internal.Account;
 using DTO.Internal.TOBUY;
+using DTO.Internal.TODO;
 using DTO.Public.Account;
 using DTO.Public.TOBUY;
 using DTO.Public.TODO;
@@ -20,6 +21,10 @@ namespace DTO
             CreateMap<SaveTOBUYRequest, UpdateTOBUY>();
             CreateMap<SaveTOBUYRequest, CreateTOBUY>();
             CreateMap<DeleteTOBUYRequest, DeleteTOBUY>();
+            CreateMap<ListTODORequest, ListTODO>();
+            CreateMap<SaveTODORequest, UpdateTODO>();
+            CreateMap<SaveTODORequest, CreateTODO>();
+            CreateMap<DeleteTODORequest, DeleteTODO>();
         }
     }
 }

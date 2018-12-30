@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Domain.DBEntities;
+using DTO.Internal.TODO;
 using DTO.Public.TODO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Utils;
 using Utils.WebRequests;
+using Web.Utils;
 
 namespace Web.Areas.api
 {
@@ -20,12 +23,15 @@ namespace Web.Areas.api
     public class ToDoController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly ToDoServiceClient _client;
 
         public ToDoController(
-            IMapper mapper
+            IMapper mapper,
+            ToDoServiceClient client
             )
         {
             _mapper = mapper;
+            _client = client;
         }
         
         /// <summary>
@@ -34,28 +40,11 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        public ListTODOResponse List(ListTODORequest request)
+        public async Task<ListTODOResponse> List(ListTODORequest request)
         {
-            const int max = 100;
-            var items = new List<TodoEntity>(max);
-            for (var i = 0; i < max; i++)
-            {
-                items.Add(new TodoEntity()
-                {
-                    UserId = Guid.NewGuid(),
-                    PublicId = Guid.NewGuid(),
-                    Description = "assa " + i,
-                    Created = DateTime.Now.AddDays(-1),
-                    Updated = DateTime.Now.AddHours(-2)
-                });                
-            }
-
-            //var show = request.Filter.ApplyFiler(items.AsQueryable()).AsPagination(request);
-            var data = request.Sort(items.AsQueryable());
-            data = request.Filter(data);
-            var paged = data.AsPagination(request);
-            var publicEntities = _mapper.Map<TodoPublicEntity[]>(paged.Items);
-            return new ListTODOResponse(publicEntities, paged.TotalItems, request);
+            var data = _mapper.Map<ListTODO>(request);
+            data.UserId = HttpContext.GetUserId();
+            return await _client.Todo_List(data);
         }
         
         /// <summary>
@@ -64,15 +53,23 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        public EditTODOResponse Get(EditTODORequest request)
+        public async Task<EditTODOResponse> Get(EditTODORequest request)
         {
+            if(request.PublicId == null)
+                return new EditTODOResponse().SetError("Id required") as EditTODOResponse;
+
+            var data = new FindToDoRequest()
+            {
+                UserId = HttpContext.GetUserId(),
+                PublicId = request.PublicId.Value
+            };
+            var ret= await _client.Todo_Get(data);
+            
             return new EditTODOResponse()
             {
-                PublicId = request.PublicId.Value,
-                Description = "asd",
-                Title = "asds",
-                Created = DateTime.Now.AddDays(-1),
-                Updated = DateTime.Now.AddMinutes(-2)
+                Message = ret.Message,
+                HasError = ret.HasError,
+                Data = _mapper.Map<TodoPublicEntity>(ret.Data)
             };
         }
         
@@ -82,19 +79,17 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public SaveTODOResponse Update([FromBody] SaveTODORequest request)
+        public async Task<SaveTODOResponse> Update([FromBody] SaveTODORequest request)
         {
-            return new SaveTODOResponse()
-            {
-                Data = new TodoPublicEntity()
-                {
-                    PublicId = request.PublicId ?? Guid.NewGuid(),
-                    Description = "asd",
-                    Title = "asds",
-                    Created = DateTime.Now.AddDays(-1),
-                    Updated = DateTime.Now.AddMinutes(-2)
-                }
-            };
+            if(request.PublicId == null)
+                return new SaveTODOResponse().SetError("Id required") as SaveTODOResponse;
+            
+            var data = _mapper.Map<UpdateTODO>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Todo_Update(data);
+
+            return ret;
         }
         
         /// <summary>
@@ -103,10 +98,18 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public SaveTODOResponse Create([FromBody] SaveTODORequest request)
+        public async Task<SaveTODOResponse> Create([FromBody] SaveTODORequest request)
         {
-            request.PublicId = null;
-            return Update(request);
+            if(request.PublicId != null)
+                return new SaveTODOResponse().SetError("Use update method for edit exist item") as SaveTODOResponse;
+            request.PublicId = Guid.NewGuid();
+            
+            var data = _mapper.Map<CreateTODO>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Todo_Create(data);
+
+            return ret;
         }
         
         /// <summary>
@@ -115,12 +118,19 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public DeleteTODOResponse Delete([FromBody] DeleteTODORequest request)
+        public async Task<DeleteTODOResponse> Delete([FromBody] DeleteTODORequest request)
         {
-            return new DeleteTODOResponse()
-            {
-                Data = true,
-            };
+            if(request.PublicId == Guid.Empty)
+                return new DeleteTODOResponse().SetError("Id required") as DeleteTODOResponse;
+            
+            var data = _mapper.Map<DeleteTODO>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Todo_Delete(data);
+
+            return ret;
         }
     }
+
+    
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shared;
 using ToDoService.DAL;
+using ToDoService.Services;
 using Utils;
 
 namespace ToDoService
@@ -37,7 +38,7 @@ namespace ToDoService
             SetupTracing.ConfigureServices(instanceInfo, services, false);
             ServiceClients.ConfigureServices(services, CustomLogs.SetupCustomLogs.Logger());
             SetupCustomCache.ConfigureServices(services, out var redisCacheOptions);
-            
+            _ServiceRegisterInjections.Configure(services);
             CustomLogs.SetupCustomLogs.PrintAllEnv();
 
             var connection = Environment.GetEnvironmentVariable($"sqlCon") ?? throw new Exception("Database connection string required 'sqlCon'");

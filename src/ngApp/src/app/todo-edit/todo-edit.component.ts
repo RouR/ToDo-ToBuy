@@ -29,7 +29,7 @@ export class TodoEditComponent implements OnInit {
       this.isLoading = true;
       this.api.apiTodoGet(this.id).subscribe(
         result => {
-          this.model = result;
+          this.model = result.data;
         },
         error => { },
         () => {
