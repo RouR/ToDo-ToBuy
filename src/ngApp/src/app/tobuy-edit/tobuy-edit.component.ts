@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { TOBUYPublicEntity, Client, SaveTOBUYRequest, PriceCurrency, Price } from 'src/_tsModels/api-client';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DATE_FORMATS } from '@angular/material';
-
+import { mergeMap, catchError } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -59,13 +60,15 @@ export class TobuyEditComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    this.isLoading = false;
     if (!this.id) {
       this.isNewRecord = true;
     } else {
       this.isLoading = true;
-      this.api.apiTobuyGet(this.id).subscribe(
+      this.api.apiTobuyGet(this.id)
+      .subscribe(
         result => {
-          this.tbForm.patchValue(result);
+          this.tbForm.patchValue(result.data);
         },
         error => { },
         () => {
@@ -77,6 +80,10 @@ export class TobuyEditComponent implements OnInit {
 
   save() {
     if (this.isLoading) {
+      return;
+    }
+
+    if (!this.tbForm.valid) {
       return;
     }
 
@@ -99,7 +106,7 @@ export class TobuyEditComponent implements OnInit {
 
   createFunc(data: SaveTOBUYRequest) {
     this.isLoading = true;
-    this.api.apiTodoCreate(data).subscribe(
+    this.api.apiTobuyCreate(data).subscribe(
       result => {
         if (!result.hasError) {
           this.tbForm.patchValue(result.data);
@@ -115,7 +122,7 @@ export class TobuyEditComponent implements OnInit {
 
   saveFunc(data: SaveTOBUYRequest) {
     this.isLoading = true;
-    this.api.apiTodoUpdate(data).subscribe(
+    this.api.apiTobuyUpdate(data).subscribe(
       result => {
         if (!result.hasError) {
           this.tbForm.patchValue(result.data);

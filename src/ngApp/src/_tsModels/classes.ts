@@ -171,7 +171,7 @@ export interface IDBEntity {
 }
 
 export class TodoEntity extends DBEntity implements ITodoEntity {
-    title?: string | undefined;
+    title!: string;
     description?: string | undefined;
     userId!: string;
 
@@ -206,7 +206,7 @@ export class TodoEntity extends DBEntity implements ITodoEntity {
 }
 
 export interface ITodoEntity extends IDBEntity {
-    title?: string | undefined;
+    title: string;
     description?: string | undefined;
     userId: string;
 }
@@ -666,8 +666,52 @@ export interface IEditTOBUYRequest {
     publicId?: string | undefined;
 }
 
+export class EditTOBUYResponse implements IEditTOBUYResponse {
+    hasError!: boolean;
+    message?: string | undefined;
+    data?: TOBUYPublicEntity | undefined;
+
+    constructor(data?: IEditTOBUYResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.hasError = data["HasError"];
+            this.message = data["Message"];
+            this.data = data["Data"] ? TOBUYPublicEntity.fromJS(data["Data"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): EditTOBUYResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditTOBUYResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["HasError"] = this.hasError;
+        data["Message"] = this.message;
+        data["Data"] = this.data ? this.data.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IEditTOBUYResponse {
+    hasError: boolean;
+    message?: string | undefined;
+    data?: TOBUYPublicEntity | undefined;
+}
+
 export class TobuyEntity extends DBEntity implements ITobuyEntity {
-    name?: string | undefined;
+    name!: string;
     qty!: number;
     price?: Price | undefined;
     dueToUtc?: Date | undefined;
@@ -708,7 +752,7 @@ export class TobuyEntity extends DBEntity implements ITobuyEntity {
 }
 
 export interface ITobuyEntity extends IDBEntity {
-    name?: string | undefined;
+    name: string;
     qty: number;
     price?: Price | undefined;
     dueToUtc?: Date | undefined;
@@ -742,35 +786,6 @@ export class TOBUYPublicEntity extends TobuyEntity implements ITOBUYPublicEntity
 }
 
 export interface ITOBUYPublicEntity extends ITobuyEntity {
-}
-
-export class EditTOBUYResponse extends TOBUYPublicEntity implements IEditTOBUYResponse {
-
-    constructor(data?: IEditTOBUYResponse) {
-        super(data);
-    }
-
-    init(data?: any) {
-        super.init(data);
-        if (data) {
-        }
-    }
-
-    static fromJS(data: any): EditTOBUYResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new EditTOBUYResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IEditTOBUYResponse extends ITOBUYPublicEntity {
 }
 
 export class Price implements IPrice {

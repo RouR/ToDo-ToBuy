@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Domain.DBEntities;
 using Domain.Enums;
 using Domain.Models;
+using DTO.Internal.TOBUY;
 using DTO.Public.TOBUY;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Utils;
 using Utils.WebRequests;
+using Web.Utils;
 
 namespace Web.Areas.api
 {
@@ -22,12 +25,15 @@ namespace Web.Areas.api
     public class ToBuyController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly ToBuyServiceClient _client;
 
         public ToBuyController(
-            IMapper mapper
+            IMapper mapper,
+            ToBuyServiceClient client
             )
         {
             _mapper = mapper;
+            _client = client;
         }
         
         /// <summary>
@@ -36,30 +42,11 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        public ListTOBUYResponse List(ListTOBUYRequest request)
+        public async Task<ListTOBUYResponse> List(ListTOBUYRequest request)
         {
-            const int max = 100;
-            var items = new List<TobuyEntity>(max);
-            for (var i = 0; i < max; i++)
-            {
-                items.Add(new TobuyEntity()
-                {
-                    UserId = Guid.NewGuid(),
-                    PublicId = Guid.NewGuid(),
-                    Name = "nnn " + i,
-                    Qty = 4 % (1+i),
-                    Price = i%2 ==0 ? new Price(){Amount = 2*i, Currency = Currency.Euro} : null,
-                    DueToUtc = i%2 == 0 ? (DateTime?)null : DateTime.UtcNow,
-                    Created = DateTime.Now.AddDays(-1),
-                    Updated = DateTime.Now.AddHours(-2)
-                });                
-            }
-
-            //var show = request.Filter.ApplyFiler(items.AsQueryable()).AsPagination(request);
-            var data = request.Sort(items.AsQueryable());
-            var paged = data.AsPagination(request);
-            var publicEntities = _mapper.Map<TOBUYPublicEntity[]>(paged.Items);
-            return new ListTOBUYResponse(publicEntities, paged.TotalItems, request);
+            var data = _mapper.Map<ListTOBUY>(request);
+            data.UserId = HttpContext.GetUserId();
+            return await _client.Tobuy_List(data);
         }
         
         /// <summary>
@@ -68,17 +55,23 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        public EditTOBUYResponse Get(EditTOBUYRequest request)
+        public async Task<EditTOBUYResponse> Get(EditTOBUYRequest request)
         {
+            if(request.PublicId == null)
+                return new EditTOBUYResponse().SetError("Id required") as EditTOBUYResponse;
+
+            var data = new FindToBuyRequest()
+            {
+                UserId = HttpContext.GetUserId(),
+                PublicId = request.PublicId.Value
+            };
+            var ret= await _client.Tobuy_Get(data);
+            
             return new EditTOBUYResponse()
             {
-                PublicId = request.PublicId.Value,
-                Name = "nnn ",
-                Qty = 22,
-                Price = new Price(){Amount = 42, Currency = Currency.Euro},
-                DueToUtc = DateTime.UtcNow,
-                Created = DateTime.Now.AddDays(-1),
-                Updated = DateTime.Now.AddMinutes(-2)
+                Message = ret.Message,
+                HasError = ret.HasError,
+                Data = _mapper.Map<TOBUYPublicEntity>(ret.Data)
             };
         }
         
@@ -88,21 +81,17 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public SaveTOBUYResponse Update([FromBody] SaveTOBUYRequest request)
+        public async Task<SaveTOBUYResponse> Update([FromBody] SaveTOBUYRequest request)
         {
-            return new SaveTOBUYResponse()
-            {
-                Data = new TOBUYPublicEntity()
-                {
-                    PublicId = request.PublicId ?? Guid.NewGuid(),
-                    Name = "nnn ",
-                    Qty = 22,
-                    Price = new Price(){Amount = 42, Currency = Currency.Euro},
-                    DueToUtc = DateTime.UtcNow,
-                    Created = DateTime.Now.AddDays(-1),
-                    Updated = DateTime.Now.AddMinutes(-2)
-                }
-            };
+            if(request.PublicId == null)
+                return new SaveTOBUYResponse().SetError("Id required") as SaveTOBUYResponse;
+            
+            var data = _mapper.Map<UpdateTOBUY>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Tobuy_Update(data);
+
+            return ret;
         }
         
         /// <summary>
@@ -111,10 +100,18 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public SaveTOBUYResponse Create([FromBody] SaveTOBUYRequest request)
+        public async Task<SaveTOBUYResponse> Create([FromBody] SaveTOBUYRequest request)
         {
-            request.PublicId = null;
-            return Update(request);
+            if(request.PublicId != null)
+                return new SaveTOBUYResponse().SetError("Use update method for edit exist item") as SaveTOBUYResponse;
+            request.PublicId = Guid.NewGuid();
+            
+            var data = _mapper.Map<CreateTOBUY>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Tobuy_Create(data);
+
+            return ret;
         }
         
         /// <summary>
@@ -123,12 +120,17 @@ namespace Web.Areas.api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public DeleteTOBUYResponse Delete([FromBody] DeleteTOBUYRequest request)
+        public async Task<DeleteTOBUYResponse> Delete([FromBody] DeleteTOBUYRequest request)
         {
-            return new DeleteTOBUYResponse()
-            {
-                Data = true,
-            };
+            if(request.PublicId == Guid.Empty)
+                return new DeleteTOBUYResponse().SetError("Id required") as DeleteTOBUYResponse;
+            
+            var data = _mapper.Map<DeleteTOBUY>(request);
+            data.UserId = HttpContext.GetUserId();
+            
+            var ret= await _client.Tobuy_Delete(data);
+
+            return ret;
         }
     }
 }

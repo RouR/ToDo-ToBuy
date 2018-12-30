@@ -5,26 +5,33 @@ using Domain.Interfaces;
 
 namespace Utils.WebRequests
 {
-    public class Pagination<T>
+    public class Pagination<T>: IPaginationSetting
     {
-        readonly IList<T> _items;
+        public int Page { get; set; }
+        public int PageSize { get; set; } = 25;
+        public int TotalItems { get; set;}
 
-        public int Page { get; private set; }
-        public int PageSize { get; private set; }
-        public int TotalItems { get; private set; }
-
-        public IEnumerable<T> Items => _items;
+        public IEnumerable<T> Items { get; set; } = new List<T>(0);
 
         public int TotalPages => (int) Math.Ceiling(((double) TotalItems) / PageSize);
 
         public int FirstItem => ((Page - 1) * PageSize) + 1;
 
-        public int LastItem => FirstItem + _items.Count - 1;
+        public int LastItem => FirstItem + Items.Count() - 1;
 
         public bool HasPreviousPage => Page > 1;
 
         public bool HasNextPage => Page < TotalPages;
 
+        public Pagination()
+        {
+            //for mapping and deserialization
+        }
+        
+        public Pagination(Pagination<T> from): this(from.Items, from.TotalItems, from)
+        {
+            
+        }
         public Pagination(IEnumerable<T> items, int totalItems, IPaginationSetting settings)
         {
             if (items == null)
@@ -45,7 +52,7 @@ namespace Utils.WebRequests
             if (totalItems < 0)
                 throw new ArgumentOutOfRangeException(nameof(totalItems), totalItems, "Value cannot be less than zero.");
 
-            this._items = items.ToList();
+            this.Items = items.ToList();
             this.Page = page;
             this.PageSize = pageSize;
             this.TotalItems = totalItems;

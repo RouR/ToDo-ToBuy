@@ -1237,7 +1237,7 @@ export interface IListTOBUYResponse {
 }
 
 export class TOBUYPublicEntity implements ITOBUYPublicEntity {
-    name?: string | null;
+    name!: string;
     qty?: number | null;
     price?: Price | null;
     dueToUtc?: moment.Moment | null;
@@ -1287,7 +1287,7 @@ export class TOBUYPublicEntity implements ITOBUYPublicEntity {
 }
 
 export interface ITOBUYPublicEntity {
-    name?: string | null;
+    name: string;
     qty?: number | null;
     price?: Price | null;
     dueToUtc?: moment.Moment | null;
@@ -1347,13 +1347,9 @@ export interface IPrice {
 }
 
 export class EditTOBUYResponse implements IEditTOBUYResponse {
-    name?: string | null;
-    qty?: number | null;
-    price?: Price | null;
-    dueToUtc?: moment.Moment | null;
-    publicId?: string | null;
-    created?: moment.Moment | null;
-    updated?: moment.Moment | null;
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TOBUYPublicEntity | null;
 
     constructor(data?: IEditTOBUYResponse) {
         if (data) {
@@ -1366,13 +1362,9 @@ export class EditTOBUYResponse implements IEditTOBUYResponse {
 
     init(data?: any) {
         if (data) {
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.qty = data["qty"] !== undefined ? data["qty"] : <any>null;
-            this.price = data["price"] ? Price.fromJS(data["price"]) : <any>null;
-            this.dueToUtc = data["dueToUtc"] ? moment(data["dueToUtc"].toString()) : <any>null;
-            this.publicId = data["publicId"] !== undefined ? data["publicId"] : <any>null;
-            this.created = data["created"] ? moment(data["created"].toString()) : <any>null;
-            this.updated = data["updated"] ? moment(data["updated"].toString()) : <any>null;
+            this.hasError = data["hasError"] !== undefined ? data["hasError"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+            this.data = data["data"] ? TOBUYPublicEntity.fromJS(data["data"]) : <any>null;
         }
     }
 
@@ -1385,25 +1377,17 @@ export class EditTOBUYResponse implements IEditTOBUYResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["qty"] = this.qty !== undefined ? this.qty : <any>null;
-        data["price"] = this.price ? this.price.toJSON() : <any>null;
-        data["dueToUtc"] = this.dueToUtc ? this.dueToUtc.toISOString() : <any>null;
-        data["publicId"] = this.publicId !== undefined ? this.publicId : <any>null;
-        data["created"] = this.created ? this.created.toISOString() : <any>null;
-        data["updated"] = this.updated ? this.updated.toISOString() : <any>null;
+        data["hasError"] = this.hasError !== undefined ? this.hasError : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
         return data; 
     }
 }
 
 export interface IEditTOBUYResponse {
-    name?: string | null;
-    qty?: number | null;
-    price?: Price | null;
-    dueToUtc?: moment.Moment | null;
-    publicId?: string | null;
-    created?: moment.Moment | null;
-    updated?: moment.Moment | null;
+    hasError?: boolean | null;
+    message?: string | null;
+    data?: TOBUYPublicEntity | null;
 }
 
 export class SaveTOBUYRequest implements ISaveTOBUYRequest {
@@ -1659,7 +1643,7 @@ export interface IListTODOResponse {
 }
 
 export class TodoPublicEntity implements ITodoPublicEntity {
-    title?: string | null;
+    title!: string;
     description?: string | null;
     publicId?: string | null;
     created?: moment.Moment | null;
@@ -1703,7 +1687,7 @@ export class TodoPublicEntity implements ITodoPublicEntity {
 }
 
 export interface ITodoPublicEntity {
-    title?: string | null;
+    title: string;
     description?: string | null;
     publicId?: string | null;
     created?: moment.Moment | null;
@@ -1711,7 +1695,7 @@ export interface ITodoPublicEntity {
 }
 
 export class EditTODOResponse implements IEditTODOResponse {
-    title?: string | null;
+    title!: string;
     description?: string | null;
     publicId?: string | null;
     created?: moment.Moment | null;
@@ -1755,7 +1739,7 @@ export class EditTODOResponse implements IEditTODOResponse {
 }
 
 export interface IEditTODOResponse {
-    title?: string | null;
+    title: string;
     description?: string | null;
     publicId?: string | null;
     created?: moment.Moment | null;

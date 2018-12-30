@@ -791,26 +791,22 @@
       "properties": {
         "page": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "pageSize": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "totalItems": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "items": {
           "uniqueItems": false,
           "type": "array",
           "items": {
             "$ref": "#/definitions/TOBUYPublicEntity"
-          },
-          "readOnly": true
+          }
         },
         "totalPages": {
           "format": "int32",
@@ -838,9 +834,13 @@
       }
     },
     "TOBUYPublicEntity": {
+      "required": [
+        "name"
+      ],
       "type": "object",
       "properties": {
         "name": {
+          "maxLength": 200,
           "type": "string"
         },
         "qty": {
@@ -897,31 +897,14 @@
     "EditTOBUYResponse": {
       "type": "object",
       "properties": {
-        "name": {
+        "hasError": {
+          "type": "boolean"
+        },
+        "message": {
           "type": "string"
         },
-        "qty": {
-          "format": "float",
-          "type": "number"
-        },
-        "price": {
-          "$ref": "#/definitions/Price"
-        },
-        "dueToUtc": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "publicId": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "created": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "updated": {
-          "format": "date-time",
-          "type": "string"
+        "data": {
+          "$ref": "#/definitions/TOBUYPublicEntity"
         }
       }
     },
@@ -990,26 +973,22 @@
       "properties": {
         "page": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "pageSize": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "totalItems": {
           "format": "int32",
-          "type": "integer",
-          "readOnly": true
+          "type": "integer"
         },
         "items": {
           "uniqueItems": false,
           "type": "array",
           "items": {
             "$ref": "#/definitions/TodoPublicEntity"
-          },
-          "readOnly": true
+          }
         },
         "totalPages": {
           "format": "int32",
@@ -1037,12 +1016,17 @@
       }
     },
     "TodoPublicEntity": {
+      "required": [
+        "title"
+      ],
       "type": "object",
       "properties": {
         "title": {
+          "maxLength": 200,
           "type": "string"
         },
         "description": {
+          "maxLength": 1000,
           "type": "string"
         },
         "publicId": {
@@ -1060,12 +1044,17 @@
       }
     },
     "EditTODOResponse": {
+      "required": [
+        "title"
+      ],
       "type": "object",
       "properties": {
         "title": {
+          "maxLength": 200,
           "type": "string"
         },
         "description": {
+          "maxLength": 1000,
           "type": "string"
         },
         "publicId": {

@@ -20,6 +20,7 @@ namespace AccountService.Controllers
         /// 
         /// </summary>
         /// <param name="tracer"></param>
+        /// <param name="userService"></param>
         public UserController(ITracer tracer,
             IUserService userService)
         {

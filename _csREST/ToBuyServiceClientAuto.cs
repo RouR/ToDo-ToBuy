@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using DTO;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
 namespace Shared
@@ -12,6 +14,71 @@ namespace Shared
 	{
 	
 	
+
+		public async Task<DTO.Public.TOBUY.ListTOBUYResponse> Tobuy_List(DTO.Internal.TOBUY.ListTOBUY data)
+		{
+			var properties = data.GetType().GetProperties();
+			var dictionary = properties
+				.ToDictionary(info => info.Name, info => info.GetValue(data, null)?.ToString())
+				.Where(x=> x.Key != null && x.Value != null)
+				.ToDictionary(x=>x.Key, x=> x.Value);
+						
+			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Tobuy/List", dictionary));
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TOBUY.ListTOBUYResponse>();
+			return result;
+		}
+		
+
+		public async Task<DTO.Internal.TOBUY.FindToBuyResponse> Tobuy_Get(DTO.Internal.TOBUY.FindToBuyRequest data)
+		{
+			var properties = data.GetType().GetProperties();
+			var dictionary = properties
+				.ToDictionary(info => info.Name, info => info.GetValue(data, null)?.ToString())
+				.Where(x=> x.Key != null && x.Value != null)
+				.ToDictionary(x=>x.Key, x=> x.Value);
+						
+			var response = await _client.GetAsync(QueryHelpers.AddQueryString("/Tobuy/Get", dictionary));
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Internal.TOBUY.FindToBuyResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TOBUY.SaveTOBUYResponse> Tobuy_Create(DTO.Internal.TOBUY.CreateTOBUY data)
+		{
+			var response = await _client.PostAsJsonAsync("/Tobuy/Create", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TOBUY.SaveTOBUYResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TOBUY.SaveTOBUYResponse> Tobuy_Update(DTO.Internal.TOBUY.UpdateTOBUY data)
+		{
+			var response = await _client.PostAsJsonAsync("/Tobuy/Update", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TOBUY.SaveTOBUYResponse>();
+			return result;
+		}
+		
+
+		
+		public async Task<DTO.Public.TOBUY.DeleteTOBUYResponse> Tobuy_Delete(DTO.Internal.TOBUY.DeleteTOBUY data)
+		{
+			var response = await _client.PostAsJsonAsync("/Tobuy/Delete", data);
+			response.EnsureSuccessStatusCode();
+		
+			var result = await response.Content.ReadAsAsync<DTO.Public.TOBUY.DeleteTOBUYResponse>();
+			return result;
+		}
+		
 
 	}
 }

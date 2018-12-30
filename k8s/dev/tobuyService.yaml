@@ -23,7 +23,7 @@ spec:
       namespace: dev
       labels:
         app: tobuy-service
-        ci: somedataForOverride1972        
+        ci: somedataForOverride598        
     spec:
       containers:
       - name: tobuy-service

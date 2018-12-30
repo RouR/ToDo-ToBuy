@@ -4,7 +4,7 @@ using Domain.Interfaces;
 
 namespace Utils.WebRequests
 {
-    public static class ISortableHelper
+    public static class SortableHelper
     {
         public static IQueryable<K> Sort<K>(this ISortable obj, IQueryable<K> data)
         {

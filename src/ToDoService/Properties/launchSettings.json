@@ -10,7 +10,7 @@
         "apiToDo": "http://localhost:55552",
         "apiToBuy": "http://localhost:55553",
 
-        "sqlCon": "Server=localhost;Database=acc_srv_db;UserId=acc_srv_login;Password=devOnlyPwd",
+        "sqlCon": "Server=localhost;Database=todo_srv_db;UserId=todo_srv_login;Password=devOnlyPwd",
 
         "apiKeyAccount": "jkldgvf67i34yuksdfg",
         "apiKeyToDo": "hnasvli7w3osadf8glr",

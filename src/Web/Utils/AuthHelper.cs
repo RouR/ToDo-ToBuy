@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
@@ -10,11 +11,12 @@ namespace Web.Utils
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static string GetUserId(this HttpContext context)
+        public static Guid GetUserId(this HttpContext context)
         {
-            return context.User.Identity.IsAuthenticated
+            var id = context.User.Identity.IsAuthenticated
                 ? context.User.Claims.SingleOrDefault(x=> x.Type == Settings.JwtUserIdClaimName)?.Value
                 : string.Empty;
+            return Guid.Parse(id);
         }
     }
 }

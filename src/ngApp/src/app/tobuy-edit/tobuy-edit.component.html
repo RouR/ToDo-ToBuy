@@ -6,19 +6,19 @@
     </div>
 
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name">
+      <input matInput placeholder="Name" formControlName="name" required>
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Quantity" formControlName="qty" type="number" min="0">
+      <input matInput placeholder="Quantity" formControlName="qty" type="number" required min="0">
     </mat-form-field>
 
     <div formGroupName="price">
       <mat-form-field>
-        <input matInput placeholder="Price" formControlName="amount" type="number" min="0">
+        <input matInput placeholder="Price" formControlName="amount" type="number" required min="0">
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="Currency" formControlName="currency">
+        <mat-select placeholder="Currency" formControlName="currency" required>
           <mat-option *ngFor="let available of AvailableCurrencies" [value]="available">
             {{Currency[available]}}
           </mat-option>
@@ -44,7 +44,7 @@
     <div>
       <button mat-raised-button routerLink="/tobuy">Back to List</button>
       <div fxFlex></div>
-      <button mat-raised-button color="primary" (click)="save()">{{isNewRecord ? 'Create': 'Save'}}</button>
+      <button mat-raised-button color="primary" (click)="save()" >{{isNewRecord ? 'Create': 'Save'}}</button>
     </div>
   </form>
 

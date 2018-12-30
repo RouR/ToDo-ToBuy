@@ -1,8 +1,13 @@
-
 {{Description}}
 public async Task<{{ResponseType}}> {{ControllerName}}_{{ActionName}}({{RequestType}} data)
 {
-	var response = await _client.GetAsJsonAsync("/{{ControllerName}}/{{ActionName}}", data);
+	var properties = data.GetType().GetProperties();
+	var dictionary = properties
+		.ToDictionary(info => info.Name, info => info.GetValue(data, null)?.ToString())
+		.Where(x=> x.Key != null && x.Value != null)
+		.ToDictionary(x=>x.Key, x=> x.Value);
+				
+	var response = await _client.GetAsync(QueryHelpers.AddQueryString("/{{ControllerName}}/{{ActionName}}", dictionary));
 	response.EnsureSuccessStatusCode();
 
 	var result = await response.Content.ReadAsAsync<{{ResponseType}}>();

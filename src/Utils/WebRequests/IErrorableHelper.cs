@@ -1,3 +1,4 @@
+using AutoMapper;
 using Domain.Interfaces;
 
 namespace Utils.WebRequests

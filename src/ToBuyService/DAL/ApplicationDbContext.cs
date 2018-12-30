@@ -1,12 +1,30 @@
 using System;
 using System.IO;
+using Domain.DBEntities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace ToBuyService.DAL
 {
-   public class ApplicationDbContext : DbContext 
+    public class ApplicationDbContext : DbContext
     {
+        public DbSet<TobuyEntity> Tobuy { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
+
+            //don`t call SaveChanges() - it will throw exception:
+            // A DbContext instance cannot be used inside OnModelCreating
+
+            builder.Entity<TobuyEntity>().HasIndex(c => new {c.UserId, c.IsDeleted});
+            //builder.Entity<TobuyEntity>().OwnsOne(p => p.Price, cb => { cb.OwnsOne(c => c.Currency); });
+            builder.Entity<TobuyEntity>().OwnsOne(p => p.Price);
+        }
+
 
         /// <summary>
         /// Used for console commands - dotnet ef migrations add MigrationName
@@ -15,7 +33,7 @@ namespace ToBuyService.DAL
         {
             //don`t delete
         }
-        
+
         /// <summary>
         /// Used in runtime for EF Migrations
         /// </summary>
@@ -25,7 +43,7 @@ namespace ToBuyService.DAL
         {
             //don`t delete
         }
-        
+
         /// <summary>
         /// Used for console commands - dotnet ef migrations add MigrationName
         /// </summary>
@@ -38,7 +56,7 @@ namespace ToBuyService.DAL
                 base.OnConfiguring(optionsBuilder);
                 return;
             }
-            
+
             var connection = Environment.GetEnvironmentVariable($"sqlCon");
             var path = Path.Combine(Environment.CurrentDirectory, "Properties", "launchSettings.json");
             if (string.IsNullOrEmpty(connection) && File.Exists(path))
@@ -49,10 +67,10 @@ namespace ToBuyService.DAL
             }
             else
                 throw new Exception("Database connection string required 'sqlCon' or check json file");
-            
-            optionsBuilder.UseNpgsql(connection);           
+
+            optionsBuilder.UseNpgsql(connection);
         }
-        
+
         /*
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -74,7 +92,7 @@ namespace ToBuyService.DAL
         public static void CustomSeed(ApplicationDbContext context)
         {
             context.Database.EnsureCreated();
-            
+
             /*
             if (!context.Accounts.Any())
             {
