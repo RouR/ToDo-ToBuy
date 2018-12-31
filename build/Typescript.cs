@@ -61,7 +61,7 @@ partial class Build : NukeBuild
                 .SetApplicationArguments("swagger")
         );
 
-        var apiVersion = "v0.1";
+        var apiVersion = "v1";
         
         var document = await SwaggerDocument.FromFileAsync($"./swagger/swagger-Web-{apiVersion}.json");
       
