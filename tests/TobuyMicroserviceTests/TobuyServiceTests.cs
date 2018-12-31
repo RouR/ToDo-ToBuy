@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using Domain.DBEntities;
 using DTO;
 using DTO.Internal.TOBUY;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ namespace TobuyMicroserviceTests
             var userId = Guid.NewGuid();
 
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "testDB")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
             var mockMapper = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingDTOProfile()); });
@@ -56,8 +57,8 @@ namespace TobuyMicroserviceTests
                 var origField = edit1.Data.Name;
 
                 const string newValue = "new value";
-                service.Update(new UpdateTOBUY() { Name = newValue, PublicId = editId, UserId = userId});
-                
+                service.Update(new UpdateTOBUY() {Name = newValue, PublicId = editId, UserId = userId});
+
                 var edit2 = service.Find(new FindToBuyRequest() {PublicId = editId, UserId = userId});
                 Assert.Equal(false, edit1.HasError);
                 Assert.NotNull(edit1.Data);
@@ -76,7 +77,7 @@ namespace TobuyMicroserviceTests
                 Assert.NotNull(cr1.Data);
                 Assert.Equal(newValue, cr1.Data.Name);
                 Assert.Equal(newId, cr1.Data.PublicId);
-                
+
                 Assert.Equal(51, context.Tobuy.Count());
                 var list4 = service.List(new ListTOBUY() {Page = 1, PageSize = 10, UserId = userId});
                 Assert.Equal(50, list4.TotalItems);
@@ -85,8 +86,54 @@ namespace TobuyMicroserviceTests
             // Use a separate instance of the context to verify correct data was saved to database
             using (var context = new ApplicationDbContext(options))
             {
-                Assert.Equal(50, context.Tobuy.Count(x=> !x.IsDeleted));
+                Assert.Equal(50, context.Tobuy.Count(x => !x.IsDeleted));
                 Assert.Equal(51, context.Tobuy.Count());
+            }
+        }
+
+
+        [Fact]
+        public void TobuyService_Should_Sort()
+        {
+            var userId = Guid.NewGuid();
+
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            var mockMapper = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingDTOProfile()); });
+            var mapper = mockMapper.CreateMapper();
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new TobuyService(context, mapper);
+                Assert.Equal(0, context.Tobuy.Count());
+                for (var i = 0; i < 50; i++)
+                {
+                    var ret1 = service.Create(new CreateTOBUY()
+                    {
+                        PublicId = Guid.NewGuid(), UserId = userId,
+                        Created = new DateTime(2000, 1, 1).AddDays(i)
+                    });
+                }
+
+                Assert.Equal(50, context.Tobuy.Count());
+
+                var list1 = service.List(new ListTOBUY()
+                    {Page = 1, PageSize = 10, UserId = userId, OrderBy = nameof(TobuyEntity.PublicId), Asc = true});
+                var list2 = service.List(new ListTOBUY()
+                    {Page = 1, PageSize = 10, UserId = userId, OrderBy = nameof(TobuyEntity.PublicId), Asc = false});
+                var list3 = service.List(new ListTOBUY()
+                    {Page = 1, PageSize = 10, UserId = userId, OrderBy = nameof(TobuyEntity.Created), Asc = true});
+                var list4 = service.List(new ListTOBUY()
+                    {Page = 1, PageSize = 10, UserId = userId, OrderBy = nameof(TobuyEntity.Created), Asc = false});
+
+                var first1 = list1.Items.First().PublicId;
+                var first2 = list2.Items.First().PublicId;
+                var first3 = list3.Items.First().PublicId;
+                var first4 = list4.Items.First().PublicId;
+
+                Assert.Equal(4, new[] {first1, first2, first3, first4}.Distinct().Count());
             }
         }
     }

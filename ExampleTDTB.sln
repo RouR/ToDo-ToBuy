@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroserviceTests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TobuyMicroserviceTests", "tests\TobuyMicroserviceTests\TobuyMicroserviceTests.csproj", "{8B89C57B-A1D0-4FFB-A93B-1FD5EF20D225}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountMicroserviceTests", "tests\AccountMicroserviceTests\AccountMicroserviceTests.csproj", "{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{8B89C57B-A1D0-4FFB-A93B-1FD5EF20D225}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B89C57B-A1D0-4FFB-A93B-1FD5EF20D225}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B89C57B-A1D0-4FFB-A93B-1FD5EF20D225}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +150,7 @@ Global
 		{615C42DB-EEED-40C0-B25B-50E76AEBE6F2} = {3819EDB3-A78B-4284-ADBD-CBD6D81BF878}
 		{EACB9EF5-2125-4619-A0EB-11722F66AB94} = {BD7B76F7-EA95-46E5-A360-B420329B3CCB}
 		{8B89C57B-A1D0-4FFB-A93B-1FD5EF20D225} = {BD7B76F7-EA95-46E5-A360-B420329B3CCB}
+		{2DEE6F63-8578-4D72-9319-5BBFD7DC6E10} = {BD7B76F7-EA95-46E5-A360-B420329B3CCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60475545-BB2D-4640-BE30-0A4289C1C368}
