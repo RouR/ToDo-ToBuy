@@ -152,7 +152,7 @@ namespace Web
                 {
                     //https://github.com/Microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
                     options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.DefaultApiVersion = new ApiVersion(0, 1);
+                    options.DefaultApiVersion = new ApiVersion(1, 0);
                     options.ReportApiVersions = true;
                     options.UseApiBehavior = false;
                 }

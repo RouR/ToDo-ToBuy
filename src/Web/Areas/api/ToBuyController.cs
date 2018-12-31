@@ -20,6 +20,7 @@ namespace Web.Areas.api
     [Authorize]
     [GlobalValidator]
     [Area("api")]
+    [ApiVersion("1.0")]
     [ApiVersion("0.1")]
     [Route("api/[controller]/[action]")]
     public class ToBuyController : Controller

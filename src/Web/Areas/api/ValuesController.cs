@@ -10,6 +10,7 @@ namespace Web.Areas.api
     /// Only for testing infrastructure
     /// </summary>
     [Area("api")]
+    [ApiVersion("1.0")]
     [ApiVersion("0.1")]
     [Route("api/[controller]")]
     public class ValuesController : Controller

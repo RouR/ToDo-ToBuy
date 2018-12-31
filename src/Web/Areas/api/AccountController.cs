@@ -16,6 +16,7 @@ using Utils.WebRequests;
 
 namespace Web.Areas.api
 {
+    [ApiVersion("1.0")]
     [ApiVersion("0.1")]
     [GlobalValidator]
     [Area("api")]
