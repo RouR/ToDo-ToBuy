@@ -89,114 +89,108 @@ DTO_Internal_Account_TryLoginRequest[label="TryLoginRequest"];
 DTO_Internal_Account_TryLoginResponse[label="TryLoginResponse"];
 
 
-
 
-subgraph ce0553af55c74b8ba7273fa3e484df53 {
 
 DTO_Public_TODO_DeleteTODORequest -> DTO_Internal_TODO_DeleteTODO[color="black"];
 DTO_Internal_TODO_DeleteTODO -> DTO_Public_TODO_DeleteTODOResponse[color="black"];
-}
 
 
-
 
-subgraph afe9b38ed42d428e81bbd5ac5fafc1a9 {
 
 DTO_Internal_TODO_FindToDoRequest -> DTO_Internal_TODO_FindToDoResponse[color="black"];
 DTO_Internal_TODO_FindToDoResponse -> DTO_Public_TODO_EditTODOResponse[color="black"];
-}
 
 
-
 
-subgraph _4cbc099f81454ab88c7d7b29a9dc5674 {
 
 DTO_Public_TODO_ListTODORequest -> DTO_Internal_TODO_ListTODO[color="black"];
 DTO_Internal_TODO_ListTODO -> DTO_Public_TODO_ListTODOResponse[color="black"];
-}
 
 
-
 
-subgraph _75e3c18382b340c5bc733a01b6588a9b {
 
 DTO_Public_TODO_SaveTODORequest -> DTO_Internal_TODO_CreateTODO[color="black"];
 DTO_Internal_TODO_CreateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
 DTO_Public_TODO_EditTODORequest -> DTO_Internal_TODO_UpdateTODO[color="black"];
 DTO_Public_TODO_SaveTODORequest -> DTO_Internal_TODO_UpdateTODO[color="black"];
 DTO_Internal_TODO_UpdateTODO -> DTO_Public_TODO_SaveTODOResponse[color="black"];
-}
 
 
-
 
-subgraph a4718df7570446ceb9ffc43fa5c29e6f {
 
 DTO_Public_TOBUY_SaveTOBUYRequest -> DTO_Internal_TOBUY_CreateTOBUY[color="black"];
 DTO_Internal_TOBUY_CreateTOBUY -> DTO_Public_TOBUY_SaveTOBUYResponse[color="black"];
 DTO_Public_TOBUY_SaveTOBUYRequest -> DTO_Internal_TOBUY_UpdateTOBUY[color="black"];
 DTO_Internal_TOBUY_UpdateTOBUY -> DTO_Public_TOBUY_SaveTOBUYResponse[color="black"];
-}
 
 
-
 
-subgraph _7cdd7b45a93540ba8d401025e77dcd8e {
 
 DTO_Public_TOBUY_DeleteTOBUYRequest -> DTO_Internal_TOBUY_DeleteTOBUY[color="black"];
 DTO_Internal_TOBUY_DeleteTOBUY -> DTO_Public_TOBUY_DeleteTOBUYResponse[color="black"];
-}
 
 
-
 
-subgraph _4616dbb8e0bb4ca98add1a90bdcfec8d {
 
 DTO_Public_TOBUY_EditTOBUYRequest -> DTO_Internal_TOBUY_FindToBuyRequest[color="black"];
 DTO_Internal_TOBUY_FindToBuyRequest -> DTO_Internal_TOBUY_FindToBuyResponse[color="black"];
 DTO_Internal_TOBUY_FindToBuyResponse -> DTO_Public_TOBUY_EditTOBUYResponse[color="black"];
-}
 
 
-
 
-subgraph _5130ce7ceb93495ea0fc4ff6d721a04a {
 
 DTO_Public_TOBUY_ListTOBUYRequest -> DTO_Internal_TOBUY_ListTOBUY[color="black"];
 DTO_Internal_TOBUY_ListTOBUY -> DTO_Public_TOBUY_ListTOBUYResponse[color="black"];
-}
 
 
-
 
-subgraph _411c0f5762fa4168b008aac0f8a0ae1c {
 
 DTO_Public_Account_RegisterRequest -> DTO_Internal_Account_CreateUserRequest[color="black"];
 DTO_Public_Account_RegisterRequest -> DTO_Internal_Account_CreateUserResponse[color="black"];
 DTO_Internal_Account_CreateUserRequest -> DTO_Internal_Account_CreateUserResponse[color="black"];
 DTO_Internal_Account_CreateUserResponse -> DTO_Public_Account_RegisterResponse[color="black"];
-}
 
 
-
 
-subgraph _547d21392e06463bbc4e5a21e1c739fe {
 
 DTO_Public_Account_LoginRequest -> DTO_Internal_Account_TryLoginRequest[color="black"];
 DTO_Internal_Account_FindUserRequest -> DTO_Internal_Account_FindUserResponse[color="black"];
 DTO_Internal_Account_FindUserResponse -> DTO_Public_Account_LoginResponse[color="black"];
 DTO_Internal_Account_TryLoginRequest -> DTO_Internal_Account_TryLoginResponse[color="black"];
 DTO_Internal_Account_TryLoginResponse -> DTO_Public_Account_LoginResponse[color="black"];
-}
 
 
-{/* ServiceName Web*/ rank=same;DTO_Public_TODO_DeleteTODORequest, DTO_Public_TODO_DeleteTODOResponse, DTO_Public_TODO_EditTODORequest, DTO_Public_TODO_EditTODOResponse, DTO_Public_TODO_ListTODORequest, DTO_Public_TODO_ListTODOResponse, DTO_Public_TODO_SaveTODORequest, DTO_Public_TODO_SaveTODOResponse, DTO_Public_TOBUY_DeleteTOBUYRequest, DTO_Public_TOBUY_DeleteTOBUYResponse, DTO_Public_TOBUY_EditTOBUYRequest, DTO_Public_TOBUY_EditTOBUYResponse, DTO_Public_TOBUY_ListTOBUYRequest, DTO_Public_TOBUY_ListTOBUYResponse, DTO_Public_TOBUY_SaveTOBUYRequest, DTO_Public_TOBUY_SaveTOBUYResponse, DTO_Public_Account_RegisterRequest, DTO_Public_Account_RegisterResponse}
+ subgraph cluster_0{	 /* ServiceName Web*/ rank=same;
+	 node [style=filled];
+	 color=blue;
+	 label = "Web";
+
+DTO_Public_TODO_DeleteTODORequest, DTO_Public_TODO_DeleteTODOResponse, DTO_Public_TODO_EditTODORequest, DTO_Public_TODO_EditTODOResponse, DTO_Public_TODO_ListTODORequest, DTO_Public_TODO_ListTODOResponse, DTO_Public_TODO_SaveTODORequest, DTO_Public_TODO_SaveTODOResponse, DTO_Public_TOBUY_DeleteTOBUYRequest, DTO_Public_TOBUY_DeleteTOBUYResponse, DTO_Public_TOBUY_EditTOBUYRequest, DTO_Public_TOBUY_EditTOBUYResponse, DTO_Public_TOBUY_ListTOBUYRequest, DTO_Public_TOBUY_ListTOBUYResponse, DTO_Public_TOBUY_SaveTOBUYRequest, DTO_Public_TOBUY_SaveTOBUYResponse, DTO_Public_Account_RegisterRequest, DTO_Public_Account_RegisterResponse
+}
 
-{/* ServiceName Account*/ rank=same;DTO_Public_Account_LoginRequest, DTO_Public_Account_LoginResponse, DTO_Internal_Account_CreateUserRequest, DTO_Internal_Account_CreateUserResponse, DTO_Internal_Account_FindUserRequest, DTO_Internal_Account_FindUserResponse, DTO_Internal_Account_TryLoginRequest, DTO_Internal_Account_TryLoginResponse}
+ subgraph cluster_1{	 /* ServiceName Account*/ rank=same;
+	 node [style=filled];
+	 color=blue;
+	 label = "Account";
+
+DTO_Public_Account_LoginRequest, DTO_Public_Account_LoginResponse, DTO_Internal_Account_CreateUserRequest, DTO_Internal_Account_CreateUserResponse, DTO_Internal_Account_FindUserRequest, DTO_Internal_Account_FindUserResponse, DTO_Internal_Account_TryLoginRequest, DTO_Internal_Account_TryLoginResponse
+}
 
-{/* ServiceName ToDo*/ rank=same;DTO_Internal_TODO_CreateTODO, DTO_Internal_TODO_DeleteTODO, DTO_Internal_TODO_ListTODO, DTO_Internal_TODO_UpdateTODO}
+ subgraph cluster_2{	 /* ServiceName ToDo*/ rank=same;
+	 node [style=filled];
+	 color=blue;
+	 label = "ToDo";
+
+DTO_Internal_TODO_CreateTODO, DTO_Internal_TODO_DeleteTODO, DTO_Internal_TODO_ListTODO, DTO_Internal_TODO_UpdateTODO
+}
 
-{/* ServiceName ToBuy*/ rank=same;DTO_Internal_TODO_FindToDoRequest, DTO_Internal_TODO_FindToDoResponse, DTO_Internal_TOBUY_CreateTOBUY, DTO_Internal_TOBUY_DeleteTOBUY, DTO_Internal_TOBUY_FindToBuyRequest, DTO_Internal_TOBUY_FindToBuyResponse, DTO_Internal_TOBUY_ListTOBUY, DTO_Internal_TOBUY_UpdateTOBUY}
+ subgraph cluster_3{	 /* ServiceName ToBuy*/ rank=same;
+	 node [style=filled];
+	 color=blue;
+	 label = "ToBuy";
+
+DTO_Internal_TODO_FindToDoRequest, DTO_Internal_TODO_FindToDoResponse, DTO_Internal_TOBUY_CreateTOBUY, DTO_Internal_TOBUY_DeleteTOBUY, DTO_Internal_TOBUY_FindToBuyRequest, DTO_Internal_TOBUY_FindToBuyResponse, DTO_Internal_TOBUY_ListTOBUY, DTO_Internal_TOBUY_UpdateTOBUY
+}
 
 
 }
